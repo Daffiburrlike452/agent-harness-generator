@@ -4,6 +4,30 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 35 (2026-06-13)
+
+- **ADR-019: Release orchestration** —
+  `docs/adrs/ADR-019-release-orchestration.md`. Locks down the
+  iter-33 release flow as an architectural decision:
+  - Composition over monolith: 5-step plan calls existing scripts in
+    a documented order
+  - Refuse dirty tree, no git mutation until step 5
+  - `--dry-run` as safe-default inspection mode
+  - Cross-platform via `cmd.exe /d /s /c` on Windows (same fix that
+    landed in publish-dryrun iter 24 / install-all iter 31)
+  - Test contract table maps every primitive to its pinning test
+- **ADR-018 added to the index** — accidentally omitted in iter 12.
+  The `__tests__/adr-index.test.ts` regression test (added below)
+  would have caught the original miss.
+- **`__tests__/adr-index.test.ts`** (3 cases) — locks the
+  `docs/adrs/INDEX.md` against the actual file set:
+  - every `ADR-NNN-*.md` file in the dir is listed
+  - every `(./ADR-NNN-*.md)` link in the index resolves
+  - every ADR has the canonical sections (Status, Context, Decision,
+    Consequences) — catches stub ADRs that ship without the
+    decision rationale
+- TS suite: **365/365** (up from 362).
+
 ### Added — Iter 34 (2026-06-13)
 
 - **`__tests__/mcp-dispatch-integration.test.ts`** (11 cases) — the

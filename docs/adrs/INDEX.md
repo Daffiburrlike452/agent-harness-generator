@@ -51,6 +51,8 @@ ADR-006 (memory + learning) and ADR-008 (drift detection) cut across all phases.
 | [ADR-014](./ADR-014-self-evolution-and-federation.md) | Self-evolution + federation (exotic) | Proposed | Learning loop applied at harness level; federated multi-instance harnesses. |
 | [ADR-015](./ADR-015-naming-and-branding-policy.md) | Naming + branding policy | Proposed | Independence mode vs powered-by; scope strategy; marketplace tags. |
 | [ADR-016](./ADR-016-migration-for-ruflo-users.md) | Migration for existing ruflo users | Proposed | Moving from ruflo to a generated harness without losing memory / patterns / skills. |
+| [ADR-018](./ADR-018-rvm-as-deployment-target.md) | RVM as deployment target | Accepted | Use the RVM microhypervisor as the hardware-isolation tier for federation + multi-tenant deployments. |
+| [ADR-019](./ADR-019-release-orchestration.md) | Release orchestration | Accepted | `scripts/release.mjs` composes version-bump + preflight + marketplace + dry-run + tag into one command; refuses dirty tree; per-step PASS/SKIP/FAIL gating. |
 
 ## Conventions used across the series
 
