@@ -4,6 +4,38 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 28 (2026-06-13)
+
+- **Marketplace entry generation + IPFS pin wired into `publish.yml`**
+  — completes the marketplace publishing pipeline as an actual,
+  load-bearing CI step:
+  1. After all 11 npm packages publish successfully…
+  2. `node scripts/marketplace-entry.mjs` regenerates
+     `dist/marketplace-entry.json` from live `.claude-plugin/plugin.json`
+     and root `package.json`.
+  3. Fetches `PINATA_JWT` from GCP Secret Manager (best-effort —
+     `continue-on-error: true`; first-time releases skip cleanly).
+  4. Single-file POST to Pinata's `pinFileToIPFS` endpoint, extracts
+     the `IpfsHash`, surfaces it as a `::notice::` annotation + step
+     output `marketplace_cid` for downstream registry-update workflows.
+  5. Pin failure is non-fatal — the npm publish has already succeeded.
+- **5th Codex skill: `verify-witness`** — distinct from the iter-22
+  `validate-harness` umbrella because it only checks the Ed25519
+  signature:
+  - Use case: federation handshake / multi-signer workflow / CI mirror
+    where you don't need the full release-readiness sweep.
+  - Args: `path` (default `.`), `strict` (default `true` — fail if no
+    witness; soft-skip when `false`).
+  - `.codex/skills/verify-witness/skill.toml` + `README.md` follow the
+    schema the iter-22 cross-skill test pins.
+- **`.claude-plugin/plugin.json`** updated to list `verify-witness` as
+  the 5th skill + 5th command (otherwise the iter-24 orphan-skill check
+  would flag the new directory).
+- Codex skill catalog now: **create / publish / validate / secrets /
+  verify-witness** — 5 surfaces.
+- Cumulative test suite: 326/326 (verify-witness + the marketplace
+  pipeline already had test coverage from iter 22 + 27).
+
 ### Added — Iter 27 (2026-06-13)
 
 - **`scripts/marketplace-entry.mjs`** — turns `.claude-plugin/plugin.json`

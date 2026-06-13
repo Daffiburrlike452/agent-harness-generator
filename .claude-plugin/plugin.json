@@ -39,7 +39,8 @@
     "create-harness",
     "publish-harness",
     "validate-harness",
-    "harness-secrets"
+    "harness-secrets",
+    "verify-witness"
   ],
   "commands": [
     {
@@ -57,6 +58,10 @@
     {
       "name": "harness-secrets",
       "description": "GCP Secret Manager helpers — check / fetch / validate-token"
+    },
+    {
+      "name": "verify-witness",
+      "description": "Verify the Ed25519 witness manifest of a scaffolded harness"
     }
   ],
   "permissions": ["memory", "filesystem", "network"],
