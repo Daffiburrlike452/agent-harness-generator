@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx {{name}}*)",
+      "Bash(kubectl describe*)",
+      "Bash(kubectl logs*)",
+      "Bash(kubectl get*)",
+      "Bash(systemctl status*)",
+      "Bash(journalctl*)",
+      "mcp__{{name}}__*",
+      "mcp__alerts__*",
+      "mcp__runbook_store__*"
+    ],
+    "deny": [
+      "Bash(kubectl delete*)",
+      "Bash(rm *)",
+      "Bash(systemctl stop*)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  },
+  "mcpServers": {
+    "{{name}}": {
+      "command": "npx",
+      "args": ["-y", "{{name}}@latest", "mcp", "start"]
+    },
+    "alerts": {
+      "command": "npx",
+      "args": ["-y", "{{name}}@latest", "mcp", "alerts"]
+    },
+    "runbook_store": {
+      "command": "npx",
+      "args": ["-y", "{{name}}@latest", "mcp", "runbooks"]
+    }
+  }
+}

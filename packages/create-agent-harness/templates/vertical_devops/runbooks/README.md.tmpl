@@ -1,0 +1,32 @@
+# Runbooks for {{name}}
+
+Drop your team's runbooks in this directory as markdown files. The
+`runbook-runner` agent finds them by semantic search via the kernel's
+memory bridge — no schema required, no registration step.
+
+## Convention
+
+```markdown
+# <Incident name>
+
+## Symptoms
+- What you see
+- What metric triggers this
+
+## Runbook
+1. First step
+2. Second step
+3. ...
+
+## When to escalate
+- Conditions under which the runbook gives up and pages a human
+```
+
+The semantic-search retriever looks at the `# title`, the `## Symptoms`,
+and the first paragraph of `## Runbook`. Keep those expressive; the
+narrative below can be as detailed as you like.
+
+## Versioning
+
+Runbooks are versioned with the harness — when you `npm publish`, the
+runbook bundle ships too. Users get your latest runbooks on `npm update`.

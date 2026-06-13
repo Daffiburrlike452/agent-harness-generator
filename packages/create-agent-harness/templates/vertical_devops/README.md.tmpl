@@ -1,0 +1,27 @@
+# {{name}}
+
+{{description}}
+
+> Generated with [`create-agent-harness`](https://github.com/ruvnet/agent-harness-generator) using the `vertical:devops` template. WASM kernel, multi-host, witness-signed.
+
+## Install
+
+```bash
+npm install -g {{name}}
+{{name}} init
+```
+
+## What's in the box
+
+- 4 specialized agents (responder, runbook-runner, escalator, postmortem)
+- `runbooks/` directory for your team's runbooks (markdown)
+- Pre-configured routing: Haiku for triage/runbook execution, Sonnet for escalation + postmortem
+- `.claude/settings.json` with sensible permissions and the kernel MCP server registered
+
+## Adding your own runbooks
+
+Drop markdown files into `runbooks/`. The runbook-runner agent finds them by semantic search via the kernel's memory bridge — no schema required.
+
+## License
+
+MIT

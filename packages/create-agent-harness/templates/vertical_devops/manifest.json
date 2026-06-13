@@ -1,0 +1,22 @@
+{
+  "id": "vertical:devops",
+  "description": "DevOps incident response harness — 4 agents (responder, runbook, escalator, postmortem), 3 MCP servers (kernel + alerts + runbook-store), opinionated routing rules for on-call workflows",
+  "domain": "devops/incident-response",
+  "files": [
+    { "src": "package.json.tmpl", "dst": "package.json", "render": true },
+    { "src": "CLAUDE.md.tmpl", "dst": "CLAUDE.md", "render": true },
+    { "src": "README.md.tmpl", "dst": "README.md", "render": true },
+    { "src": ".claude/settings.json.tmpl", "dst": ".claude/settings.json", "render": true },
+    { "src": "src/init.ts.tmpl", "dst": "src/init.ts", "render": true },
+    { "src": "src/agents/responder.ts.tmpl", "dst": "src/agents/responder.ts", "render": true },
+    { "src": "src/agents/runbook-runner.ts.tmpl", "dst": "src/agents/runbook-runner.ts", "render": true },
+    { "src": "src/agents/escalator.ts.tmpl", "dst": "src/agents/escalator.ts", "render": true },
+    { "src": "src/agents/postmortem.ts.tmpl", "dst": "src/agents/postmortem.ts", "render": true },
+    { "src": "runbooks/README.md.tmpl", "dst": "runbooks/README.md", "render": true }
+  ],
+  "vars": [
+    { "name": "name", "prompt": "Harness name (kebab-case)", "validate": "^[a-z0-9-]+$" },
+    { "name": "description", "prompt": "One-line description", "default": "Incident response with on-call workflows" },
+    { "name": "host", "prompt": "Host adapter", "default": "claude-code", "choices": ["claude-code", "codex", "pi-dev", "hermes"] }
+  ]
+}

@@ -1,0 +1,34 @@
+# {{name}}
+
+{{description}}
+
+## What this harness does
+
+Coordinates on-call incident response: alert ingestion, runbook lookup, escalation logic, and postmortem authoring. 4 agents work in a hierarchical pipeline; the kernel routes between them.
+
+## Agents
+
+| Agent | Role | Typical model tier |
+|---|---|---|
+| `responder` | Triages incoming alerts, identifies playbook | Haiku |
+| `runbook-runner` | Executes known runbooks step by step | Haiku |
+| `escalator` | Decides when to page humans + who | Sonnet |
+| `postmortem` | Drafts incident postmortems from session transcript | Sonnet |
+
+## Behavioral rules
+
+- ALWAYS run `runbook-runner` before `escalator` — escalation requires runbook context
+- NEVER auto-execute destructive commands; runbook-runner deliberates, doesn't `rm`
+- `escalator` may invoke a human via the `notify` MCP tool — that's the only side-effect agent
+
+## Slash commands
+
+| Command | What it does |
+|---|---|
+| `/triage <alert>` | Run responder + runbook-runner |
+| `/escalate <reason>` | Force escalation path |
+| `/postmortem` | Generate postmortem from current session |
+
+## Architecture
+
+Built on `@ruflo/kernel` (Rust + WASM). Multi-host: ships with the **{{host}}** adapter; other hosts available via `harness add-host <name>`.
