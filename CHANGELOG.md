@@ -4,6 +4,48 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 8 (2026-06-13)
+
+- **`harness` CLI binary** (`packages/create-agent-harness/src/harness-bin.ts`)
+  with three subcommands:
+  - `harness sign [path]` — produce/update witness manifest; reads
+    `WITNESS_SIGNING_KEY` env (64-char hex), refuses on missing/malformed
+    keys, delegates to kernel signing when available, emits a shape-valid
+    placeholder otherwise (so doctor + verify report the gap explicitly)
+  - `harness verify [path]` — read + verify witness.json, prints harness
+    name + version + entry count + public key prefix
+  - `harness doctor [path]` — smoke checks: package.json, @ruflo/kernel
+    dep, .harness/manifest.json + .sha256, manifest hash consistency,
+    at least one host artifact (.claude/, .codex/, AGENTS.md, or
+    cli-config.yaml)
+  - `harness help` — usage summary
+- 11 new TS test cases for the subcommands (help, verify with/without
+  witness, doctor healthy/missing-host/hash-mismatch, sign with/without
+  key/with malformed key)
+- Package bin map adds `harness` binary alongside `create-agent-harness`
+- **MCP tool registry in Rust kernel** (`crates/kernel/src/mcp.rs`):
+  - `ToolSpec` (name, server, description, JSON-schema input)
+  - `ToolRegistry` with register/get/list/for_server, replaces on same
+    (server, name) key
+  - `validate_tool()` requires non-empty name + server, schema must be
+    a JSON object
+  - 7 new Rust test cases (validate-tool, registry register/get/replace,
+    for-server filter)
+- **Per-package READMEs** for the 6 npm-published packages:
+  - `@ruflo/kernel` — kernel API + memory subpath usage
+  - `create-agent-harness` — scaffold quick start + template + host matrix
+  - `@ruflo/host-claude-code` — hooks three-level shape, 3 settings scopes
+  - `@ruflo/host-codex` — TOML quirks (trusted-project gate, no hooks)
+  - `@ruflo/host-pi-dev` — no-MCP design clarification, badlogic Pi (NOT
+    Inflection)
+  - `@ruflo/host-hermes` — Hermes-4 `<think>` / `<tool_call>` quirk,
+    two-project disambiguation
+- **GCP setup automation** (`scripts/setup-gcp.sh`):
+  - One-shot bash script: APIs → WIF pool → OIDC provider → publisher SA
+    → pool-to-SA binding → NPM_TOKEN secret → SA read access → variable
+    wiring instructions
+  - Idempotent — re-runnable; skips steps already done
+
 ### Added — Iter 7 (2026-06-13)
 
 - **Real Hooks subsystem in Rust** (`crates/kernel/src/hooks.rs`):

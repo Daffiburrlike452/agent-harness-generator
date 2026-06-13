@@ -11,7 +11,10 @@
   "license": "MIT",
   "author": "rUv <ruv@ruv.net>",
   "type": "module",
-  "bin": { "create-agent-harness": "./dist/bin.js" },
+  "bin": {
+    "create-agent-harness": "./dist/bin.js",
+    "harness": "./dist/harness-bin.js"
+  },
   "files": ["dist/**", "templates/**", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsc",
