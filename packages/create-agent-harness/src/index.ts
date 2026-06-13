@@ -15,7 +15,14 @@ const TEMPLATES_ROOT = resolve(__dirname, '..', 'templates');
 export const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes'] as const;
 export type Host = (typeof HOSTS)[number];
 
-export const TEMPLATES = ['minimal', 'vertical:devops', 'vertical:support'] as const;
+export const TEMPLATES = [
+  'minimal',
+  'vertical:devops',
+  'vertical:support',
+  'vertical:trading',
+  'vertical:legal',
+  'vertical:research',
+] as const;
 export type TemplateId = (typeof TEMPLATES)[number];
 
 export interface CliArgs {

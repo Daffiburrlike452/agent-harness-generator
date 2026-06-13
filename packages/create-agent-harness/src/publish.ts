@@ -17,6 +17,7 @@
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { findWitness, readAndVerify } from './witness-client.js';
 
 export interface PinataConfig {
   /** Bearer JWT for Pinata's API. Must come from env or GCP Secret Manager. */
@@ -118,8 +119,16 @@ export async function publishHarness(opts: HarnessPublishOptions): Promise<Publi
   const raw = await readFile(manifestPath, 'utf-8');
   const manifest = JSON.parse(raw) as Record<string, unknown>;
 
-  // TODO iter-6: call into @ruflo/kernel's witness.verify before pinning.
-  // For now we trust the manifest came from create-agent-harness.
+  // Iter-6 security gate: verify the witness signature before pinning.
+  // We accept missing witness.json (witness signing is iter-7+ end-to-end
+  // wired) but tampered manifests fail loudly.
+  const witnessPath = findWitness(opts.harnessDir);
+  if (witnessPath) {
+    const { result } = await readAndVerify(witnessPath);
+    if (!result.valid) {
+      throw new Error(`witness verification failed: ${result.reason ?? 'unknown'}`);
+    }
+  }
 
   if (!opts.confirm) {
     return {

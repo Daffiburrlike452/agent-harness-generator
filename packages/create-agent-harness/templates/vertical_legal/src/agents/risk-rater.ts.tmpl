@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+export const SYSTEM_PROMPT = `You are the risk rater for {{name}}.
+You see ONLY verified deviations (those that passed citation-checker).
+Assign each: HIGH / MEDIUM / LOW with a one-sentence rationale. Order the
+final memo by risk descending. Top of memo: total deviations + count by
+risk tier.`;
+export const NAME = 'risk-rater';
+export const TIER = 'sonnet' as const;

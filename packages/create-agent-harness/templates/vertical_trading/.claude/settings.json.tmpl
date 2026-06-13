@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx {{name}}*)",
+      "mcp__{{name}}__*",
+      "mcp__market_data__read*"
+    ],
+    "deny": [
+      "Bash(rm *)",
+      "mcp__broker__live_order*",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./.creds*)"
+    ]
+  },
+  "mcpServers": {
+    "{{name}}": { "command": "npx", "args": ["-y", "{{name}}@latest", "mcp", "start"] },
+    "market_data": { "command": "npx", "args": ["-y", "{{name}}@latest", "mcp", "market-data"] }
+  }
+}

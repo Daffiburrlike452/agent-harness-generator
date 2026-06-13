@@ -1,0 +1,24 @@
+# {{name}}
+
+{{description}}
+
+## Safety defaults
+
+- **Paper mode is the default.** Live trading requires explicit `--live` AND a non-empty `RUFLO_TRADE_CONFIRM` env var.
+- **Circuit breakers**: trade halts when daily P&L drops below `-2%` of equity OR when more than 5 consecutive losses occur OR when latency > 500ms.
+- **Position sizing** uses fractional-Kelly with a 0.25 multiplier — never bet full Kelly.
+
+## Agents
+
+| Agent | Role | Tier |
+|---|---|---|
+| `market-watcher` | Polls market data, detects regime shifts | Haiku |
+| `signal-gen` | Generates entry/exit signals from indicators | Sonnet |
+| `risk-checker` | Vets every signal against position-sizing rules + circuit-breaker state | Codemod (deterministic) |
+| `executor` | Submits orders (or simulates in paper mode) | Codemod (deterministic) |
+| `postmortem` | Daily P&L review + lessons learned | Sonnet |
+
+## Routing rules
+
+- `signal-gen` MUST always go through `risk-checker` before `executor`
+- Circuit-breaker state is checked on EVERY tick — not periodically

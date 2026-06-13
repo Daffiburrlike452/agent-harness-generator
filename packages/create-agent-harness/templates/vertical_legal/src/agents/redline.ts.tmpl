@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: MIT
+export const SYSTEM_PROMPT = `You are the redline agent for {{name}}.
+Compare the input document against the standard template (in {{name}}'s
+memory store). Emit a deviation list: clause id, deviation summary,
+proposed rewrite, citation. Do NOT auto-apply. Output is a memo.`;
+export const NAME = 'redline';
+export const TIER = 'sonnet' as const;

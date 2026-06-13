@@ -1,0 +1,20 @@
+{
+  "id": "vertical:legal",
+  "description": "Legal review harness — 3 agents (redline, citation-checker, risk-rater), citation-search MCP, deliberation-first workflow",
+  "domain": "legal/contract-review",
+  "files": [
+    { "src": "package.json.tmpl", "dst": "package.json", "render": true },
+    { "src": "CLAUDE.md.tmpl", "dst": "CLAUDE.md", "render": true },
+    { "src": "README.md.tmpl", "dst": "README.md", "render": true },
+    { "src": ".claude/settings.json.tmpl", "dst": ".claude/settings.json", "render": true },
+    { "src": "src/init.ts.tmpl", "dst": "src/init.ts", "render": true },
+    { "src": "src/agents/redline.ts.tmpl", "dst": "src/agents/redline.ts", "render": true },
+    { "src": "src/agents/citation-checker.ts.tmpl", "dst": "src/agents/citation-checker.ts", "render": true },
+    { "src": "src/agents/risk-rater.ts.tmpl", "dst": "src/agents/risk-rater.ts", "render": true }
+  ],
+  "vars": [
+    { "name": "name", "prompt": "Harness name (kebab-case)", "validate": "^[a-z0-9-]+$" },
+    { "name": "description", "prompt": "One-line description", "default": "Contract redline + citation check + risk rating" },
+    { "name": "host", "prompt": "Host adapter", "default": "claude-code", "choices": ["claude-code", "codex", "pi-dev", "hermes"] }
+  ]
+}

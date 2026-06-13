@@ -1,0 +1,22 @@
+{
+  "id": "vertical:trading",
+  "description": "Trading harness — market-watcher, signal-gen, risk-checker, executor (paper by default), postmortem. Includes circuit-breaker safety patterns.",
+  "domain": "trading/quantitative",
+  "files": [
+    { "src": "package.json.tmpl", "dst": "package.json", "render": true },
+    { "src": "CLAUDE.md.tmpl", "dst": "CLAUDE.md", "render": true },
+    { "src": "README.md.tmpl", "dst": "README.md", "render": true },
+    { "src": ".claude/settings.json.tmpl", "dst": ".claude/settings.json", "render": true },
+    { "src": "src/init.ts.tmpl", "dst": "src/init.ts", "render": true },
+    { "src": "src/agents/market-watcher.ts.tmpl", "dst": "src/agents/market-watcher.ts", "render": true },
+    { "src": "src/agents/signal-gen.ts.tmpl", "dst": "src/agents/signal-gen.ts", "render": true },
+    { "src": "src/agents/risk-checker.ts.tmpl", "dst": "src/agents/risk-checker.ts", "render": true },
+    { "src": "src/agents/executor.ts.tmpl", "dst": "src/agents/executor.ts", "render": true },
+    { "src": "src/agents/postmortem.ts.tmpl", "dst": "src/agents/postmortem.ts", "render": true }
+  ],
+  "vars": [
+    { "name": "name", "prompt": "Harness name (kebab-case)", "validate": "^[a-z0-9-]+$" },
+    { "name": "description", "prompt": "One-line description", "default": "Quant trading with paper-default and circuit-breakers" },
+    { "name": "host", "prompt": "Host adapter", "default": "claude-code", "choices": ["claude-code", "codex", "pi-dev", "hermes"] }
+  ]
+}

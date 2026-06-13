@@ -1,0 +1,24 @@
+# {{name}}
+
+{{description}}
+
+## Disclaimer — read first
+
+This is software, not a lawyer. Output is **advisory only**. Final review by qualified counsel is required before any contract is signed.
+
+## Agents
+
+| Agent | Role | Tier |
+|---|---|---|
+| `redline` | Identifies clauses that deviate from standard templates, suggests rewrites | Sonnet |
+| `citation-checker` | Verifies every cited statute / case is real, current, and on-point | Sonnet |
+| `risk-rater` | Assigns HIGH/MEDIUM/LOW risk to each surviving deviation | Sonnet |
+
+## Deliberation-first workflow
+
+1. `redline` runs over the input document and emits a deviation list
+2. For each deviation, `citation-checker` verifies every legal citation in the proposed rewrite
+3. `risk-rater` reviews ONLY the verified deviations and assigns risk
+4. Output: a memo with verified deviations, rewrites, and risk ratings
+
+No agent auto-applies changes. The deliverable is always a memo to a human reviewer.

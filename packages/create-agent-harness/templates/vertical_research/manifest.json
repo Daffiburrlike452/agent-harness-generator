@@ -1,0 +1,23 @@
+{
+  "id": "vertical:research",
+  "description": "Research dossier harness — 6 agents (scout, web-searcher, source-grader, synthesizer, fact-checker, citer), evidence-graded multi-source synthesis",
+  "domain": "research/multi-source-dossier",
+  "files": [
+    { "src": "package.json.tmpl", "dst": "package.json", "render": true },
+    { "src": "CLAUDE.md.tmpl", "dst": "CLAUDE.md", "render": true },
+    { "src": "README.md.tmpl", "dst": "README.md", "render": true },
+    { "src": ".claude/settings.json.tmpl", "dst": ".claude/settings.json", "render": true },
+    { "src": "src/init.ts.tmpl", "dst": "src/init.ts", "render": true },
+    { "src": "src/agents/scout.ts.tmpl", "dst": "src/agents/scout.ts", "render": true },
+    { "src": "src/agents/web-searcher.ts.tmpl", "dst": "src/agents/web-searcher.ts", "render": true },
+    { "src": "src/agents/source-grader.ts.tmpl", "dst": "src/agents/source-grader.ts", "render": true },
+    { "src": "src/agents/synthesizer.ts.tmpl", "dst": "src/agents/synthesizer.ts", "render": true },
+    { "src": "src/agents/fact-checker.ts.tmpl", "dst": "src/agents/fact-checker.ts", "render": true },
+    { "src": "src/agents/citer.ts.tmpl", "dst": "src/agents/citer.ts", "render": true }
+  ],
+  "vars": [
+    { "name": "name", "prompt": "Harness name (kebab-case)", "validate": "^[a-z0-9-]+$" },
+    { "name": "description", "prompt": "One-line description", "default": "Multi-source research with evidence grading" },
+    { "name": "host", "prompt": "Host adapter", "default": "claude-code", "choices": ["claude-code", "codex", "pi-dev", "hermes"] }
+  ]
+}

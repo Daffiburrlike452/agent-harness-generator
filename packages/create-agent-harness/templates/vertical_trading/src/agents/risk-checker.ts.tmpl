@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+// Deterministic risk checker. Codemod tier — no LLM call, just rules.
+
+export const SYSTEM_PROMPT = `You are the risk gate for {{name}}.
+For each incoming signal, check:
+  1. Circuit-breaker state (daily P&L > -2%, < 5 consecutive losses, latency < 500ms)
+  2. Position-sizing rule (fractional-Kelly with 0.25 multiplier)
+  3. Concentration limits (no single position > 10% equity)
+Output: APPROVE or REJECT with a single-sentence reason.`;
+export const NAME = 'risk-checker';
+export const TIER = 'codemod' as const;

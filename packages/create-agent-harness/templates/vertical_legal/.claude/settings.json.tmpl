@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": ["Bash(npx {{name}}*)", "mcp__{{name}}__*", "mcp__citations__*"],
+    "deny": ["Bash(rm *)", "Read(./.env)", "Read(./.env.*)", "WebFetch"]
+  },
+  "mcpServers": {
+    "{{name}}": { "command": "npx", "args": ["-y", "{{name}}@latest", "mcp", "start"] },
+    "citations": { "command": "npx", "args": ["-y", "{{name}}@latest", "mcp", "citations"] }
+  }
+}
