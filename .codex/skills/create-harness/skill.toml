@@ -1,0 +1,59 @@
+# Codex skill manifest for create-harness.
+#
+# Codex doesn't ship a first-class "marketplace" yet but it does honor
+# skill packages installed under ~/.codex/skills/ or .codex/skills/. This
+# manifest declares the skill's surface and the MCP server it dispatches to.
+
+[skill]
+name = "create-harness"
+version = "0.1.0"
+description = "Scaffold your own focused AI agent harness — pick host (Claude Code, Codex, pi.dev, Hermes), template, agents, skills, and ship a npm-publishable harness with its own npx CLI."
+author = "rUv <ruv@ruv.net>"
+homepage = "https://github.com/ruvnet/agent-harness-generator"
+license = "MIT"
+
+# Mapped onto a single MCP tool invocation. Codex calls this tool with
+# the user's responses to the prompts below.
+[dispatch]
+type = "mcp_tool"
+server = "agent-harness-generator"
+tool = "create_harness"
+
+# Codex's slash-command surface — what `/create-harness` expands to.
+[command]
+name = "create-harness"
+synopsis = "Scaffold a new AI agent harness"
+
+# Argument shape Codex passes to the MCP tool.
+[[args]]
+name = "name"
+prompt = "Harness name (kebab-case)"
+required = true
+validate = "^[a-z0-9-]+$"
+
+[[args]]
+name = "description"
+prompt = "One-line description"
+default = "My AI agent harness"
+
+[[args]]
+name = "host"
+prompt = "Host adapter"
+default = "claude-code"
+choices = ["claude-code", "codex", "pi-dev", "hermes"]
+
+[[args]]
+name = "template"
+prompt = "Template"
+default = "minimal"
+choices = ["minimal", "vertical:trading", "vertical:devops", "vertical:legal", "vertical:support", "vertical:research", "eject-from-ruflo"]
+
+[[args]]
+name = "branding"
+prompt = "Branding mode"
+default = "independent"
+choices = ["independent", "powered-by"]
+
+# Tags used by codex's skill catalog (analog to Claude Code's plugin tags).
+[catalog]
+tags = ["scaffolding", "agent-harness", "mcp", "multi-agent", "rust", "wasm"]

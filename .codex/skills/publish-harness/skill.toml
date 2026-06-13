@@ -1,0 +1,32 @@
+# Codex skill: ship the harness you just generated.
+
+[skill]
+name = "publish-harness"
+version = "0.1.0"
+description = "Publish a generated harness to npm — runs the smoke test, signs the witness manifest, and dispatches `npm publish --provenance` from your tagged release."
+author = "rUv <ruv@ruv.net>"
+homepage = "https://github.com/ruvnet/agent-harness-generator"
+license = "MIT"
+
+[dispatch]
+type = "mcp_tool"
+server = "agent-harness-generator"
+tool = "publish_harness"
+
+[command]
+name = "publish-harness"
+synopsis = "Smoke-test + witness-sign + npm publish for a generated harness"
+
+[[args]]
+name = "path"
+prompt = "Path to the harness directory"
+required = true
+
+[[args]]
+name = "dry_run"
+prompt = "Dry run (no actual publish)?"
+default = "true"
+choices = ["true", "false"]
+
+[catalog]
+tags = ["publishing", "npm", "agent-harness", "witness", "provenance"]
