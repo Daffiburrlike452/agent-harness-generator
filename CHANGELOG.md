@@ -4,6 +4,36 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 33 (2026-06-13)
+
+- **`scripts/release.mjs`** — single-command release orchestrator that
+  composes the existing release primitives in one 5-step plan:
+  1. `version-bump.mjs` (iter 29) — atomic cross-pack semver bump
+  2. `preflight.mjs` (iter 14) — every gate publish.yml would run
+  3. `marketplace-entry.mjs` (iter 27) — regen the IPFS-pinnable JSON
+  4. `publish-dryrun.mjs` (iter 20) — verify all tarballs build cleanly
+  5. `git add -A` + `git commit -m 'chore(release): vX.Y.Z'` + `git tag`
+- Modes:
+  - `node scripts/release.mjs patch` — no push, local only
+  - `node scripts/release.mjs minor --push` — push branch + tag (publish.yml fires)
+  - `node scripts/release.mjs 0.2.0-rc.1 --dry-run` — show plan only
+  - `--skip-preflight`, `--skip-marketplace`, `--skip-pack` for fast iteration
+- Sanity checks: refuses to run with a dirty working tree (unless
+  `--dry-run`); reports current branch up front.
+- **`__tests__/release.test.ts`** (6 cases) — pins the orchestration
+  contract against the real repo using `--dry-run` so the test is
+  hermetic by construction:
+  - script exists
+  - `--dry-run` exits 0 with `DRY-RUN complete` and creates no `v0.1.1`
+    git tag (zero mutation check)
+  - 5-step plan prints in order (`1/5` < `2/5` < ... < `5/5`)
+  - `--skip-*` flags honored
+  - semver bump kinds (patch/minor/major) forwarded to version-bump
+  - explicit version (`0.5.7-rc.1`) forwarded to version-bump
+- CI milestone: iter-31 commit `b37060c` was confirmed **CI SUCCESS** —
+  the first run conclusion = success in repo history.
+- TS suite: **351/351** (up from 345).
+
 ### Added — Iter 32 (2026-06-13)
 
 - **`examples/quickstart/`** — first RUNNABLE example. Before this iter
