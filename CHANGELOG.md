@@ -4,6 +4,34 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 34 (2026-06-13)
+
+- **`__tests__/mcp-dispatch-integration.test.ts`** (11 cases) — the
+  full ToolDispatcher surface exercised end-to-end as realistic MCP
+  flows, not just unit tests for the capability/resource matchers.
+  Pins:
+  - happy path: registered tool + matching claim → `result`
+  - `not-found`: unregistered tool surfaces server+tool
+  - `denied`: no matching claim, reason names the missing capability
+  - `denied`: expired claim no longer authorises
+  - `bad-args`: array/null args caught before handler runs (zero
+    handler invocations confirmed)
+  - handler throw → `denied` (not `result`), throw message in reason
+  - `*` wildcard authorises every tool
+  - `tool.invoke.mem.*` prefix matches mem.* but not eval.*
+  - resource scoping: narrow grant (`ns/x`) vs wildcard (`ns/*`),
+    correct match/no-match per pair
+  - multiple-claims OR: any matching claim authorises (expired and
+    unrelated claims in the same list don't block a valid one)
+  - realistic end-to-end flow: issue claim → use tool → claim
+    expires → tool denied → reissue claim → tool works again
+- This is the layer iter-10 (MCP tool dispatch in Rust kernel) +
+  iter-13 (MCP dispatch TS wrapper) built; before this iter only
+  the matcher unit tests existed. The integration coverage closes
+  the loop: a regression in either layer surfaces here before it
+  ships.
+- TS suite: **362/362** (up from 351).
+
 ### Added — Iter 33 (2026-06-13)
 
 - **`scripts/release.mjs`** — single-command release orchestrator that
