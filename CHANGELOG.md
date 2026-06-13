@@ -4,6 +4,51 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 7 (2026-06-13)
+
+- **Real Hooks subsystem in Rust** (`crates/kernel/src/hooks.rs`):
+  - `HandlerSpec` + `HandlerKind` (5 types per Claude Code: Command, Http,
+    McpTool, Prompt, Agent)
+  - `matcher_matches()` with pseudo-DSL support (`*`, `Bash(rm *)`)
+  - `merge_decisions()` with defer-cascade rule + per-event default
+    (PreToolUse / SubagentStart default to Ask, others to Allow)
+  - 10 new Rust tests pinning matcher + merge invariants
+- **Real Claims subsystem in Rust** (`crates/kernel/src/claims.rs`):
+  - `check()` with wildcard + prefix-with-dot + glob resource matching
+  - Expired claims skipped; first matching unexpired wins
+  - 9 new Rust tests
+- **Self-evolving routing TS layer**
+  (`packages/kernel-js/src/self-evolution.ts`):
+  - `SelfEvolvingRouter` wraps `@ruvector/emergent-time`'s
+    `LearnedWeights` over the kernel router
+  - `computeReward()` from success + latency + cost components
+  - Graceful EMA fallback when emergent-time isn't installed
+  - 8 new TS tests pinning reward computation, learning behaviour, bias
+- **End-user walkthrough doc** (`docs/USAGE.md`):
+  - 11-section walkthrough from install to publish to self-evolution
+  - Troubleshooting table covering the 5 most likely failure modes
+
+### Added — Iter 6 (2026-06-13)
+
+- 3 vertical templates: trading, legal, research (5 total templates)
+- Witness verification client wired into publish gate
+- Marketplace registry entry generator (matches ruflo plugin registry shape)
+
+### Added — Iter 5 (2026-06-13)
+
+- Memory subsystem with `@ruvector/emergent-time@0.1.0` integration
+- Full ruflo-eject pipeline (`--from-existing`)
+- Real 3-tier routing heuristics in Rust kernel
+- `vertical:support` template
+- `harness publish` IPFS subcommand (Pinata)
+
+### Added — Iter 4 (2026-06-13)
+
+- End-to-end scaffold pipeline (template walker + atomic writer)
+- `vertical:devops` template
+- `harness upgrade` drift detection
+- `--from-existing` ruflo-eject detection
+
 ### Added — Iter 3 (2026-06-13)
 
 - **Real Ed25519 witness signing in Rust** (`crates/kernel/src/witness.rs`)
