@@ -4,6 +4,66 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 57 (2026-06-13)
+
+- **Pages workflow unblocked** — enabled GitHub Pages on the repo via
+  the REST API (`POST /repos/.../pages` with `build_type=workflow` +
+  `source.branch=main`). Build job was already green on `d4a3db8`; the
+  deploy step had been failing with 404 because Pages wasn't enabled.
+  No code change required — repo-admin action only.
+- **Security cargo-deny fix** — the PR #1 merge wired
+  `EmbarkStudios/cargo-deny-action@v1` with `arguments: --workspace check`
+  but the action implicitly appends `command: check`, producing
+  `cargo deny ... --workspace check check` and a CLI parse error
+  (`error: invalid value 'check' for '[WHICH]...'`). Dropped the trailing
+  `check` token so the action invocation lines up with the action's
+  expected shape.
+
+### Added — Iter 56 (2026-06-13)
+
+- **`manifest.meta.surface` + `manifest.meta.kernel_version`** —
+  added optional `HarnessMeta` fields on the `HarnessManifest` so the
+  CLI vs web-UI parity test (ADR-027) has a load-bearing diagnostic
+  field for skew. Default surface is `'cli'`; web-UI's renderer port
+  sets `'web-ui'`.
+- **`harness doctor` reports the surface** — PASS line when present,
+  WARN line when missing (graceful for pre-iter-56 manifests).
+- Merged cleanly with the PR #1 additions to `subcommands.ts`
+  (`mcpScanCmd` + `analyzeRepoCmd`).
+
+### Added — Iter 55 (2026-06-13)
+
+- **`scripts/dev-toolkit.mjs`** — single-command repo orientation map.
+  Lists the 6 entry-point scripts (healthcheck / preflight / release /
+  sbom / audit-deps / bench-baseline), the 18 `scripts/*.mjs` helpers,
+  the 12 `harness` subcommands, and the 6 CI matrix job groups.
+  Modes: default text, `--json`, `--filter=<topic>`, `--check-health`.
+  Designed for new contributors who shouldn't have to spelunk 50+
+  CHANGELOG iter entries to find the right tool for a task.
+- **`__tests__/dev-toolkit.test.ts`** (8 cases) — default exits 0 with
+  4 sections, lists every harness subcommand, every entry point,
+  `--json` is parseable, `--filter` narrows correctly, `--check-health`
+  verifies, every listed script exists on disk.
+- **`CONTRIBUTING.md`** refreshed with the "Orientation map" section
+  and a "Day-to-day commands" table mapping question → command →
+  wall time.
+- **`docs/adrs/ADR-027-cli-and-web-ui-integration.md`** (drafted as
+  ADR-022 originally; renumbered to 027 after the PR #1 merge to
+  avoid collision with PR #1's ADR-022 MCP primitive) — defines the
+  byte-parity contract between CLI and web-UI surfaces, the
+  asymmetric-features table, decoupled release cadence (npm
+  tag-driven vs Pages push-driven), and the 6 required tests.
+- **PR #1 merge** — combined the web-UI Studio (188 files, +15977 /
+  -23) into main: `apps/web-ui/` (Vite + React + TS + Tailwind),
+  `crates/template-catalog/`, `harness mcp-scan` + `analyze-repo`
+  subcommands, 7 new ADRs (020-026), gated Pages workflow. Test
+  suite grew 486 → 522 cases on the merged tree.
+- **`examples/host-tour/`** — single script scaffolds and validates
+  one harness for each of all 6 hosts (claude-code, codex, pi-dev,
+  hermes, openclaw, rvm), prints a markdown summary table + per-host
+  file tree. 6/6 HEALTHY in ~190ms; non-zero exit if any host fails.
+  Demonstrates the multi-host parity story (iter 2/4/11/12) end-to-end.
+
 ### Added — Iter 54 (2026-06-13)
 
 - **CI Bench job extended to load-bear iter-39 + iter-53** — closes

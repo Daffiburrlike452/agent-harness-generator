@@ -32,7 +32,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: EmbarkStudios/cargo-deny-action@v1
         with:
-          arguments: --workspace check
+          # The action implicitly appends the `command` (default: check) to
+          # `arguments`, so passing `--workspace check` here was producing
+          # `cargo deny ... --workspace check check` and a CLI parse error.
+          arguments: --workspace
 
   npm-audit:
     runs-on: ubuntu-latest
