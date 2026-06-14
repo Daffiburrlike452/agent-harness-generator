@@ -8,6 +8,19 @@
 import { createHash } from 'node:crypto';
 import type { TemplateVars } from './renderer.js';
 
+/** Diagnostic metadata per ADR-022 (CLI ↔ Web-UI integration). */
+export interface HarnessMeta {
+  /** Which surface produced this harness — 'cli' or 'web-ui'. Lets the
+   *  validate umbrella decide which parity test bucket the harness should
+   *  pass, and tells operators which surface to debug when drift surfaces. */
+  surface?: 'cli' | 'web-ui';
+  /** `@ruflo/kernel` version the harness was scaffolded against. ADR-022
+   *  identifies kernel version skew as the most common root cause of
+   *  manifest-shape disagreement between CLI + Pages deployments. Recording
+   *  it here turns "drift" into "v0.1.5 vs v0.1.6 mismatch". */
+  kernel_version?: string;
+}
+
 export interface HarnessManifest {
   /** Manifest schema version. Bump only on breaking shape changes. */
   schema: 1;
@@ -25,9 +38,16 @@ export interface HarnessManifest {
   files: Record<string, string>;
   /** ISO-8601 generation timestamp. */
   generated_at: string;
+  /** ADR-022 diagnostic block. Optional for backwards-compat with pre-iter-56
+   *  manifests; `harness validate doctor` warns (does NOT fail) when absent. */
+  meta?: HarnessMeta;
 }
 
-export function emptyManifest(template: string, generator: string): HarnessManifest {
+export function emptyManifest(
+  template: string,
+  generator: string,
+  opts: { meta?: HarnessMeta } = {},
+): HarnessManifest {
   return {
     schema: 1,
     generator,
@@ -37,6 +57,13 @@ export function emptyManifest(template: string, generator: string): HarnessManif
     hosts: [],
     files: {},
     generated_at: new Date().toISOString(),
+    // ADR-022: surface is always 'cli' from this code path. The web-UI
+    // (PR #1) will populate 'web-ui' from its own emit path. opts.meta
+    // wins so callers can override (tests, future channels).
+    meta: {
+      surface: 'cli',
+      ...(opts.meta ?? {}),
+    },
   };
 }
 

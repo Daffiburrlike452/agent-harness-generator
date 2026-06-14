@@ -106,6 +106,27 @@ export async function doctor(args: string[]): Promise<SubcommandResult> {
   check(existsSync(join(dir, '.harness', 'manifest.json')), '.harness/manifest.json exists');
   check(existsSync(join(dir, '.harness', 'manifest.sha256')), '.harness/manifest.sha256 exists');
 
+  // ADR-022 diagnostic: warn (don't fail) when the manifest lacks
+  // meta.surface or meta.kernel_version. Pre-iter-56 manifests won't
+  // have these; surface=cli/web-ui helps the umbrella decide which
+  // parity test to run; kernel_version flags version-skew between
+  // CLI + Pages deployments.
+  if (existsSync(join(dir, '.harness', 'manifest.json'))) {
+    try {
+      const m = JSON.parse(await readFile(join(dir, '.harness', 'manifest.json'), 'utf-8'));
+      if (m.meta?.surface) {
+        lines.push(`  PASS manifest.meta.surface = ${m.meta.surface}`);
+      } else {
+        lines.push('  WARN manifest.meta.surface missing (pre-iter-56 manifest; ADR-022 diagnostic absent)');
+      }
+      if (m.meta?.kernel_version) {
+        lines.push(`  PASS manifest.meta.kernel_version = ${m.meta.kernel_version}`);
+      }
+    } catch {
+      /* already reported above */
+    }
+  }
+
   if (existsSync(join(dir, '.harness', 'manifest.json')) && existsSync(join(dir, '.harness', 'manifest.sha256'))) {
     try {
       const m = await readFile(join(dir, '.harness', 'manifest.json'), 'utf-8');
