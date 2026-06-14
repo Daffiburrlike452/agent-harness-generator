@@ -67,6 +67,38 @@ describe('harness validate', () => {
     }
   });
 
+  // iter 94 — symmetric with iter 93 doctor fix
+  it('umbrella FAIL message recommends diag --bundle (iter 94)', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'ahg-val-fail-'));
+    try {
+      // Empty dir → doctor fails (no package.json, no .harness),
+      // umbrella FAILs → must recommend the bundle.
+      const r = await validate([dir, '--skip-gcp']);
+      expect(r.code).toBe(1);
+      const txt = r.lines.join('\n');
+      expect(txt).toMatch(/Next:\s*capture the full diagnostic state/);
+      expect(txt).toMatch(/harness diag .* --bundle > bundle\.json/);
+      expect(txt).toContain('github.com/ruvnet/agent-harness-generator/issues');
+      expect(txt).toMatch(/secret_\/token_\/key_\/password_ fields are redacted/);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('HEALTHY result has no bundle suggestion noise (iter 94)', async () => {
+    const dir = await makeHarnessDir();
+    try {
+      const r = await validate([dir, '--skip-gcp']);
+      expect(r.code).toBe(0);
+      const txt = r.lines.join('\n');
+      expect(txt).toMatch(/Result: HEALTHY/);
+      // Crucially: NO "Next:" block on HEALTHY runs
+      expect(txt).not.toMatch(/Next:\s*capture/);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it('returns 1 and explains which check failed', async () => {
     // Empty dir → doctor fails (no package.json)
     const dir = await mkdtemp(join(tmpdir(), 'ahg-validate-empty-'));

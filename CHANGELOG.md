@@ -4,6 +4,37 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Changed — Iter 94 (2026-06-14)
+
+- **`harness validate` umbrella FAIL message now recommends
+  `harness diag --bundle`** — symmetric with iter 93's doctor fix.
+  The umbrella aggregates 6 checks (doctor + verify + path-guard +
+  mcp + secrets + diag); any of them failing should surface the
+  bundle as the next user action, not just the doctor sub-check.
+- **New "Next:" block** appears only on FAIL:
+  ```
+  Result: N checks FAILED — fix before publish
+
+  Next: capture the full diagnostic state for a support ticket:
+    harness diag /path/to/harness --bundle > bundle.json
+  (then attach bundle.json to a GitHub issue at
+   https://github.com/ruvnet/agent-harness-generator/issues — the
+   bundle is sanitised; secret_/token_/key_/password_ fields are redacted)
+  ```
+- **HEALTHY output is unchanged** — the bundle suggestion would be
+  noise on a successful release-readiness check. iter-94 pins both
+  paths in the test.
+- **`packages/create-agent-harness/__tests__/validate.test.ts`**
+  8 → **10** cases (+2):
+  - umbrella FAIL message recommends diag --bundle (iter 94) — pins
+    Next: block + bundle command + URL + redaction reassurance
+  - HEALTHY result has no bundle suggestion noise — pins that the
+    Next: block doesn't appear on green runs
+- **iter 93 + iter 94 together**: both user-facing failure surfaces
+  (doctor standalone + validate umbrella) now flow to the bundle.
+  Any "what went wrong?" path ends at "here's the JSON to paste".
+- TS suite: **591/591** (was 589).
+
 ### Changed — Iter 93 (2026-06-14)
 
 - **`harness doctor` failure message now recommends

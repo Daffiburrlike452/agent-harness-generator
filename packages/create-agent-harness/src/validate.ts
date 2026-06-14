@@ -201,5 +201,16 @@ export async function validate(args: string[]): Promise<SubcommandResult> {
     return { code: 0, lines };
   }
   lines.push(`Result: ${problems} check${problems === 1 ? '' : 's'} FAILED — fix before publish`);
+  // iter 94: symmetric with iter 93 — when the umbrella FAILs, point
+  // the user at the bundle. Doctor already does this for its own
+  // failures, but the umbrella aggregates 6 checks (doctor + verify +
+  // path-guard + mcp + secrets + diag) — any of them failing should
+  // surface the bundle as the next user action.
+  lines.push('');
+  lines.push(`Next: capture the full diagnostic state for a support ticket:`);
+  lines.push(`  harness diag ${dir} --bundle > bundle.json`);
+  lines.push(`(then attach bundle.json to a GitHub issue at`);
+  lines.push(` https://github.com/ruvnet/agent-harness-generator/issues — the`);
+  lines.push(` bundle is sanitised; secret_/token_/key_/password_ fields are redacted)`);
   return { code: 1, lines };
 }
