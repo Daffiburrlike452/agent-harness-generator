@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { runDraco, type DracoCorpus } from './runner.js';
 import { openRouterTransport, type OpenRouterTransport } from './fusion.js';
 import { liveUrlChecker, type UrlChecker } from './scorer.js';
+import { runAblation } from './ablation.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dracoDir = resolve(here); // dist/draco at runtime; corpus is shipped alongside source
@@ -84,6 +85,26 @@ async function main() {
     transport = mockTransport();
     checkUrl = mockUrlChecker;
     kind = 'mock';
+  }
+
+  // M6: --ablation runs the fusion-vs-single comparison (the beyond-SOTA proof).
+  if (has('ablation')) {
+    const ab = await runAblation(corpus, { transport, transportKind: kind, checkUrl, judgeTransport, limit });
+    process.stdout.write(`\nDRACO ${kind.toUpperCase()} ABLATION — optimised fusion vs single-model\n`);
+    if (kind === 'mock') {
+      process.stdout.write('NOTE: MOCK transport — this demonstrates the ablation MACHINERY, not a live result.\n');
+    }
+    process.stdout.write(`single (${'one model end-to-end'}): ${ab.single.score.toFixed(4)}\n`);
+    process.stdout.write(`fusion (independent verifier${ab.judged ? ' + judge' : ''}): ${ab.fusion.score.toFixed(4)}\n`);
+    process.stdout.write(`delta: ${ab.delta >= 0 ? '+' : ''}${ab.delta.toFixed(4)}  →  fusion ${ab.fusionWins ? 'WINS' : 'does not win'}\n`);
+    process.stdout.write(`  by dimension: grounding ${ab.deltaByDimension.grounding.toFixed(2)} · coverage ${ab.deltaByDimension.coverage.toFixed(2)} · balance ${ab.deltaByDimension.balance.toFixed(2)} · cleanliness ${ab.deltaByDimension.cleanliness.toFixed(2)}${ab.deltaByDimension.faithfulness != null ? ` · faithfulness ${ab.deltaByDimension.faithfulness.toFixed(2)}` : ''}\n`);
+    if (out) {
+      const outPath = resolve(out);
+      mkdirSync(dirname(outPath), { recursive: true });
+      writeFileSync(outPath, JSON.stringify(ab, null, 2) + '\n', 'utf-8');
+      process.stderr.write(`[draco] wrote ${outPath}\n`);
+    }
+    return;
   }
 
   const report = await runDraco(corpus, { transport, transportKind: kind, checkUrl, domain, limit, judgeTransport });
