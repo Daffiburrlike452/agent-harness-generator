@@ -242,8 +242,29 @@ export function formatDiagReport(report: DiagReport): SubcommandResult {
   return { code, lines };
 }
 
+/**
+ * Format a report as JSON for programmatic consumers. Includes the full
+ * report shape + the resolved exit code (delegated to formatDiagReport
+ * so the verdict-to-exit-code mapping has exactly ONE definition) so
+ * callers can gate on either the structured data or the exit code.
+ */
+export function formatDiagReportJson(report: DiagReport): SubcommandResult {
+  const human = formatDiagReport(report);
+  return {
+    code: human.code,
+    lines: [
+      JSON.stringify({ ...report, exitCode: human.code }, null, 2),
+    ],
+  };
+}
+
 export async function diagCmd(args: string[]): Promise<SubcommandResult> {
-  const dir = resolve(args[0] ?? process.cwd());
+  // iter 73: --json emits machine-readable output. Useful for CI
+  // scripts that want to gate on the structured verdict rather than
+  // parsing the human text.
+  const json = args.includes('--json');
+  const positional = args.filter(a => !a.startsWith('--'));
+  const dir = resolve(positional[0] ?? process.cwd());
   const report = await buildDiagReport(dir);
-  return formatDiagReport(report);
+  return json ? formatDiagReportJson(report) : formatDiagReport(report);
 }

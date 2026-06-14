@@ -4,6 +4,37 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 73 (2026-06-14)
+
+- **`harness diag --json`** — machine-readable output for CI scripts
+  that want to gate on the structured verdict rather than parse the
+  human text.
+- **One source of truth for exit codes** — `formatDiagReportJson`
+  delegates to `formatDiagReport` for the verdict→exit-code mapping
+  so both surfaces stay in lockstep forever. The JSON output appends
+  an `exitCode` field for callers that only have the JSON in hand.
+- **Position-independent flag** — `harness diag --json ./path` and
+  `harness diag ./path --json` produce identical output.
+- **Sample output**:
+  ```json
+  {
+    "dir": "/tmp/ahg-diag-json-944dZR",
+    "surface": "cli",
+    "manifestKernelVersion": "0.1.0",
+    "localKernelVersion": "0.1.0",
+    "verdict": "match",
+    "manifestGeneratorVersion": "0.1.0",
+    "localGeneratorVersion": "0.1.0",
+    "generatorVerdict": "match",
+    "exitCode": 0
+  }
+  ```
+- **`__tests__/harness-diag.test.ts`** 17 → **20** (+3):
+  - emits parseable JSON with the full DiagReport + exitCode
+  - position-independent flag (both orderings produce identical output)
+  - missing manifest emits JSON with `exitCode: 2`
+- TS suite: **557/557** (was 554).
+
 ### Added — Iter 72 (2026-06-14)
 
 - **`scripts/healthcheck.mjs --probe-pages`** — opt-in HTTP probe of

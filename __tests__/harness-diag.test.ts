@@ -198,6 +198,70 @@ describe('generator-version skew (iter 71)', () => {
   });
 });
 
+describe('--json output (iter 73)', () => {
+  it('emits parseable JSON with the full DiagReport + exitCode', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'ahg-diag-json-'));
+    try {
+      await scaffold({
+        name: 'json-bot',
+        template: 'minimal',
+        host: 'claude-code',
+        targetDir: dir,
+        force: true,
+        generatorVersion: '0.1.0',
+      });
+      const r = await diag.diagCmd([dir, '--json']);
+      expect(r.code).toBe(0);
+      const parsed = JSON.parse(r.lines.join('\n'));
+      expect(parsed.surface).toBe('cli');
+      expect(parsed.verdict).toBe('match');
+      expect(parsed.generatorVerdict).toBe('match');
+      expect(parsed.exitCode).toBe(0);
+      expect(typeof parsed.manifestKernelVersion).toBe('string');
+      expect(typeof parsed.localKernelVersion).toBe('string');
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('--json position-independent (works as --json then path, or path then --json)', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'ahg-diag-json2-'));
+    try {
+      await scaffold({
+        name: 'json-bot2',
+        template: 'minimal',
+        host: 'codex',
+        targetDir: dir,
+        force: true,
+        generatorVersion: '0.1.0',
+      });
+      const a = await diag.diagCmd(['--json', dir]);
+      const b = await diag.diagCmd([dir, '--json']);
+      expect(a.code).toBe(0);
+      expect(b.code).toBe(0);
+      const pa = JSON.parse(a.lines.join('\n'));
+      const pb = JSON.parse(b.lines.join('\n'));
+      expect(pa.verdict).toBe(pb.verdict);
+      expect(pa.surface).toBe(pb.surface);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('--json on missing manifest emits JSON with exitCode 2', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'ahg-diag-json3-'));
+    try {
+      const r = await diag.diagCmd([dir, '--json']);
+      expect(r.code).toBe(2);
+      const parsed = JSON.parse(r.lines.join('\n'));
+      expect(parsed.exitCode).toBe(2);
+      expect(parsed.manifestKernelVersion).toBeUndefined();
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('diagCmd end-to-end', () => {
   it('reports PASS on a freshly scaffolded harness (manifest kernel === local kernel)', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'ahg-diag-'));
