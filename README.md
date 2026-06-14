@@ -177,6 +177,7 @@ See [`examples/`](examples/) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) 
 
 | Day-to-day | Wall time | Command |
 |---|---|---|
+| First scaffold — don't know what to pick? | ~30s | `npx create-agent-harness --wizard` (iter 100) |
 | Did I break anything? | <1s | `node scripts/healthcheck.mjs` |
 | Is the deployed Studio alive? | ~1s | `node scripts/healthcheck.mjs --probe-pages` |
 | Is THIS local kernel compatible with this harness? | <100ms | `harness diag <path>` |

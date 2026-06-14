@@ -24,10 +24,14 @@ You'll be able to `npm publish` it and your users will do `npx my-bot init` in t
 Once `create-agent-harness` is published to npm (currently in Phase 1 development), you'll be able to run:
 
 ```bash
-npx create-agent-harness my-bot
+npx create-agent-harness my-bot                       # arg-driven (default template + claude-code)
+npx create-agent-harness --wizard                     # iter 100 — interactive picker
+npx create-agent-harness --list                       # browse all 19 templates
 ```
 
 No global install required. The package downloads itself on use.
+
+**Don't know what to pick?** Run `--wizard` — 4-question form (name → template → host → description), with the equivalent `npx create-agent-harness …` command printed afterwards so you can skip the wizard next time.
 
 If you're working from the repo directly:
 

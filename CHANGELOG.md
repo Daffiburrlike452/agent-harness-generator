@@ -4,6 +4,27 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Changed — Iter 101 (2026-06-14)
+
+- **iter-100's `--wizard` flag propagated across user-facing docs**
+  per ADR-030 step 2:
+  - **`docs/USAGE.md` section 1 (Install)** — 3 entrypoint commands
+    listed side-by-side:
+    ```
+    npx create-agent-harness my-bot     # arg-driven
+    npx create-agent-harness --wizard   # iter 100 — interactive picker
+    npx create-agent-harness --list     # browse all 19 templates
+    ```
+    Plus a callout: "Don't know what to pick? Run `--wizard` …" with
+    the 4-question summary + the "next time skip with" hint mention.
+  - **README day-to-day commands** — new row:
+    `First scaffold — don't know what to pick?` → `npx create-agent-harness --wizard`
+- **No dev-toolkit / plugin.json updates** — `--wizard` is a flag on
+  `npx create-agent-harness`, not a `harness` subcommand. Per
+  ADR-030's triage table, "user-facing CLI flag on a different
+  binary" gets README + USAGE only.
+- **No code changes** — docs only.
+
 ### Added — Iter 100 (MILESTONE) (2026-06-14)
 
 - **`npx create-agent-harness --wizard`** — interactive picker for
