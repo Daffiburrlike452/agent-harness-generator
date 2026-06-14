@@ -4,6 +4,39 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Changed — Iter 99 (2026-06-14)
+
+- **`docs/USAGE.md` catches up after ~90 iters of new subcommands +
+  verticals**. The walkthrough was last touched at iter 7 and still
+  referenced 4 subcommands; the dispatcher now honours 16, the
+  catalog has grown 1 → 19 templates, and 4 new ADRs (027-030) shipped.
+- **Section 5 (Test locally)** gained a "Sanity-check before you ship"
+  block listing the release-readiness umbrella:
+  - `harness validate` (iter 20 — 6-check umbrella)
+  - `harness diag` (iter 66)
+  - `harness audit` (iter 51)
+  - `harness sbom > sbom.json` (iter 51)
+  - `harness mcp-scan` (iter 55)
+- **Section 11 (Troubleshooting)** gained 3 new rows:
+  - `harness doctor` reports issues you don't understand → run
+    `harness diag --bundle > bundle.json` and attach to an issue
+    (the bundle is sanitised; iter 90)
+  - `harness diag` says MAJOR skew → `npm install @ruflo/kernel@<v>`
+    with ADR-028 link
+  - Share MCP/Bash/claims config for a security review →
+    `harness export-config` (iter 97)
+- **New section** — "When to use which subcommand" — 16-row table
+  mapping user intent (e.g. "Smoke-check a fresh scaffold", "File a
+  useful support ticket") → CLI command with iter attribution.
+  Surfaces every subcommand the dispatcher honours in a discovery-
+  friendly format.
+- **Stale fixes**:
+  - "17 ADRs" → "21 ADRs" (ADR-018 added iter 35; ADR-027 iter 55;
+    ADR-028/029/030 iters 79/92/95)
+  - "Check `npx create-agent-harness` (no args)" → "Check
+    `--list`" with current count "19 verticals at iter 96"
+- **No code changes** — pure docs.
+
 ### Changed — Iter 98 (2026-06-14)
 
 - **iter-97's `export-config` propagated across user-facing surfaces**

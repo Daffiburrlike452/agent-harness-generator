@@ -126,6 +126,18 @@ node ./dist/init.js
 my-bot init
 ```
 
+**Sanity-check before you ship** — run the release-readiness umbrella:
+
+```bash
+harness validate                # doctor + verify + path-guard + mcp + secrets + diag
+harness diag                    # kernel-version skew check
+harness audit                   # npm audit per-harness
+harness sbom > sbom.json        # SPDX-2.3 bill of materials
+harness mcp-scan                # security-scan the MCP surface (perms + deps)
+```
+
+A `harness validate` HEALTHY verdict means publish.yml's gates would all pass — no surprises in CI.
+
 ---
 
 ## 6. Publish to npm
@@ -241,15 +253,44 @@ Honesty caveat from the underlying `@ruvector/emergent-time` package: the SDK is
 |---|---|
 | `Error: target exists` | Pass `--force` or pick a new directory name |
 | `invalid harness name` | Must be kebab-case, lowercase, no leading number, no consecutive hyphens, no trailing hyphen, ≤ 214 chars (npm rule) |
-| `unknown template` | Check `npx create-agent-harness` (no args) for the current template list |
+| `unknown template` | Check `npx create-agent-harness --list` for the current template list (19 verticals at iter 96) |
 | `witness verification failed` on publish | Your `.harness/witness.json` was tampered with OR `harness sign` was never run |
 | `npm publish: 403` | Token expired — rotate via `gcloud secrets versions add NPM_TOKEN --data-file=-` |
+| `harness doctor` reports issues you don't understand | Run `harness diag <path> --bundle > bundle.json` and attach to an issue at <https://github.com/ruvnet/agent-harness-generator/issues>. The bundle is sanitised (secret/token/key/password fields redacted). |
+| `harness diag` says `MAJOR skew — APIs may have changed; expect breakage` | Your local `@ruflo/kernel` is on a different major than the version your harness was scaffolded against. Run `npm install @ruflo/kernel@<manifest-version>` (the diag output names the version). See [ADR-028](adrs/ADR-028-skew-detection-and-liveness.md). |
+| Want to share your MCP/Bash/claims config for a security review without zipping the whole harness | `harness export-config <path> > config.json` (iter 97) — emits a single sanitised JSON. |
+
+---
+
+## When to use which subcommand
+
+| You're trying to … | Subcommand |
+|---|---|
+| Smoke-check a fresh scaffold | `harness doctor` (iter 8) |
+| Run every release-readiness gate at once | `harness validate` (iter 20) — 6-check umbrella |
+| Check that your local kernel matches the harness | `harness diag` (iter 66) |
+| File a useful support ticket | `harness diag --bundle` (iter 90) |
+| Share MCP/Bash/claims config for an audit | `harness export-config` (iter 97) |
+| Drift-detect against the latest template | `harness upgrade` (iter 47) |
+| Sign a release manifest | `harness sign` (iter 8) |
+| Verify the witness signature | `harness verify` (iter 8) |
+| Pin the manifest to IPFS | `harness publish --confirm` (iter 46) |
+| List / invoke MCP tools | `harness mcp ls` / `harness mcp invoke` (iter 45) |
+| Security-scan the MCP surface | `harness mcp-scan` (iter 55) |
+| Recommend a harness from an existing repo | `harness analyze-repo` (iter 55) |
+| Emit SPDX-2.3 SBOM for the harness | `harness sbom` (iter 51) |
+| Run npm audit per-harness | `harness audit` (iter 51) |
+| Manage federation peers | `harness federate` (iter 9) |
+| GCP Secret Manager helpers | `harness secrets` (iter 18) |
+| Emit shell completion (bash/zsh/fish) | `harness completions` (iter 48) |
+
+16 subcommands total as of iter 97. Every subcommand respects `--help` / `-h`.
 
 ---
 
 ## See also
 
-- [`docs/adrs/INDEX.md`](adrs/INDEX.md) — the design docs (17 ADRs)
+- [`docs/adrs/INDEX.md`](adrs/INDEX.md) — the design docs (21 ADRs)
 - [`docs/setup/gcp-secrets.md`](setup/gcp-secrets.md) — publish-token wiring
 - [`SECURITY.md`](../SECURITY.md) — vulnerability disclosure
 - [`CHANGELOG.md`](../CHANGELOG.md) — what landed when
