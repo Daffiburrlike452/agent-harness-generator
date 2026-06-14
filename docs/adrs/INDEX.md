@@ -53,6 +53,7 @@ ADR-006 (memory + learning) and ADR-008 (drift detection) cut across all phases.
 | [ADR-016](./ADR-016-migration-for-ruflo-users.md) | Migration for existing ruflo users | Proposed | Moving from ruflo to a generated harness without losing memory / patterns / skills. |
 | [ADR-018](./ADR-018-rvm-as-deployment-target.md) | RVM as deployment target | Accepted | Use the RVM microhypervisor as the hardware-isolation tier for federation + multi-tenant deployments. |
 | [ADR-019](./ADR-019-release-orchestration.md) | Release orchestration | Accepted | `scripts/release.mjs` composes version-bump + preflight + marketplace + dry-run + tag into one command; refuses dirty tree; per-step PASS/SKIP/FAIL gating. |
+| [ADR-022](./ADR-022-cli-and-web-ui-integration.md) | CLI and Web-UI integration | Accepted | Byte-parity contract between `packages/create-agent-harness/` (CLI) and `apps/web-ui/` (PR #1 browser generator); decoupled release cadence; asymmetric-features table; 6 required tests for integration. |
 
 ## Conventions used across the series
 
