@@ -4,6 +4,33 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 84 (2026-06-14)
+
+- **`.github/workflows/pages-monitor.yml`** — daily liveness probe of
+  the live Studio. iter 78 added post-deploy verify but only fires on
+  `apps/web-ui/**` pushes. A quiet week leaves a window where the
+  Studio could silently degrade between deploys; iter 84 closes it.
+- **Schedule**: `cron: '17 2 * * *'` (02:17 UTC daily). Odd-minute
+  offset avoids the cron herd that piles on at HH:00 / HH:15 / HH:30 /
+  HH:45.
+- **`workflow_dispatch`** also wired so the monitor can be triggered
+  manually for live verification at any time.
+- **One probe implementation** per ADR-028 — pages-monitor.yml
+  delegates to `node scripts/healthcheck.mjs --probe-pages --check=pages`.
+  Same 2-stage HTTP check used by daily-driver healthcheck (iter 72),
+  release.mjs preflight (iter 77), and pages.yml verify (iter 78).
+  Now four callers, zero duplicate fetch code.
+- **`__tests__/workflows.test.ts`** 8 → **9** cases:
+  - "pages-monitor.yml is a daily cron probe of the live Studio
+    (iter 84)" — pins schedule trigger, daily-cron-shape, manual
+    workflow_dispatch, and healthcheck delegation. CRLF-tolerant for
+    Windows checkouts.
+- TS suite: **576/576** (was 575).
+- Failure mode caught: "deploy worked Monday, CDN went weird on
+  Wednesday." If the Studio returns non-200 on any morning, the
+  workflow status surfaces in the repo's Actions tab the same hour
+  instead of hours later when someone manually probes.
+
 ### Added — Iter 83 (2026-06-14)
 
 - **`dev-toolkit.mjs` now lists the 4 runnable example demos**. iter 55

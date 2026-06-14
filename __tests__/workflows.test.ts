@@ -104,4 +104,18 @@ describe('.github/workflows/*.yml', () => {
     // and use the iter-72 healthcheck probe
     expect(verifyBlock).toMatch(/healthcheck\.mjs --probe-pages/);
   });
+
+  // iter 84 — daily scheduled liveness monitor (independent of pushes).
+  it('pages-monitor.yml is a daily cron probe of the live Studio (iter 84)', async () => {
+    const monitor = await readFile(join(WORKFLOWS, 'pages-monitor.yml'), 'utf-8');
+    // Has a cron schedule trigger (CRLF-tolerant — Windows checkouts).
+    expect(monitor, 'pages-monitor.yml missing schedule').toMatch(/schedule:[\s\S]*?-\s*cron:/);
+    // Cron is daily — 5-field cron with day-of-month=* (3rd field).
+    // Pattern: 'M H * * *' (optional minute/hour values, then three *s).
+    expect(monitor).toMatch(/cron:\s*'[\d*]+\s+[\d*]+\s+\*\s+\*\s+\*'/);
+    // workflow_dispatch is also present so it can be triggered manually
+    expect(monitor).toMatch(/workflow_dispatch:/);
+    // Delegates to the same iter-72 healthcheck probe — single impl per ADR-028
+    expect(monitor).toMatch(/healthcheck\.mjs --probe-pages/);
+  });
 });
