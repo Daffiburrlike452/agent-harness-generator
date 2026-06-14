@@ -12,6 +12,45 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // Templates live at packages/create-agent-harness/templates/, one level above dist/.
 const TEMPLATES_ROOT = resolve(__dirname, '..', 'templates');
 
+/**
+ * Resolve `@ruflo/kernel`'s version at scaffold time so we can stamp it into
+ * `manifest.meta.kernel_version` (ADR-027 diagnostic). Falls through three
+ * lookup paths because the create-agent-harness package can run:
+ *   - from a workspace checkout (`packages/kernel-js/package.json`)
+ *   - from an installed npm tree (resolve `@ruflo/kernel/package.json`)
+ *   - from the prebuilt dist with neither sibling (fall back to 'unknown')
+ *
+ * We never throw — a missing kernel version downgrades the meta block to
+ * `kernel_version: undefined`, which `harness doctor` already handles as
+ * a WARN line. The CLI must keep generating harnesses even if the local
+ * kernel install is broken.
+ */
+function resolveKernelVersion(): string | undefined {
+  const candidates = [
+    // Workspace layout: packages/create-agent-harness/dist/ → ../../kernel-js/package.json
+    resolve(__dirname, '..', '..', 'kernel-js', 'package.json'),
+    // Installed layout: sibling node_modules/@ruflo/kernel/package.json
+    resolve(__dirname, '..', '..', '@ruflo', 'kernel', 'package.json'),
+    // Fallback: top-level node_modules
+    resolve(__dirname, '..', '..', '..', '@ruflo', 'kernel', 'package.json'),
+  ];
+  for (const p of candidates) {
+    try {
+      if (existsSync(p)) {
+        const pkg = JSON.parse(readFileSync(p, 'utf-8')) as { version?: string };
+        if (typeof pkg.version === 'string' && pkg.version.length > 0) {
+          return pkg.version;
+        }
+      }
+    } catch {
+      // Try next candidate
+    }
+  }
+  return undefined;
+}
+
+const KERNEL_VERSION = resolveKernelVersion();
+
 export const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm'] as const;
 export type Host = (typeof HOSTS)[number];
 
@@ -173,7 +212,12 @@ export async function scaffold(opts: ScaffoldOptions): Promise<ScaffoldResult> {
   const rendered = await walkTemplate(dir, vars, { strict: false });
   const fileMap = asFileMap(rendered);
 
-  const manifest = emptyManifest(opts.template, opts.generatorVersion);
+  // iter 58: stamp kernel_version at scaffold time (ADR-027 diagnostic).
+  // surface defaults to 'cli' inside emptyManifest; we override only
+  // kernel_version here so the web-UI port can still set surface='web-ui'.
+  const manifest = emptyManifest(opts.template, opts.generatorVersion, {
+    meta: KERNEL_VERSION ? { kernel_version: KERNEL_VERSION } : {},
+  });
   manifest.vars = vars;
   manifest.hosts = [opts.host];
   manifest.files = fingerprintFiles(fileMap);

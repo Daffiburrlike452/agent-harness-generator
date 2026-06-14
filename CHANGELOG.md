@@ -4,6 +4,25 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 58 (2026-06-14)
+
+- **`manifest.meta.kernel_version` populated at scaffold time** —
+  iter 56 added the field; iter 58 makes it load-bearing. New
+  `resolveKernelVersion()` helper in `packages/create-agent-harness/src/index.ts`
+  reads `@ruflo/kernel`'s package.json (3 lookup paths: workspace,
+  installed sibling, top-level node_modules) and stamps the version
+  into every scaffolded manifest. Never throws — a broken kernel
+  install soft-passes to `kernel_version: undefined` (the doctor
+  WARN path already handles that).
+- **`__tests__/manifest-kernel-version.test.ts`** (2 cases) —
+  scaffold a real harness against a tmpdir, read the manifest back,
+  assert `meta.surface === 'cli'` and `meta.kernel_version` matches
+  the resolved kernel version, plus a semver-shape sanity check.
+- TS suite: **524/524** (up from 522).
+- This closes the ADR-027 diagnostic loop. When a downstream
+  validate sees a manifest-shape mismatch between CLI and Pages
+  output, `meta.kernel_version` will identify the skew root cause.
+
 ### Added — Iter 57 (2026-06-13)
 
 - **Pages workflow unblocked** — enabled GitHub Pages on the repo via
