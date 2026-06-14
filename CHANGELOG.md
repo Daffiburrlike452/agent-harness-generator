@@ -4,6 +4,33 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 70 (2026-06-14)
+
+- **7th Codex skill — `diag-harness`** wrapping the iter-66 `harness
+  diag` subcommand. Closes the "every user-facing subcommand has a
+  matching codex skill" parity:
+  - `create-harness`, `publish-harness`, `validate-harness`,
+    `harness-secrets` (iter 22)
+  - `verify-witness` (iter 28)
+  - `upgrade-harness` (iter 49)
+  - `diag-harness` (iter 70) ← new
+- **`.codex/skills/diag-harness/skill.toml`** — name, dispatch via
+  the `agent-harness-generator` MCP tool `diag_harness`, single `path`
+  arg defaulting to cwd, catalog tags include `ADR-027`.
+- **`.codex/skills/diag-harness/README.md`** — exit code table per
+  verdict, sample output, lifecycle-position diagram, "when to run"
+  list (clone someone else's harness, post-kernel-bump, cryptic doctor
+  failures, fail-fast CI).
+- **`.claude-plugin/plugin.json`** updated:
+  - `skills` array grew 6 → 7 (`diag-harness` appended)
+  - `commands` array gained a `diag-harness` entry with description
+- **`__tests__/codex-skills.test.ts`** new case (7 → 8 tests): "all 7
+  codex skills are present (iter 70: + diag-harness)" — pinned with
+  per-skill iter attribution so removing one is visible in code review.
+- **`scripts/marketplace-entry.mjs`** auto-picks up `plugin.json`'s
+  `skills` array, so the IPFS marketplace entry generator now ships
+  with 7 skills (no code change there).
+
 ### Fixed — Iter 69 (2026-06-14)
 
 - **`scripts/dev-toolkit.mjs` currency** — the iter-55 contributor

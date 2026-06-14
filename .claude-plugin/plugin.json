@@ -41,7 +41,8 @@
     "validate-harness",
     "harness-secrets",
     "verify-witness",
-    "upgrade-harness"
+    "upgrade-harness",
+    "diag-harness"
   ],
   "commands": [
     {
@@ -67,6 +68,10 @@
     {
       "name": "upgrade-harness",
       "description": "Drift detection + apply against the latest generator template (--apply opt-in)"
+    },
+    {
+      "name": "diag-harness",
+      "description": "Kernel-version skew check (ADR-027). Surfaces manifest kernel + installed kernel + verdict with copy-pasteable next step."
     }
   ],
   "permissions": ["memory", "filesystem", "network"],

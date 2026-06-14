@@ -141,4 +141,22 @@ describe('.codex/skills/*/skill.toml manifests', () => {
     expect(skills).toContain('validate-harness');
     expect(skills).toContain('harness-secrets');
   });
+
+  // iter 70 — every harness-lifecycle skill that exists on disk now,
+  // pinned so dropping one is visible in code review.
+  it('all 7 codex skills are present (iter 70: + diag-harness)', async () => {
+    const skills = await readdir(SKILLS_DIR);
+    const expected = [
+      'create-harness',      // iter 22
+      'publish-harness',     // iter 22
+      'validate-harness',    // iter 22
+      'harness-secrets',     // iter 22
+      'verify-witness',      // iter 28
+      'upgrade-harness',     // iter 49
+      'diag-harness',        // iter 70
+    ];
+    for (const s of expected) {
+      expect(skills, `missing skill dir: ${s}`).toContain(s);
+    }
+  });
 });
