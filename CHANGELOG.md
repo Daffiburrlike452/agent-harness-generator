@@ -4,6 +4,19 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Changed — Iter 81 (2026-06-14)
+
+- **README templates table surfaces `vertical:education`** with one-line
+  pedagogy summary. The new vertical shipped in iter 80 needed a
+  README signal so users browsing the README catalog see it without
+  having to run `npx create-agent-harness --list`.
+- **Heading bumped 16 → 17 verticals**.
+- **Per-template categorisation**: `vertical:education` sits in the
+  "Knowledge" row alongside `vertical:research` and `vertical:ruview` —
+  the three mastery/learning-shaped harnesses cluster.
+- **Hand-curated count corrected**: the description line was
+  "10 generated dirs"; now 11 with vertical:education's addition.
+
 ### Added — Iter 80 (MILESTONE) (2026-06-14)
 
 - **`vertical:education` — 17th vertical template**. Real new product
