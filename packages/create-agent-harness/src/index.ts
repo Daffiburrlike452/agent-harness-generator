@@ -37,7 +37,13 @@ function resolveKernelVersion(): string | undefined {
   for (const p of candidates) {
     try {
       if (existsSync(p)) {
-        const pkg = JSON.parse(readFileSync(p, 'utf-8')) as { version?: string };
+        const pkg = JSON.parse(readFileSync(p, 'utf-8')) as { name?: string; version?: string };
+        // Guard: only trust a package.json that IS the kernel. Without this,
+        // an ambiguous candidate path can resolve to the CLI's own
+        // package.json (e.g. metaharness), leaking the CLI version into
+        // manifest.meta.kernel_version and producing a phantom skew in
+        // `harness diag` (iter 149 fix).
+        if (pkg.name && pkg.name !== '@ruflo/kernel') continue;
         if (typeof pkg.version === 'string' && pkg.version.length > 0) {
           return pkg.version;
         }

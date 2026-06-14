@@ -41,11 +41,17 @@ const CHECKS = {
     const drifts = [];
     // packages/*
     const packages = await readdir(join(ROOT, 'packages'), { withFileTypes: true });
+    // iter 149: the published CLI (metaharness) + its library wrapper
+    // (@ruvnet/agent-harness-generator) version INDEPENDENTLY of the
+    // @ruflo/* workspace packages — they ship to npm on their own semver
+    // cadence. Exclude them from the workspace-coherence check.
+    const INDEPENDENT = new Set(['metaharness', '@ruvnet/agent-harness-generator']);
     for (const p of packages) {
       if (!p.isDirectory()) continue;
       const pkgPath = join(ROOT, 'packages', p.name, 'package.json');
       if (!existsSync(pkgPath)) continue;
       const pkg = JSON.parse(await readFile(pkgPath, 'utf-8'));
+      if (INDEPENDENT.has(pkg.name)) continue;
       if (pkg.version && pkg.version !== wantedVersion) {
         drifts.push(`${pkg.name}: ${pkg.version} (expected ${wantedVersion})`);
       }

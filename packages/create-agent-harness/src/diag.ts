@@ -71,6 +71,9 @@ function resolveLocalKernelVersion(harnessDir: string): string | undefined {
     if (existsSync(wsPath)) {
       try {
         const pkg = JSON.parse(readFileSync(wsPath, 'utf-8'));
+        // Guard: must be the kernel package (iter 149 — symmetry with
+        // resolveKernelVersion's name check).
+        if (pkg.name && pkg.name !== '@ruflo/kernel') return undefined;
         return typeof pkg.version === 'string' ? pkg.version : undefined;
       } catch {
         return undefined;

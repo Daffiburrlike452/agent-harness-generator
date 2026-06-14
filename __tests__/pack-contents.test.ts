@@ -81,11 +81,14 @@ describe('npm pack content invariants', () => {
     }
   }, 120_000);
 
-  it('create-agent-harness ships dist/ + templates/ + the bin entrypoints', async () => {
+  it('metaharness (in packages/create-agent-harness/) ships dist/ + templates/ + the bin entrypoints', async () => {
+    // The workspace folder is still named create-agent-harness; the package
+    // was renamed to `metaharness` at publish (iter 124). The folder rename
+    // is tracked separately — assert the PUBLISHED name here.
     const dir = join(PACKAGES_DIR, 'create-agent-harness');
     const packed = await packList(dir);
     expect(packed).not.toBeNull();
-    expect(packed!.name).toBe('create-agent-harness');
+    expect(packed!.name).toBe('metaharness');
     expect(fileExistsInPack(packed, 'dist/'), 'missing dist/').toBe(true);
     expect(fileExistsInPack(packed, 'templates/'), 'missing templates/').toBe(true);
     expect(fileExistsInPack(packed, 'dist/bin.js'), 'missing dist/bin.js (create-agent-harness binary)').toBe(true);

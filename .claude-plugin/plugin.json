@@ -64,7 +64,8 @@
     "repo-genome",
     "score-harness",
     "threat-model",
-    "oia-manifest"
+    "oia-manifest",
+    "example-harness"
   ],
   "commands": [
     {
@@ -114,6 +115,10 @@
     {
       "name": "oia-manifest",
       "description": "Emit/validate `.harness/oia-manifest.json` — OIA v0.1 9-layer reference architecture alignment (ADR-034). Self-describes MCP wiring, witness signing, audit-log, identity posture. --check shape-validates; PASS 0 / DRIFT 1 / missing 2."
+    },
+    {
+      "name": "example-harness",
+      "description": "One-command picker over the 19 published @metaharness/* example packages — 9 host integrations (Claude Code, Codex, Hermes, pi.dev, OpenClaw, RVM, Copilot, OpenCode, GitHub Actions) + 10 vertical pods. Shell-dispatch: runs `npx @metaharness/<pkg> <name>` (iter 143/148)."
     }
   ],
   "permissions": ["memory", "filesystem", "network"],
