@@ -1,7 +1,7 @@
 {
-  "name": "create-agent-harness",
+  "name": "agentmint",
   "version": "0.1.0",
-  "description": "Scaffold your own focused AI agent harness — Claude Code / Codex / pi.dev / Hermes",
+  "description": "Paste any GitHub repo → get a custom AI agent harness. Browser Studio + npx CLI. Runs on Claude Code, Codex, pi.dev, Hermes, OpenClaw, RVM.",
   "homepage": "https://github.com/ruvnet/agent-harness-generator",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   "author": "rUv <ruv@ruv.net>",
   "type": "module",
   "bin": {
-    "create-agent-harness": "./dist/bin.js",
+    "agentmint": "./dist/bin.js",
     "harness": "./dist/harness-bin.js"
   },
   "files": [
@@ -28,15 +28,18 @@
     "gen:templates": "node scripts/gen-templates.mjs"
   },
   "keywords": [
+    "agentmint",
     "agent-harness",
     "agent-harness-generator",
     "scaffold",
-    "create-agent-harness",
+    "repo-to-agent",
     "mcp-server",
     "claude-code",
     "codex",
     "pi-dev",
     "hermes-agent",
+    "openclaw",
+    "rvm",
     "multi-agent",
     "agentic-ai",
     "autonomous-agents"

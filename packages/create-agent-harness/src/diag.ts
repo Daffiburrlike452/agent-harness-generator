@@ -90,14 +90,18 @@ function resolveLocalGeneratorVersion(): string | undefined {
   const candidates = [
     // Workspace: packages/create-agent-harness/dist/ → ../package.json
     resolve(__dirname, '..', 'package.json'),
-    // Installed: node_modules/create-agent-harness/package.json
+    // Installed: node_modules/agentmint/package.json (post iter 108 rename)
+    resolve(__dirname, '..', '..', 'agentmint', 'package.json'),
+    // Legacy: node_modules/create-agent-harness/package.json (pre-rename installs)
     resolve(__dirname, '..', '..', 'create-agent-harness', 'package.json'),
   ];
   for (const p of candidates) {
     try {
       if (existsSync(p)) {
         const pkg = JSON.parse(readFileSync(p, 'utf-8')) as { name?: string; version?: string };
-        if (pkg.name === 'create-agent-harness' && typeof pkg.version === 'string') {
+        // Accept either name — `create-agent-harness` is the legacy resolved-from-sibling
+        // case, `agentmint` is the current publishable name (iter 108).
+        if ((pkg.name === 'agentmint' || pkg.name === 'create-agent-harness') && typeof pkg.version === 'string') {
           return pkg.version;
         }
       }
@@ -324,7 +328,7 @@ export async function buildSupportBundle(harnessDir: string): Promise<SupportBun
       for (const block of [pkg.dependencies, pkg.devDependencies, pkg.peerDependencies] as Array<Record<string, string> | undefined>) {
         if (block && typeof block === 'object') {
           for (const [name, version] of Object.entries(block)) {
-            if (name.startsWith('@ruflo/') || name === 'create-agent-harness') {
+            if (name.startsWith('@ruflo/') || name === 'create-agent-harness' || name === 'agentmint') {
               rufloDeps[name] = version;
             }
           }
