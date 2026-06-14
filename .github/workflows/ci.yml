@@ -185,13 +185,26 @@ jobs:
           node-version: '20'
       - run: npm ci || npm install
       - run: npm run build
-      - name: Run benchmark (small corpus for smoke)
+      - name: Memory retrieval benchmark (iter 13)
         run: BENCH_ITEMS=200 BENCH_QUERIES=50 BENCH_OUT=./bench-report.json npm --prefix packages/bench run bench
-      - name: Upload bench report
+      - name: Cross-host config-gen benchmark (iter 39)
+        # 1000 iters/host; total wall time < 50ms in practice, no
+        # network. Writes host-bench-report.json for the baseline gate
+        # to compare against next run.
+        run: BENCH_HOST_ITERS=1000 BENCH_HOST_OUT=./host-bench-report.json npm --prefix packages/bench run bench:hosts
+      - name: Perf regression gate (iter 53)
+        # Soft-gate for now: report regressions but DON'T fail the
+        # build, since CI runners have non-deterministic perf. The
+        # signal is still useful in the logs.
+        continue-on-error: true
+        run: node scripts/bench-baseline.mjs --current=packages/bench/host-bench-report.json --baseline=packages/bench/host-baseline.json --threshold=50
+      - name: Upload bench reports
         uses: actions/upload-artifact@v4
         with:
-          name: bench-report
-          path: packages/bench/bench-report.json
+          name: bench-reports
+          path: |
+            packages/bench/bench-report.json
+            packages/bench/host-bench-report.json
           if-no-files-found: warn
 
   # ─────────────────────────────────────────────────────────────────────

@@ -4,6 +4,28 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added — Iter 54 (2026-06-13)
+
+- **CI Bench job extended to load-bear iter-39 + iter-53** — closes
+  the perf-tracking loop end-to-end. The Bench (smoke) job now runs:
+  1. Memory retrieval benchmark (iter 13) — small-corpus smoke
+  2. Cross-host config-gen benchmark (iter 39) — `bench:hosts` script
+     for the 6 host adapters, writes `host-bench-report.json`
+  3. **Perf regression gate** (iter 53) — `bench-baseline.mjs`
+     compares the host-bench report against
+     `packages/bench/host-baseline.json` at a 50% threshold.
+     Currently `continue-on-error: true` (soft-gate) so CI's
+     non-deterministic runner perf doesn't false-fail. The signal
+     is still visible in the logs as `[bench-baseline] FAIL: ...`.
+  4. Upload BOTH reports (`bench-report.json` + `host-bench-report.json`)
+     as a single `bench-reports` artifact.
+- Before this iter: bench produced reports nobody compared against
+  anything. Now the loop is closed — each CI run measures, compares,
+  and records.
+- `workflows.test.ts` (iter 30) still passes — the script-ref test
+  catches any future drift in the wired `node scripts/<X>.mjs`
+  references.
+
 ### Added — Iter 53 (2026-06-13)
 
 - **`scripts/bench-baseline.mjs`** — performance regression detector
