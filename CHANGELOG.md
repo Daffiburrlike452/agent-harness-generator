@@ -4,6 +4,33 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Changed — Iter 98 (2026-06-14)
+
+- **iter-97's `export-config` propagated across user-facing surfaces**
+  per ADR-030 steps 2 + 3:
+  - **README day-to-day commands** — new row:
+    `Share MCP + Bash + claims config for a security review` →
+    `harness export-config <path> > config.json`
+  - **`scripts/dev-toolkit.mjs`** — `HARNESS_SUBCOMMANDS` gains an
+    `export-config` entry (iter 97) with one-line "Emit MCP + claims +
+    permissions as single JSON for sharing/auditing (sanitised)"
+    description. `node scripts/dev-toolkit.mjs` now reports
+    `16 total — 16 listed`.
+  - **`__tests__/dev-toolkit.test.ts`** assertion bumped 15 → 16 with
+    explicit `export-config` pin — future regressions where someone
+    drops the entry now fail loudly.
+- **plugin.json commands array unchanged** — export-config has no
+  Codex slash command (CLI utility only, no per-tool Codex skill).
+  Per ADR-030's triage table, this is the correct propagation for
+  "user-facing CLI tool without a matching slash command": README +
+  dev-toolkit only, not codex skill / plugin.json.
+- **Surface consistency**: every iter-69 / iter-83 catch-up sweep
+  pattern now also covers iter-97's addition. Tab-completion drift
+  caught by cli-flags-completions (iter 97 update); dev-toolkit
+  currency caught here.
+- Tests still 9/9 in dev-toolkit; new dev-toolkit assertion pins
+  16 subcommands. Suite count unchanged.
+
 ### Added — Iter 97 (2026-06-14)
 
 - **`harness export-config` — 16th subcommand**. Real new feature
