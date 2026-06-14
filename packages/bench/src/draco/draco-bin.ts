@@ -62,6 +62,7 @@ const mockUrlChecker: UrlChecker = async () => 'dead'; // mock answers cite noth
 async function main() {
   const corpus = loadCorpus();
   const live = has('live');
+  const noJudge = has('no-judge');
   const domain = arg('domain');
   const limit = arg('limit') ? parseInt(arg('limit')!, 10) : undefined;
   const out = arg('out');
@@ -69,23 +70,30 @@ async function main() {
   let transport: OpenRouterTransport;
   let checkUrl: UrlChecker;
   let kind: 'mock' | 'live';
+  // M4: a judged run adds the independent LLM-judge faithfulness dimension.
+  // Default for --live is JUDGED (the full proof); --no-judge runs the
+  // deterministic subset only. Mock runs are never judged (a mock judge would
+  // be theater).
+  let judgeTransport: OpenRouterTransport | undefined;
   if (live) {
     transport = openRouterTransport(); // throws if OPENROUTER_API_KEY absent
     checkUrl = liveUrlChecker();
     kind = 'live';
+    if (!noJudge) judgeTransport = openRouterTransport(); // judge model picked by runner
   } else {
     transport = mockTransport();
     checkUrl = mockUrlChecker;
     kind = 'mock';
   }
 
-  const report = await runDraco(corpus, { transport, transportKind: kind, checkUrl, domain, limit });
+  const report = await runDraco(corpus, { transport, transportKind: kind, checkUrl, domain, limit, judgeTransport });
 
   // Print a human summary
-  process.stdout.write(`\nDRACO ${kind.toUpperCase()} run (--no-judge, deterministic subset)\n`);
+  const mode = report.judged ? 'judged' : '--no-judge, deterministic subset';
+  process.stdout.write(`\nDRACO ${kind.toUpperCase()} run (${mode})\n`);
   if (kind === 'mock') {
     process.stdout.write('NOTE: MOCK transport — this is a MACHINERY baseline, NOT a quality score.\n');
-    process.stdout.write('      A real score needs `--live` + OPENROUTER_API_KEY (GCP-secret) + the M4 judge.\n');
+    process.stdout.write('      A real score needs `--live` + OPENROUTER_API_KEY (GCP-secret) + the judge.\n');
   }
   process.stdout.write(`corpus v${report.corpusVersion} · ${report.efficiency.questions} questions · ${report.efficiency.totalTokens} tokens\n`);
   process.stdout.write(`score (mean quality): ${report.score.toFixed(4)}\n`);

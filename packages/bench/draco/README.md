@@ -131,7 +131,9 @@ along the way.
 | coverage | fraction of the rubric's `must_contain` terms present (case-insensitive). |
 | balance | for questions whose prompt demands multiple positions, are ≥2 present. |
 | cleanliness | 1 − fraction of `must_not` anti-patterns present. |
+| faithfulness (M4) | an INDEPENDENT LLM-judge (google/gemini-2.5-pro, pinned, a third family distinct from synthesize + verify) rates whether the synthesis is supported by its cited sources. Judged runs fold this into a 5-dimension mean; `--no-judge` omits it. |
 
-Quality score = mean of the four. **Faithfulness** (LLM-judge) is the 5th
-dimension and lands in M4. Efficiency (tokens/wall/usd) is reported separately
-and gated for regression, not folded into the quality mean.
+Quality score = mean of the four deterministic dimensions on a `--no-judge`
+run, or of all **five** (including faithfulness) on a judged `--live` run.
+Efficiency (tokens/wall/usd) is reported separately and gated for regression,
+not folded into the quality mean.

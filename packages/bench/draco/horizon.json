@@ -60,9 +60,23 @@
       "notes": "TS modules moved draco/ → src/draco/ so tsc (rootDir src) compiles them to dist/draco; corpus.json/schema.json/runs/ stay in draco/ as data. bench:draco wired to dist/draco/draco-bin.js."
     },
     "M4": {
-      "name": "LLM-judge dimension + full proof JSON",
-      "status": "PENDING",
-      "notes": "Judge model pinned per corpus version. Prompt pinned. Faithfulness dimension (0-1). Full proof JSON shape defined in ADR-037 §4."
+      "name": "LLM-judge faithfulness dimension + judged proof JSON",
+      "status": "COMPLETE",
+      "completedAt": "2026-06-14",
+      "artifacts": [
+        "packages/bench/src/draco/judge.ts",
+        "packages/bench/src/draco/runner.ts (judged mode)",
+        "packages/bench/src/draco/draco-bin.ts (--live judged; --no-judge opt-out)",
+        "packages/bench/__tests__/draco-judge.test.ts"
+      ],
+      "metrics": {
+        "testsAdded": 14,
+        "totalBenchTests": 70,
+        "judgeModel": "google/gemini-2.5-pro (pinned, promptVersion 1)",
+        "independence": "assertJudgeIndependent enforces the judge is a THIRD family — distinct from BOTH synthesize (anthropic) and verify (openai) — so it shares no blind spot with either side. Throws before any call.",
+        "faithfulness": "Judged runs fold faithfulness (0-1) into a 5-dimension mean. parseFaithfulness reads a pinned `FAITHFULNESS: <n>` line and FAILS CLOSED (0) on unparseable output. judged:true + judge:{model,promptVersion} recorded in the report.",
+        "stillNoLiveScore": "M4 builds the judge machinery + 14 mocked tests; a REAL judged score needs --live + OPENROUTER_API_KEY. Mock runs are never judged (a mock judge would be theater)."
+      }
     },
     "M5": {
       "name": "harness draco subcommand + bench-baseline regression gate + CI job + README score row",
@@ -76,7 +90,7 @@
   },
   "lastSession": {
     "date": "2026-06-14",
-    "accomplished": "M1 (941b0b9), M2 (cb71bae), M3 pushed: deterministic scorer + --no-judge runner + first MOCK baseline (0.4625, machinery floor — grounding=0+coverage=0 on every Q because a mock can't fake content). 56/56 bench tests. TS moved to src/draco/ so it compiles to dist.",
-    "nextAction": "M4 — LLM-judge faithfulness dimension. Pin a judge model (a model NOT used in the fusion harness) + a pinned judge prompt per corpus version. Adds the 5th dimension (faithfulness 0-1: is the synthesis supported by its cited sources?). Judge calls go through an injected transport too (offline-mockable). Update the runner to a judged mode that includes faithfulness in the mean and sets judged:true. STILL needs a live OPENROUTER_API_KEY for a REAL judged score — M4 builds the machinery + mocked tests; the first real judged run is gated on the key (M5 CI cadence)."
+    "accomplished": "M1-M4 complete + pushed. M4: judge.ts (pinned google/gemini-2.5-pro judge, THIRD family, independence-enforced, prompt v1, fails closed) + runner judged mode (5-dim mean) + draco-bin --live judged / --no-judge opt-out + 14 mocked tests. 70/70 bench tests.",
+    "nextAction": "M5 — wire DRACO into the product surfaces: (1) a `harness draco` CLI subcommand (ADR-031 bundle shape) that runs DRACO against a scaffolded research harness; (2) extend bench-baseline.mjs to track a DRACO baseline + fail CI on a quality regression > threshold; (3) a published-smoke / scheduled CI `draco` job that runs the --no-judge deterministic subset on every push (offline, mock) and a full judged run on a cadence (needs OPENROUTER_API_KEY in CI from GCP via the iter-145 secret-list gate); (4) a README Benchmarks row. M6 after that is the fusion-vs-single-model ablation (THE proof) — needs a live key, so it runs in the cadence job and writes the comparison."
   }
 }
