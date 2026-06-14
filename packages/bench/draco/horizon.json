@@ -41,8 +41,23 @@
     },
     "M3": {
       "name": "Deterministic scorer + --no-judge runner + first baseline",
-      "status": "PENDING",
-      "notes": "Grounding (URL re-fetch), Coverage (regex+embedding), Balance, Efficiency. --no-judge skips Faithfulness. Writes packages/bench/draco/runs/<iso>.json."
+      "status": "COMPLETE",
+      "completedAt": "2026-06-14",
+      "artifacts": [
+        "packages/bench/src/draco/scorer.ts",
+        "packages/bench/src/draco/runner.ts",
+        "packages/bench/src/draco/draco-bin.ts",
+        "packages/bench/draco/runs/baseline-mock.json",
+        "packages/bench/__tests__/draco-scorer.test.ts"
+      ],
+      "metrics": {
+        "testsAdded": 15,
+        "totalBenchTests": 56,
+        "dimensions": "grounding (URL re-fetch, injected), coverage (must_contain substring), balance (prompt-gated position markers), cleanliness (must_not penalty; fabrication hard-zeros grounding). Mean of the four = quality score. Efficiency reported separately.",
+        "firstBaselineMock": 0.4625,
+        "baselineHonesty": "MOCK transport — every question scores grounding=0 + coverage=0 (a mock cannot fabricate citations or rubric terms); only cleanliness/balance give partial credit. transport:\"mock\", judged:false in the report. A real score needs --live + OPENROUTER_API_KEY + the M4 judge. A guard test pins these invariants so a live score can never be committed as the mock baseline."
+      },
+      "notes": "TS modules moved draco/ → src/draco/ so tsc (rootDir src) compiles them to dist/draco; corpus.json/schema.json/runs/ stay in draco/ as data. bench:draco wired to dist/draco/draco-bin.js."
     },
     "M4": {
       "name": "LLM-judge dimension + full proof JSON",
@@ -61,7 +76,7 @@
   },
   "lastSession": {
     "date": "2026-06-14",
-    "accomplished": "M1 pushed (941b0b9). M2 pushed: packages/bench/draco/fusion.ts — 6-stage OpenRouter fusion client, dependency-injected transport (offline-testable), assertFusionDistinct enforces verify!=synthesize family, 10/10 mocked tests. No score computed (M2 = fused answer + provenance only).",
-    "nextAction": "M3 — deterministic scorer (grounding via URL re-fetch, coverage regex+embedding, balance, efficiency) + --no-judge runner that drives fuseResearch() over the corpus and writes packages/bench/draco/runs/<iso>.json. First baseline. STILL no LLM-judge (that's M4). The scorer tests use the mock transport from M2 so they run fully offline."
+    "accomplished": "M1 (941b0b9), M2 (cb71bae), M3 pushed: deterministic scorer + --no-judge runner + first MOCK baseline (0.4625, machinery floor — grounding=0+coverage=0 on every Q because a mock can't fake content). 56/56 bench tests. TS moved to src/draco/ so it compiles to dist.",
+    "nextAction": "M4 — LLM-judge faithfulness dimension. Pin a judge model (a model NOT used in the fusion harness) + a pinned judge prompt per corpus version. Adds the 5th dimension (faithfulness 0-1: is the synthesis supported by its cited sources?). Judge calls go through an injected transport too (offline-mockable). Update the runner to a judged mode that includes faithfulness in the mean and sets judged:true. STILL needs a live OPENROUTER_API_KEY for a REAL judged score — M4 builds the machinery + mocked tests; the first real judged run is gated on the key (M5 CI cadence)."
   }
 }

@@ -100,3 +100,38 @@ npm run bench:draco
 | M4 | LLM-judge dimension + full proof JSON | Pending |
 | M5 | `harness draco` subcommand + CI job + README score row | Pending |
 | M6 | Fusion-vs-single-model ablation (the proof) | Pending |
+
+## Running DRACO (M3)
+
+```bash
+npm run bench:draco                              # --no-judge, MOCK transport (offline machinery baseline)
+node dist/draco/draco-bin.js --domain=science    # one domain
+node dist/draco/draco-bin.js --live --out=draco/runs/$(date +%FT%TZ).json   # REAL run (needs OPENROUTER_API_KEY)
+```
+
+**The mock baseline is a machinery floor, not a quality score.** With the mock
+transport, every question scores **grounding = 0** and **coverage = 0** — a mock
+cannot fabricate citations or rubric terms, so it earns nothing on the
+dimensions that require real content. The committed
+[`runs/baseline-mock.json`](./runs/baseline-mock.json) records `transport: "mock"`
++ `judged: false`, and a guard test (`draco-scorer.test.ts`) pins those
+invariants so a real (`--live`) score can never be committed in its place.
+
+A **real** DRACO score requires `--live` + `OPENROUTER_API_KEY` (sourced from GCP
+Secret Manager via the publish-time secret gate; see
+`scripts/validate-gcp-secrets.mjs`) **and** the M4 LLM-judge faithfulness
+dimension. That is the proof the benchmark is built to earn — it is not faked
+along the way.
+
+### Scoring dimensions (M3, deterministic)
+
+| Dimension | How |
+|---|---|
+| grounding | cited URLs are re-fetched; fraction that resolve. A `must_not` fabrication pattern present hard-zeros it. |
+| coverage | fraction of the rubric's `must_contain` terms present (case-insensitive). |
+| balance | for questions whose prompt demands multiple positions, are ≥2 present. |
+| cleanliness | 1 − fraction of `must_not` anti-patterns present. |
+
+Quality score = mean of the four. **Faithfulness** (LLM-judge) is the 5th
+dimension and lands in M4. Efficiency (tokens/wall/usd) is reported separately
+and gated for regression, not folded into the quality mean.

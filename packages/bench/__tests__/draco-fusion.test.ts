@@ -13,7 +13,7 @@ import {
   openRouterTransport,
   type FusionModelMap,
   type OpenRouterTransport,
-} from '../draco/fusion.js';
+} from '../src/draco/fusion.js';
 
 describe('DRACO fusion — model map invariants', () => {
   it('has exactly the six ADR-037 stages', () => {

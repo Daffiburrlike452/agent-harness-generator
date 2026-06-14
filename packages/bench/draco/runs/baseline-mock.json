@@ -1,0 +1,227 @@
+{
+  "corpusVersion": 1,
+  "transport": "mock",
+  "fusionModels": {
+    "decompose": "anthropic/claude-haiku-4",
+    "search": "anthropic/claude-haiku-4",
+    "grade": "anthropic/claude-sonnet-4",
+    "synthesize": "anthropic/claude-opus-4",
+    "verify": "openai/gpt-5",
+    "cite": "anthropic/claude-haiku-4"
+  },
+  "judged": false,
+  "score": 0.4625,
+  "perDomain": {
+    "science": 0.4375,
+    "finance": 0.5,
+    "law": 0.5,
+    "current-events": 0.5,
+    "technical": 0.4
+  },
+  "perQuestion": [
+    {
+      "id": "sci-001",
+      "domain": "science",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 0,
+      "cleanliness": 1,
+      "mean": 0.25
+    },
+    {
+      "id": "sci-002",
+      "domain": "science",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "sci-003",
+      "domain": "science",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "sci-004",
+      "domain": "science",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "fin-001",
+      "domain": "finance",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "fin-002",
+      "domain": "finance",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "fin-003",
+      "domain": "finance",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "fin-004",
+      "domain": "finance",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "law-001",
+      "domain": "law",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "law-002",
+      "domain": "law",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "law-003",
+      "domain": "law",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "law-004",
+      "domain": "law",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "cur-001",
+      "domain": "current-events",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "cur-002",
+      "domain": "current-events",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "cur-003",
+      "domain": "current-events",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "tech-001",
+      "domain": "technical",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 0,
+      "cleanliness": 1,
+      "mean": 0.25
+    },
+    {
+      "id": "tech-002",
+      "domain": "technical",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "tech-003",
+      "domain": "technical",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    },
+    {
+      "id": "tech-004",
+      "domain": "technical",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 0,
+      "cleanliness": 1,
+      "mean": 0.25
+    },
+    {
+      "id": "tech-005",
+      "domain": "technical",
+      "tokens": 56,
+      "grounding": 0,
+      "coverage": 0,
+      "balance": 1,
+      "cleanliness": 1,
+      "mean": 0.5
+    }
+  ],
+  "efficiency": {
+    "totalTokens": 1120,
+    "questions": 20
+  }
+}

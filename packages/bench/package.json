@@ -10,7 +10,7 @@
     "test": "vitest run --passWithNoTests",
     "bench": "node ./dist/bin.js",
     "bench:hosts": "node ./dist/host-bin.js",
-    "bench:draco": "node -e \"console.log('M1: corpus only; runner lands in M3')\"",
+    "bench:draco": "node ./dist/draco/draco-bin.js",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -30,5 +30,7 @@
     "typescript": "^5.4.0",
     "vitest": "^2.0.0"
   },
-  "engines": { "node": ">=20.0.0" }
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }
