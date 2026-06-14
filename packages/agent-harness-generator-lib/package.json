@@ -1,6 +1,6 @@
 {
   "name": "@ruvnet/agent-harness-generator",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Library/core package for the Agent Harness Generator. Pair with `metaharness` for the CLI. Re-exports scaffold(), validate(), and the deterministic-analysis pipeline from `metaharness` so consumers can `import { scaffold } from '@ruvnet/agent-harness-generator'` without shelling out to the CLI.",
   "homepage": "https://github.com/ruvnet/agent-harness-generator",
   "repository": {
@@ -43,7 +43,7 @@
     "access": "public"
   },
   "dependencies": {
-    "metaharness": "0.1.4"
+    "metaharness": "0.1.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

@@ -72,7 +72,7 @@ No repository code is executed. Inferred build/test commands are emitted as `tru
 
 ## Hosts
 
-The same harness output runs on six agent hosts:
+The same harness output runs on **nine** agent hosts — eight interactive, plus GitHub Actions (CI/CD):
 
 | Host | What ships | Notes |
 |---|---|---|
@@ -82,8 +82,11 @@ The same harness output runs on six agent hosts:
 | [**Hermes**](https://hermes-agent.nousresearch.com/docs/) | MCP runtime, `<think>` scrubbing | Per Hermes issue #741 |
 | [**OpenClaw**](https://github.com/openclaw/openclaw) | `~/.openclaw/openclaw.json` + workspace skills | Personal-AI gateway |
 | [**RVM**](https://github.com/ruvnet/rvm) | Bare-metal microhypervisor + capability tokens | Hardware isolation for untrusted peers |
+| [**GitHub Copilot**](https://code.visualstudio.com/docs/copilot/mcp) | MCP via `.vscode/mcp.json` | VSCode 1.99+ (ADR-032) |
+| [**OpenCode**](https://opencode.ai/) | MCP via `.opencode/opencode.json` | sst/opencode TUI (ADR-036) |
+| [**GitHub Actions**](https://docs.github.com/actions) | `.github/workflows/` + composite `action.yml` | **Non-interactive** CI/CD; default-deny via `permissions:` (ADR-033) |
 
-See [ADR-004 — Host integration model](docs/adrs/ADR-004-host-integration-model.md).
+See [ADR-004 — Host integration model](docs/adrs/ADR-004-host-integration-model.md) and [ADR-033 — GitHub Actions host](docs/adrs/ADR-033-host-github-actions.md).
 
 ---
 

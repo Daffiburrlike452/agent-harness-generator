@@ -51,9 +51,10 @@ function resolveKernelVersion(): string | undefined {
 
 const KERNEL_VERSION = resolveKernelVersion();
 
-// iter 127 added copilot (ADR-032); iter 128 added opencode (ADR-036).
-// HOSTS is the canonical 8-host catalog as of iter 128.
-export const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm', 'copilot', 'opencode'] as const;
+// iter 127 added copilot (ADR-032); iter 128 added opencode (ADR-036);
+// iter 147 added github-actions (ADR-033, the first non-interactive host).
+// HOSTS is the canonical 9-host catalog as of iter 147.
+export const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm', 'copilot', 'opencode', 'github-actions'] as const;
 export type Host = (typeof HOSTS)[number];
 
 export const TEMPLATES = [

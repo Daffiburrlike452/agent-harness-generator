@@ -22,6 +22,8 @@ export const HOSTS: HostInfo[] = [
   { id: 'copilot', name: 'GitHub Copilot', shape: 'MCP via .vscode/mcp.json (VSCode 1.99+)', color: '#1f883d' },
   // iter 128 — ADR-036
   { id: 'opencode', name: 'OpenCode', shape: 'MCP via .opencode/opencode.json (sst/opencode)', color: '#f59e0b' },
+  // iter 147 — ADR-033 (first non-interactive host)
+  { id: 'github-actions', name: 'GitHub Actions', shape: 'CI/CD — .github/workflows + composite action.yml', color: '#2088ff' },
 ];
 
 export const TEMPLATES: TemplateInfo[] = GEN_TEMPLATES;

@@ -8,7 +8,7 @@ interface HostStep {
 }
 
 interface HostGuide {
-  id: 'claude-code' | 'codex' | 'pi-dev' | 'hermes' | 'openclaw' | 'rvm' | 'copilot' | 'opencode';
+  id: 'claude-code' | 'codex' | 'pi-dev' | 'hermes' | 'openclaw' | 'rvm' | 'copilot' | 'opencode' | 'github-actions';
   name: string;
   blurb: string;
   steps: HostStep[];
@@ -153,6 +153,23 @@ export const GUIDES: HostGuide[] = [
         title: '2. Boot from the harness folder',
         body: 'OpenCode reads .opencode/opencode.json on startup; /mcp verifies servers loaded.',
         code: 'cd ./my-harness && opencode',
+      },
+    ],
+  },
+  {
+    id: 'github-actions',
+    name: 'GitHub Actions',
+    blurb: 'The first non-interactive host (ADR-033). Harness emits `.github/workflows/<name>.yml` + a composite `action.yml` — runs autonomously on the runner, no human at the keyboard.',
+    steps: [
+      {
+        title: '1. Commit the workflow + action',
+        body: 'Both files land under .github/. Push them to your default branch to register the workflow.',
+        code: 'git add .github && git commit -m "add harness workflow" && git push',
+      },
+      {
+        title: '2. Add your provider key + trigger',
+        body: 'Add ANTHROPIC_API_KEY as a repo secret (Settings → Secrets → Actions), then run it from the Actions tab or by commenting on an issue. Default permissions are contents:read (ADR-022 default-deny).',
+        code: 'gh workflow run my-harness',
       },
     ],
   },

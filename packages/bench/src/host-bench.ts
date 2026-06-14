@@ -21,6 +21,7 @@ import adapterOpenclaw from '@ruflo/host-openclaw';
 import adapterRvm from '@ruflo/host-rvm';
 import adapterCopilot from '@ruflo/host-copilot';
 import adapterOpencode from '@ruflo/host-opencode';
+import adapterGithubActions from '@ruflo/host-github-actions';
 
 interface HostAdapter {
   name: string;
@@ -36,6 +37,7 @@ export const HOST_ADAPTERS: HostAdapter[] = [
   adapterRvm as HostAdapter,
   adapterCopilot as HostAdapter,   // iter 127 (ADR-032)
   adapterOpencode as HostAdapter,  // iter 128 (ADR-036)
+  adapterGithubActions as HostAdapter, // iter 147 (ADR-033, non-interactive)
 ];
 
 export interface HostBenchResult {

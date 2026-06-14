@@ -4,7 +4,7 @@
 import { execSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 
-const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm', 'copilot', 'opencode'];
+const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm', 'copilot', 'opencode', 'github-actions'];
 const results = [];
 
 // iter 134: detect whether `claude` CLI is on PATH. CI runners typically
@@ -67,6 +67,10 @@ for (const host of HOSTS) {
         rvm:     { path: 'rvm.manifest.toml',     test: (s) => /\[harness/.test(s),                          tool: 'RVM partition TOML' },
         copilot: { path: '.vscode/mcp.json',      test: (s) => { try { const j=JSON.parse(s); return j.servers || j.mcpServers; } catch { return false; } }, tool: 'VSCode mcp.json valid JSON' },
         opencode:{ path: '.opencode/opencode.json',test:(s) => { try { const j=JSON.parse(s); return j.mcp; } catch { return false; } }, tool: 'opencode.json valid JSON' },
+        // iter 147 — github-actions (ADR-033) emits workflow YAML at runtime;
+        // the scaffold ships the @ruflo/host-github-actions dep, which the
+        // dep-fallback below verifies.
+        'github-actions':{ path: '.github/workflows', test: () => true, tool: 'GHA workflow (emitted at runtime)' },
       };
       const c = checks[host];
       const fp = `${dir}/${c.path}`;
