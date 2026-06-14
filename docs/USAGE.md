@@ -263,6 +263,7 @@ Honesty caveat from the underlying `@ruvector/emergent-time` package: the SDK is
 | `harness doctor` reports issues you don't understand | Run `harness diag <path> --bundle > bundle.json` and attach to an issue at <https://github.com/ruvnet/agent-harness-generator/issues>. The bundle is sanitised (secret/token/key/password fields redacted). |
 | `harness diag` says `MAJOR skew — APIs may have changed; expect breakage` | Your local `@ruflo/kernel` is on a different major than the version your harness was scaffolded against. Run `npm install @ruflo/kernel@<manifest-version>` (the diag output names the version). See [ADR-028](adrs/ADR-028-skew-detection-and-liveness.md). |
 | Want to share your MCP/Bash/claims config for a security review without zipping the whole harness | `harness export-config <path> > config.json` (iter 97) — emits a single sanitised JSON. |
+| Want to share npm-audit findings (machine-parseable, for grep / CI / vuln review) | `harness audit <path> --bundle > audit.json` (iter 102) — emits `{ schema, level, total, counts, offenders, failCount, exitCode }`. Error paths (no-package-json / no-lockfile / unknown-level) are also JSON. |
 
 ---
 

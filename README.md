@@ -184,6 +184,7 @@ See [`examples/`](examples/) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) 
 | Same, for a CI script | <100ms | `harness diag <path> --json` |
 | File a support ticket — bundle everything the maintainer needs | <100ms | `harness diag <path> --bundle > bundle.json` |
 | Share MCP + Bash + claims config for a security review | <100ms | `harness export-config <path> > config.json` |
+| Share npm-audit findings for a vuln review (machine-parseable) | ~3s | `harness audit <path> --bundle > audit.json` |
 | Is this scaffolded harness release-ready? | <1s | `harness validate <path>` |
 | Is this branch release-ready? | ~30s | `node scripts/preflight.mjs` |
 | Preview the v0.1.0 GH release body | ~1s | `node scripts/release-notes.mjs --version=0.1.0` |

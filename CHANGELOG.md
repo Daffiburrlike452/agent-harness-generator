@@ -4,6 +4,31 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Changed — Iter 103 (2026-06-14)
+
+- **iter-102's `audit --bundle` propagated across user-facing docs**
+  per ADR-030 step 2 — same discipline as iter 91 (diag --bundle),
+  iter 98 (export-config), iter 101 (--wizard):
+  - **README day-to-day commands** — new row:
+    `Share npm-audit findings for a vuln review (machine-parseable)` →
+    `harness audit <path> --bundle > audit.json`
+  - **`docs/USAGE.md` section 11 (Troubleshooting)** — new row:
+    "Want to share npm-audit findings (machine-parseable, for grep /
+    CI / vuln review)" → `harness audit <path> --bundle > audit.json`
+    with bundle-shape inline (`schema/level/total/counts/offenders/
+    failCount/exitCode`) and error-path callout.
+  - **`scripts/dev-toolkit.mjs`** — audit subcommand summary updated
+    to flag both modes ("text by default, --bundle for JSON snapshot
+    (iter 102)").
+- **No codex skill / plugin.json update** — audit has no Codex slash
+  command. Per ADR-030's triage table, "subcommand without a matching
+  Codex skill" stays out of those listings.
+- **Discovery now consistent across the 3 bundle-shaped commands**:
+  diag --bundle (iter 90 → 91 propagation), export-config (iter 97 →
+  98), audit --bundle (iter 102 → 103). Each user-facing flag lands
+  in README + USAGE + dev-toolkit within one iter of shipping.
+- Tests still 9/9 in dev-toolkit; suite count unchanged.
+
 ### Added — Iter 102 (2026-06-14)
 
 - **`harness audit --bundle`** — JSON snapshot of the iter-51 audit
