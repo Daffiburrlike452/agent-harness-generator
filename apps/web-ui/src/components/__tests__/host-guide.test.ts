@@ -39,8 +39,9 @@ describe('HostGuide × HOSTS catalog parity (iter 106)', () => {
     }
   });
 
-  it('guide IDs are exhaustively the 6 supported hosts', () => {
-    const expected = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm'];
+  it('guide IDs are exhaustively the 8 supported hosts (iter 127 + 128)', () => {
+    // iter 127 added 'copilot' (ADR-032); iter 128 added 'opencode' (ADR-036).
+    const expected = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm', 'copilot', 'opencode'];
     const actual = GUIDES.map((g) => g.id).sort();
     expect(actual).toEqual(expected.sort());
   });

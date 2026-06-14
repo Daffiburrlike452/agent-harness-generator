@@ -4,7 +4,8 @@
 // of packages/create-agent-harness so the UI emits artifacts that the CLI and
 // the Claude marketplace would accept verbatim.
 
-export type HostId = 'claude-code' | 'codex' | 'pi-dev' | 'hermes' | 'openclaw' | 'rvm';
+// iter 127 added 'copilot' (ADR-032); iter 128 added 'opencode' (ADR-036).
+export type HostId = 'claude-code' | 'codex' | 'pi-dev' | 'hermes' | 'openclaw' | 'rvm' | 'copilot' | 'opencode';
 
 // Template ids come from the canonical catalog (e.g. "minimal",
 // "vertical:coding"). Kept as a string so adding a template needs no type edit.

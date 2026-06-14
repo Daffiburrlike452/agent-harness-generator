@@ -1,0 +1,130 @@
+// SPDX-License-Identifier: MIT
+//
+// @ruflo/host-opencode — OpenCode (sst/opencode) host adapter. The 8th host,
+// per ADR-036.
+//
+// Verified integration surface (research from ADR-036):
+//   - OpenCode is an open-source terminal AI coding agent by SST.
+//   - First-class MCP support via .opencode/opencode.json or
+//     ~/.opencode/opencode.json. Schema-compatible with Claude Code's
+//     mcpServers — the kernel's src/mcp/server.ts emits the same shape.
+//   - Permissions modelled as { allow: string[], deny: string[] } under
+//     mcp.permissions — directly compatible with .harness/mcp-policy.json's
+//     allow/deny arrays (ADR-022).
+//   - Agents defined in .opencode/agents/ as markdown with YAML frontmatter
+//     (analogous to Claude Code's .claude/commands/).
+//
+// Default-deny composition (ADR-036 §Default-deny composition):
+//   OpenCode evaluates `deny` BEFORE `allow`. The adapter MUST emit the
+//   deny rules from .harness/mcp-policy.json verbatim, so the harness's
+//   posture wins through OpenCode's own enforcement gate.
+
+import type { HostAdapter, HarnessSpec, McpServerSpec } from '@ruflo/kernel';
+
+export const HOST_NAME = 'opencode' as const;
+
+/**
+ * OpenCode 1.x server entry shape:
+ * {
+ *   "command": "<binary>",   // stdio
+ *   "args": ["..."],         // stdio
+ *   "url": "...",            // HTTP streamable (alternative to command)
+ *   "env": { "K": "V" }      // optional, both stdio + HTTP
+ * }
+ */
+export function serverToOpencode(s: McpServerSpec): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  if (s.command && s.command.length > 0) {
+    out.command = s.command[0];
+    if (s.command.length > 1) out.args = s.command.slice(1);
+  } else if (s.url) {
+    out.url = s.url;
+  }
+  if (s.env && s.env.length > 0) {
+    const env: Record<string, string> = {};
+    for (const [k, v] of s.env) env[k] = v;
+    out.env = env;
+  }
+  return out;
+}
+
+/**
+ * Render the full .opencode/opencode.json content. Includes the
+ * `$schema` reference + `mcp.servers` + `mcp.permissions` block.
+ *
+ * The schema URL is pinned to the OpenCode 1.x snapshot per ADR-036's
+ * open question (pin against a snapshot to handle drift). Updates to a
+ * v2.x manifest land via a new ADR + a new adapter version.
+ */
+export function opencodeJson(spec: HarnessSpec): string {
+  const servers: Record<string, unknown> = {};
+  for (const s of spec.mcpServers ?? []) {
+    servers[s.name] = serverToOpencode(s);
+  }
+  const policy = (spec as any).mcpPolicy as {
+    allow?: string[];
+    deny?: string[];
+  } | undefined;
+  const cfg: Record<string, unknown> = {
+    $schema: 'https://opencode.ai/schema/opencode.json',
+    mcp: {
+      servers,
+      permissions: {
+        // ADR-036 §Default-deny composition: deny wins via OpenCode's own
+        // enforcement. Always emit something — empty arrays are valid.
+        allow: policy?.allow ?? [],
+        deny: policy?.deny ?? [],
+      },
+    },
+  };
+  return JSON.stringify(cfg, null, 2) + '\n';
+}
+
+/**
+ * Per-host setup runbook. Walks the user through `opencode auth login`,
+ * model-provider selection, and a first-boot smoke.
+ */
+export function installRunbook(spec: HarnessSpec): string {
+  const name = spec.name ?? 'this harness';
+  return [
+    `# Installing ${name} into OpenCode`,
+    '',
+    '## Prerequisites',
+    '',
+    '- OpenCode 1.0 or later (`opencode --version`)',
+    '- A model provider configured (Anthropic, OpenAI, local Ollama, etc.)',
+    '',
+    '## First-boot',
+    '',
+    '```bash',
+    'opencode auth login              # one-time provider setup',
+    'cd /path/to/this/harness',
+    'opencode                          # boots the TUI; loads .opencode/opencode.json',
+    '```',
+    '',
+    '## Verify MCP servers registered',
+    '',
+    'Run the slash command `/mcp` inside the OpenCode TUI to list registered',
+    'MCP servers. Expected entries:',
+    '',
+    ...(spec.mcpServers ?? []).map(s => `- \`${s.name}\``),
+    '',
+    '## Known gotchas',
+    '',
+    '- OpenCode re-reads `.opencode/opencode.json` on `:reload` but not on',
+    '  hot-edit; restart the TUI after schema changes.',
+    '- The `mcp.permissions.deny` block is enforced BEFORE `allow`. Adding',
+    '  `Bash(rm:*)` to deny will silently override any matching allow rule.',
+    '- Provider-specific costs are tracked in `~/.opencode/usage.json`.',
+  ].join('\n') + '\n';
+}
+
+export const adapter: HostAdapter = {
+  name: HOST_NAME,
+  generateConfig: (spec: HarnessSpec) => ({
+    '.opencode/opencode.json': opencodeJson(spec),
+    'install.md': installRunbook(spec),
+  }),
+};
+
+export default adapter;

@@ -18,6 +18,10 @@ export const HOSTS: HostInfo[] = [
   { id: 'hermes', name: 'Hermes Agent', shape: 'MCP runtime + <think> scrubbing', color: '#06b6d4' },
   { id: 'openclaw', name: 'OpenClaw', shape: 'MCP via ~/.openclaw/openclaw.json + skills', color: '#ef4444' },
   { id: 'rvm', name: 'RVM', shape: 'Bare-metal microhypervisor + witness', color: '#64748b' },
+  // iter 127 — ADR-032
+  { id: 'copilot', name: 'GitHub Copilot', shape: 'MCP via .vscode/mcp.json (VSCode 1.99+)', color: '#1f883d' },
+  // iter 128 — ADR-036
+  { id: 'opencode', name: 'OpenCode', shape: 'MCP via .opencode/opencode.json (sst/opencode)', color: '#f59e0b' },
 ];
 
 export const TEMPLATES: TemplateInfo[] = GEN_TEMPLATES;

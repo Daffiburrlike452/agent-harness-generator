@@ -51,7 +51,9 @@ function resolveKernelVersion(): string | undefined {
 
 const KERNEL_VERSION = resolveKernelVersion();
 
-export const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm'] as const;
+// iter 127 added copilot (ADR-032); iter 128 added opencode (ADR-036).
+// HOSTS is the canonical 8-host catalog as of iter 128.
+export const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm', 'copilot', 'opencode'] as const;
 export type Host = (typeof HOSTS)[number];
 
 export const TEMPLATES = [

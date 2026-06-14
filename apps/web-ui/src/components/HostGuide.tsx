@@ -8,7 +8,7 @@ interface HostStep {
 }
 
 interface HostGuide {
-  id: 'claude-code' | 'codex' | 'pi-dev' | 'hermes' | 'openclaw' | 'rvm';
+  id: 'claude-code' | 'codex' | 'pi-dev' | 'hermes' | 'openclaw' | 'rvm' | 'copilot' | 'opencode';
   name: string;
   blurb: string;
   steps: HostStep[];
@@ -120,6 +120,39 @@ export const GUIDES: HostGuide[] = [
         title: '2. Launch partition',
         body: 'RVM creates an isolated tenant from the harness manifest.',
         code: 'rvm launch --partition ./rvm-partition.toml',
+      },
+    ],
+  },
+  {
+    id: 'copilot',
+    name: 'GitHub Copilot',
+    blurb: 'VSCode 1.99+ with the Copilot Chat extension. Harness emits `.vscode/mcp.json` and an `install.md` runbook (ADR-032).',
+    steps: [
+      {
+        title: '1. Open the harness folder in VSCode',
+        body: 'Trust the workspace when prompted — VSCode requires it before loading .vscode/mcp.json.',
+        code: 'code ./my-harness',
+      },
+      {
+        title: '2. Verify MCP servers loaded',
+        body: 'Open the Copilot Chat panel, run /mcp to list registered MCP servers.',
+      },
+    ],
+  },
+  {
+    id: 'opencode',
+    name: 'OpenCode',
+    blurb: 'sst/opencode — the open-source TUI agent. Harness emits `.opencode/opencode.json` with $schema-anchored MCP config (ADR-036).',
+    steps: [
+      {
+        title: '1. Install OpenCode + log in',
+        body: 'See https://opencode.ai for install, then run `opencode auth login` to set a model provider.',
+        code: 'opencode auth login',
+      },
+      {
+        title: '2. Boot from the harness folder',
+        body: 'OpenCode reads .opencode/opencode.json on startup; /mcp verifies servers loaded.',
+        code: 'cd ./my-harness && opencode',
       },
     ],
   },

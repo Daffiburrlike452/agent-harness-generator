@@ -216,6 +216,30 @@ function hostFiles(host: HostId, cfg: HarnessConfig): GenFile[] {
     }
     case 'rvm':
       return [{ path: 'rvm.manifest.toml', content: `[harness]\nname = "${cfg.name}"\nisolation = "hardware"\nwitness = "ed25519"\n` }];
+    case 'copilot': {
+      // iter 127 — ADR-032: VSCode 1.99+ MCP via .vscode/mcp.json.
+      const server = mcpServerEntry(cfg);
+      const body = server ? { servers: { [cfg.name]: server }, mcpServers: { [cfg.name]: server } } : { servers: {}, mcpServers: {} };
+      return [
+        { path: '.vscode/mcp.json', content: JSON.stringify(body, null, 2) + '\n' },
+        { path: 'install.md', content: `# Installing ${cfg.name} into GitHub Copilot (VSCode)\n\n1. Open this folder in VSCode 1.99+ and trust the workspace.\n2. Open the Copilot Chat panel and run \`/mcp\` to verify \`${cfg.name}\` is registered.\n` },
+      ];
+    }
+    case 'opencode': {
+      // iter 128 — ADR-036: sst/opencode TUI via .opencode/opencode.json.
+      const server = mcpServerEntry(cfg);
+      const body = {
+        $schema: 'https://opencode.ai/schema/opencode.json',
+        mcp: {
+          servers: server ? { [cfg.name]: server } : {},
+          permissions: { allow: [], deny: ['Bash(rm:*)', 'Bash(git push:*)'] },
+        },
+      };
+      return [
+        { path: '.opencode/opencode.json', content: JSON.stringify(body, null, 2) + '\n' },
+        { path: 'install.md', content: `# Installing ${cfg.name} into OpenCode\n\n1. \`opencode auth login\` to set a model provider.\n2. \`cd\` here and run \`opencode\` — the TUI reads \`.opencode/opencode.json\`.\n3. Inside the TUI run \`/mcp\` to verify \`${cfg.name}\` is registered.\n` },
+      ];
+    }
   }
 }
 
