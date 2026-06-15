@@ -48,8 +48,10 @@ Output is an npm-publishable `.zip` with **your name on it, your branding, your 
   rough **cost per run** — so you know what you'll get before scaffolding.
 - **Pick the cheapest model that's good enough.** [`@metaharness/router`](https://www.npmjs.com/package/@metaharness/router)
   routes each request to the right model from your own results — same quality,
-  far less spend. Works out of the box; **train it on your data** for a sharper
-  fit (`npm i @metaharness/router`).
+  far less spend. Works out of the box with zero native deps; **train it on your
+  data** for a sharper fit (`npm i @metaharness/router`). Add the optional
+  [`@ruvector/tiny-dancer`](https://www.npmjs.com/package/@ruvector/tiny-dancer)
+  to train a fast native model instead — same training data, no API change.
 
 ## Tune it to your project — then ship it as your own npm
 

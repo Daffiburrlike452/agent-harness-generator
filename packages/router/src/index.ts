@@ -131,3 +131,6 @@ export class Router {
 
 // Training pipeline (ADR-043) — kernel ridge regression router.
 export * from './train.js';
+
+// Native FastGRNN backend (ADR-043 routing stage) — optional, lazily loaded.
+export * from './native.js';

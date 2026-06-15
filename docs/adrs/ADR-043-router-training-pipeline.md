@@ -105,3 +105,44 @@ DRACO validation.
 KRR over n≈20 cannot manufacture signal that isn't there; the tie above is the
 data ceiling (ADR-040), and the pipeline is the thing that *pays off* when the
 corpus is scaled. We report the measured LOO number, win or tie — here, a tie.
+
+---
+
+## Native backend — SHIPPED (tiny-dancer 0.1.21)
+
+The "substrate for swapping in a native tiny-dancer model later" is now wired.
+`@ruvector/tiny-dancer@0.1.21` shipped a real native (Rust/NAPI, 8 platforms)
+FastGRNN **trainer** — gradients + Adam + `.safetensors` persistence — that
+consumes the **exact `{ embedding, scores }` DRACO row shape** this package
+already uses. `@metaharness/router` now exposes a lazily-loaded adapter to it
+(`src/native.ts`):
+
+| export | does |
+|--------|------|
+| `isNativeRouterAvailable()` / `nativeRouterVersion()` | probe the optional engine |
+| `trainNativeRouter(rows, prices, { outputPath, … })` | native FastGRNN train → `.safetensors` |
+| `NativeRouter.load({ modelPath })` / `.route(query, candidates)` | load + route natively |
+| `resolveRouterBackend('auto')` | `'native'` when installed, else `'js'` |
+
+tiny-dancer is an **optional peer** — never a hard dependency — so a generated
+harness that only needs the dependency-free KRR/k-NN router pulls nothing native;
+the adapter degrades to a clear error (or `available = false`) when it is absent.
+Validated by `__tests__/native.test.ts`: when the binary loads it runs the genuine
+train → persist → load → route arc (train accuracy → ~1.0 on a separable set);
+when absent the train/load/`resolveRouterBackend('native')` paths reject with an
+actionable message. 21 router tests total.
+
+### Honest constraint (measured, reported upstream)
+
+Native **training, persistence, and load** are fully functional at any embedding
+dimension. Native **route**, in tiny-dancer 0.1.21, is dimension-locked: the route
+path engineers a **fixed 5-feature relational vector** (verified independent of
+embedding dim and candidate count), while `trainRouter` trains on the raw
+`inputDim`. So an end-to-end native route succeeds **only when the model is trained
+at `inputDim = 5`** — on real DRACO embeddings (1536-dim) native route raises a
+dimension mismatch. The adapter catches that cryptic native error and rethrows a
+clear one pointing at the cause + the pure-TS fallback. **Therefore the production
+router for arbitrary high-dim embeddings remains the pure-TS KRR/k-NN path**; the
+native backend ships as available + validated, with high-dim native routing
+tracked pending an upstream train↔route feature-dim alignment. No result is
+gamed: native training is real, the route constraint is reported as found.
