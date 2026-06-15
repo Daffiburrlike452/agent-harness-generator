@@ -1,0 +1,58 @@
+{
+  "corpusVersion": 1,
+  "transport": "live",
+  "judged": true,
+  "judge": {
+    "model": "google/gemini-2.5-pro",
+    "promptVersion": 1
+  },
+  "arms": {
+    "vanilla": {
+      "arm": "single",
+      "score": 0.7143414432471553,
+      "perDimension": {
+        "grounding": 0.5050322162357765,
+        "coverage": 0.5799999999999998,
+        "balance": 0.85,
+        "cleanliness": 1,
+        "faithfulness": 0.636675
+      },
+      "totalTokens": 27115
+    },
+    "harness": {
+      "arm": "single",
+      "score": 0.6125666666666666,
+      "perDimension": {
+        "grounding": 0.07708333333333332,
+        "coverage": 0.5800000000000001,
+        "balance": 0.9,
+        "cleanliness": 1,
+        "faithfulness": 0.50575
+      },
+      "totalTokens": 329522
+    },
+    "fusion": {
+      "arm": "fusion",
+      "score": 0.6472000000000001,
+      "perDimension": {
+        "grounding": 0.04375,
+        "coverage": 0.5699999999999998,
+        "balance": 0.875,
+        "cleanliness": 1,
+        "faithfulness": 0.74725
+      },
+      "totalTokens": 686524
+    }
+  },
+  "deltas": {
+    "harnessOverVanilla": -0.10177477658048872,
+    "fusionOverHarness": 0.034633333333333516,
+    "fusionOverVanilla": -0.06714144324715521
+  },
+  "thesisHolds": false,
+  "ordering": [
+    "harness",
+    "fusion",
+    "vanilla"
+  ]
+}

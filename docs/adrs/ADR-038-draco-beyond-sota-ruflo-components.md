@@ -94,4 +94,20 @@ gate + SONA adaptation over the per-stage reward signal.
 | Tier | vanilla | harness | fusion+harness | thesis | notes |
 |------|---------|---------|----------------|--------|-------|
 | cheap n=20 | 0.7788 | 0.7611 | 0.7594 | NO | structure hurt on weak models |
-| frontier n=20 | _pending_ | _pending_ | _pending_ | _pending_ | baseline run |
+| frontier n=20 (baseline) | 0.7143 | 0.6126 | 0.6472 | NO | harness DEGRADES −0.10 vs vanilla; fusion recovers +0.035 but still < vanilla. ordering: harness < fusion < vanilla |
+
+### What the baseline tells us (the real target)
+
+The harness loses to vanilla at BOTH tiers, and at frontier the gap is large
+(−0.10). Root cause hypothesis: the decompose→search→grade→synthesize chain
+forces the synthesizer to work from an intermediate "graded sources" summary
+with **no real web retrieval**, so it loses the grounding (real, re-fetchable
+URLs) that a single direct "write a cited dossier" call produces. Fusion's
+independent verifier recovers ~0.035 by pruning unsupported claims, but cannot
+restore the lost grounding.
+
+**Revised optimization target:** the harness must AUGMENT the strong direct
+dossier, not REPLACE it through lossy stages. The first arm (below) tests this
+directly: keep vanilla's grounding, add an independent verify+prune pass that
+only raises cleanliness/faithfulness without rebuilding (and discarding) the
+dossier. Self-consistency selection (best-of-N judged) is the second lever.
