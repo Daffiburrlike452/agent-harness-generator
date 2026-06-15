@@ -179,19 +179,19 @@ describe('host functional: codex — iter 126', () => {
         }
       }
     }
-    // Always: dependency on @ruflo/host-codex must land.
+    // Always: dependency on @metaharness/host-codex must land.
     const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf-8'));
-    expect(pkg.dependencies['@ruflo/host-codex']).toBeDefined();
+    expect(pkg.dependencies['@metaharness/host-codex']).toBeDefined();
   });
 });
 
 describe('host functional: pi-dev (no MCP by design) — iter 126', () => {
-  it('no .mcp.json emitted; @ruflo/host-pi-dev dep present', async () => {
+  it('no .mcp.json emitted; @metaharness/host-pi-dev dep present', async () => {
     const dir = await scaffoldFor('pi-dev');
     // pi.dev is MCP-less by design.
     expect(existsSync(join(dir, '.mcp.json'))).toBe(false);
     const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf-8'));
-    expect(pkg.dependencies['@ruflo/host-pi-dev']).toBeDefined();
+    expect(pkg.dependencies['@metaharness/host-pi-dev']).toBeDefined();
   });
 });
 
@@ -208,7 +208,7 @@ describe('host functional: hermes (cli-config.yaml) — iter 126', () => {
       // Adapter may instead emit hermes/<name>/config.yaml or similar — at
       // minimum, the harness should have SOME hermes-specific file.
       const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf-8'));
-      expect(pkg.dependencies['@ruflo/host-hermes']).toBeDefined();
+      expect(pkg.dependencies['@metaharness/host-hermes']).toBeDefined();
     }
   });
 });
@@ -220,7 +220,7 @@ describe('host functional: openclaw (workspace SKILL.md + JSON config) — iter 
     // an openclaw config JSON snippet for the user to merge into their
     // ~/.openclaw/openclaw.json.
     const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf-8'));
-    expect(pkg.dependencies['@ruflo/host-openclaw']).toBeDefined();
+    expect(pkg.dependencies['@metaharness/host-openclaw']).toBeDefined();
     // The harness depends on the adapter; the adapter emits the skill
     // folder either at scaffold-time or at runtime via host adapter init.
   });
@@ -231,7 +231,7 @@ describe('host functional: rvm (partition manifest TOML) — iter 126', () => {
     const dir = await scaffoldFor('rvm');
     // RVM is a microhypervisor. The adapter emits a partition manifest.
     const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf-8'));
-    expect(pkg.dependencies['@ruflo/host-rvm']).toBeDefined();
+    expect(pkg.dependencies['@metaharness/host-rvm']).toBeDefined();
     // If a partition file landed, verify it parses as TOML.
     const partitionCandidates = [
       'rvm-partition.toml',
@@ -258,10 +258,10 @@ describe('cross-host invariants (iter 126)', () => {
   const HOSTS = ['claude-code', 'codex', 'pi-dev', 'hermes', 'openclaw', 'rvm'];
 
   for (const host of HOSTS) {
-    it(`${host}: package.json has the matching @ruflo/host-${host} dep`, async () => {
+    it(`${host}: package.json has the matching @metaharness/host-${host} dep`, async () => {
       const dir = await scaffoldFor(host, `inv-${host}`);
       const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf-8'));
-      expect(pkg.dependencies[`@ruflo/host-${host}`]).toBeDefined();
+      expect(pkg.dependencies[`@metaharness/host-${host}`]).toBeDefined();
     });
   }
 

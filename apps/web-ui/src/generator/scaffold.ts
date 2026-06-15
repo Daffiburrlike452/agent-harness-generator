@@ -11,7 +11,7 @@ import { mcpFiles } from './mcp';
 import { render, toPascalCase } from './render';
 import type { GenFile, HarnessConfig, HostId } from './types';
 
-const KERNEL_DEP = '@ruflo/kernel';
+const KERNEL_DEP = '@metaharness/kernel';
 const KERNEL_VERSION = '^0.1.0';
 
 export function buildScaffold(cfg: HarnessConfig): GenFile[] {
@@ -127,7 +127,7 @@ After \`{{name}} init\`, the following are available:
 
 ## Architecture
 
-This harness uses [@ruflo/kernel](https://www.npmjs.com/package/@ruflo/kernel) for its primitives. The kernel is a Rust-compiled WASM module with a NAPI-RS native fallback — same code runs identically on every platform.
+This harness uses [@metaharness/kernel](https://www.npmjs.com/package/@metaharness/kernel) for its primitives. The kernel is a Rust-compiled WASM module with a NAPI-RS native fallback — same code runs identically on every platform.
 `;
 
 function claudeMd(_cfg: HarnessConfig, vars: Record<string, string>): string {
@@ -381,7 +381,7 @@ npm publish            # ship to npm under your own name
 npx ${cfg.name} init   # your users bootstrap the harness
 \`\`\`
 
-Built on [@ruflo/kernel](https://www.npmjs.com/package/@ruflo/kernel) — a Rust → WASM + NAPI-RS kernel that runs identically on every platform.
+Built on [@metaharness/kernel](https://www.npmjs.com/package/@metaharness/kernel) — a Rust → WASM + NAPI-RS kernel that runs identically on every platform.
 `;
 }
 

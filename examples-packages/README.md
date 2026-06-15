@@ -35,7 +35,7 @@ Every scaffold ships:
 - a `.harness/manifest.json` (signed-shape provenance),
 - host-specific config (`.claude/`, `.codex/config.toml`, `cli-config.yaml`, …),
 - a `.claude-plugin/plugin.json` so `claude -p --plugin-dir <bot>` loads it as a plugin,
-- and the matching `@ruflo/host-<name>` adapter dependency.
+- and the matching `@metaharness/host-<name>` adapter dependency.
 
 After scaffolding:
 

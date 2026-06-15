@@ -56,7 +56,7 @@ If you want this multi-host harness to share learned weights across hosts (per-h
 
 ```js
 // In your harness's init.ts:
-import { SelfEvolvingRouter } from '@ruflo/kernel/self-evolution';
+import { SelfEvolvingRouter } from '@metaharness/kernel/self-evolution';
 
 const router = new SelfEvolvingRouter({
   enabled: process.env.OPS_DEMO_LEARN === 'true',

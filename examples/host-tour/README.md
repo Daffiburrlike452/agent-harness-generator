@@ -47,12 +47,12 @@ If any host returns FAIL, you've found a regression that escapes the per-host e2
 
 | Host | Adapter package |
 |---|---|
-| Claude Code | [`@ruflo/host-claude-code`](../../packages/host-claude-code/) |
-| OpenAI Codex | [`@ruflo/host-codex`](../../packages/host-codex/) |
-| pi.dev | [`@ruflo/host-pi-dev`](../../packages/host-pi-dev/) |
-| Hermes Agent | [`@ruflo/host-hermes`](../../packages/host-hermes/) |
-| OpenClaw | [`@ruflo/host-openclaw`](../../packages/host-openclaw/) |
-| RVM | [`@ruflo/host-rvm`](../../packages/host-rvm/) |
+| Claude Code | [`@metaharness/host-claude-code`](../../packages/host-claude-code/) |
+| OpenAI Codex | [`@metaharness/host-codex`](../../packages/host-codex/) |
+| pi.dev | [`@metaharness/host-pi-dev`](../../packages/host-pi-dev/) |
+| Hermes Agent | [`@metaharness/host-hermes`](../../packages/host-hermes/) |
+| OpenClaw | [`@metaharness/host-openclaw`](../../packages/host-openclaw/) |
+| RVM | [`@metaharness/host-rvm`](../../packages/host-rvm/) |
 
 The `minimal` template emits a host-agnostic file shape (`CLAUDE.md` etc.) with the chosen host tagged in `manifest.hosts`. For host-specific runtime config (e.g. `.codex/config.toml`, `.openclaw/policy.yml`, `rvm-partition.toml`), the adapter packages emit those at runtime via `adapter.generateConfig(spec)` — see [`packages/bench/src/host-bench.ts`](../../packages/bench/src/host-bench.ts) for the cross-adapter benchmark that exercises `generateConfig()` directly.
 

@@ -69,8 +69,8 @@ Asymmetric features are explicitly allowed; the **shared subset** (full-harness 
 ### 4. Where each lives in the repo
 
 ```
-crates/kernel/                        Rust kernel (both surfaces converge here via @ruflo/kernel)
-packages/kernel-js/                   @ruflo/kernel runtime bridge (Node + browser)
+crates/kernel/                        Rust kernel (both surfaces converge here via @metaharness/kernel)
+packages/kernel-js/                   @metaharness/kernel runtime bridge (Node + browser)
 packages/create-agent-harness/        CLI generator + 12 harness subcommands
 apps/web-ui/                          Browser generator (Vite + React + TS) — PR #1
 .github/workflows/ci.yml              CLI matrix (Rust + WASM + Node + Bench + pack+install)
@@ -121,7 +121,7 @@ When the parity test passes AND the CLI e2e lifecycle passes against web-UI outp
 **Hurts**:
 
 - We now maintain TWO implementations of the generator (CLI's `renderer.ts` + the web-UI's port). Drift is a real risk; the parity test is the only thing preventing it.
-- A `@ruflo/kernel` version bump can cause silent skew between an installed CLI (latest npm) and a stale Pages deploy. The diagnostic — `meta.kernel_version` in manifest — must be surfaced in `harness validate` failure output; if this becomes a real pain point, file a follow-up.
+- A `@metaharness/kernel` version bump can cause silent skew between an installed CLI (latest npm) and a stale Pages deploy. The diagnostic — `meta.kernel_version` in manifest — must be surfaced in `harness validate` failure output; if this becomes a real pain point, file a follow-up.
 - The web-UI's CI workflow (`pages.yml`) is independent of the main CI matrix (`ci.yml`), so a green main CI does not imply a green web-UI build. Operators reviewing PRs touching both surfaces must check both badges.
 - `node scripts/dev-toolkit.mjs` (iter 55) does not currently include the web-UI surface — TODO when PR #1 lands.
 

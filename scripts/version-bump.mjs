@@ -57,7 +57,7 @@ async function bumpJson(path, newVersion, label) {
   for (const depBlock of ['dependencies', 'peerDependencies', 'devDependencies']) {
     if (!pkg[depBlock]) continue;
     for (const dep of Object.keys(pkg[depBlock])) {
-      if (dep.startsWith('@ruflo/') || dep === 'create-agent-harness') {
+      if (dep.startsWith('@metaharness/') || dep === 'create-agent-harness') {
         if (pkg[depBlock][dep] === old) pkg[depBlock][dep] = newVersion;
       }
     }

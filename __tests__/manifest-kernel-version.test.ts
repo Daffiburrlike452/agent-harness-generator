@@ -8,9 +8,9 @@
 // .harness/manifest.json that was written, and asserts:
 //
 //   1. meta.surface === 'cli' (default — only the web-UI port sets 'web-ui')
-//   2. meta.kernel_version === @ruflo/kernel's package.json version
+//   2. meta.kernel_version === @metaharness/kernel's package.json version
 //
-// If the workspace doesn't have @ruflo/kernel resolvable (CI on a clean
+// If the workspace doesn't have @metaharness/kernel resolvable (CI on a clean
 // checkout without `npm install`), we accept undefined as a soft-pass —
 // the resolveKernelVersion() implementation deliberately never throws
 // because a broken kernel install should not block scaffolding.
@@ -38,7 +38,7 @@ beforeAll(async () => {
 });
 
 describe('manifest.meta.kernel_version (iter 58 — ADR-027 diagnostic)', () => {
-  it('scaffold writes meta.surface = "cli" and meta.kernel_version matches @ruflo/kernel', async () => {
+  it('scaffold writes meta.surface = "cli" and meta.kernel_version matches @metaharness/kernel', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'ahg-kernver-'));
     try {
       await scaffold({

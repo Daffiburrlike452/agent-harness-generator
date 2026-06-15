@@ -17,10 +17,10 @@ This ADR pins down the contract.
 
 ### The host-adapter contract
 
-`@ruflo/kernel/hosts` exports a base class and an interface:
+`@metaharness/kernel/hosts` exports a base class and an interface:
 
 ```ts
-// Simplified for the ADR. Full schema in @ruflo/kernel/hosts/contract.ts.
+// Simplified for the ADR. Full schema in @metaharness/kernel/hosts/contract.ts.
 export interface HostAdapter {
   // Identity
   readonly hostId: 'claude-code' | 'codex' | 'pi-dev' | 'hermes' | string;
@@ -81,16 +81,16 @@ The capabilities object is the kernel's window into what the host can do. The ge
 
 | Adapter | Package | Version | Notes |
 |---|---|---|---|
-| Claude Code | `@ruflo/host-claude-code` | tracks `claude-code` CLI minor versions | Reference adapter. The implementation today is essentially the ruflo `init/` directory factored out. |
-| Codex | `@ruflo/host-codex` | tracks `@openai/codex` minor versions | Builds on the existing `@claude-flow/codex` package. |
-| pi.dev (badlogic Pi) | `@ruflo/host-pi-dev` | tracks Pi `packages/coding-agent` minor versions | Ships as a Pi extension (TypeScript module), bypassing MCP per Pi's design. See §pi.dev below. |
-| Hermes / hermes-agent | `@ruflo/host-hermes` | tracks the NousResearch/Hermes-Function-Calling repo | Smaller integration; mostly tool-call + thinking-block conventions. |
+| Claude Code | `@metaharness/host-claude-code` | tracks `claude-code` CLI minor versions | Reference adapter. The implementation today is essentially the ruflo `init/` directory factored out. |
+| Codex | `@metaharness/host-codex` | tracks `@openai/codex` minor versions | Builds on the existing `@claude-flow/codex` package. |
+| pi.dev (badlogic Pi) | `@metaharness/host-pi-dev` | tracks Pi `packages/coding-agent` minor versions | Ships as a Pi extension (TypeScript module), bypassing MCP per Pi's design. See §pi.dev below. |
+| Hermes / hermes-agent | `@metaharness/host-hermes` | tracks the NousResearch/Hermes-Function-Calling repo | Smaller integration; mostly tool-call + thinking-block conventions. |
 
-Each adapter is an npm package, peer-dep on `@ruflo/kernel`, versioned independently. A generated harness installs only the adapters its user picked, keeping install size proportional to choice.
+Each adapter is an npm package, peer-dep on `@metaharness/kernel`, versioned independently. A generated harness installs only the adapters its user picked, keeping install size proportional to choice.
 
 ### Per-host integration details
 
-#### Claude Code (`@ruflo/host-claude-code`)
+#### Claude Code (`@metaharness/host-claude-code`)
 
 This is the reference adapter. It is the integration surface ruflo ships today, generalised. Details verified against the canonical Claude Code documentation (note: `docs.claude.com/en/docs/claude-code/...` URLs 301-redirect to the canonical `code.claude.com/docs/en/...` paths).
 
@@ -118,7 +118,7 @@ References:
 - MCP — https://code.claude.com/docs/en/mcp
 - Hooks — https://code.claude.com/docs/en/hooks
 
-#### Codex (`@ruflo/host-codex`)
+#### Codex (`@metaharness/host-codex`)
 
 Codex is OpenAI's open-source CLI agent (`@openai/codex` on npm; repo: https://github.com/openai/codex). It supports MCP, with a **TOML** config file at `~/.codex/config.toml` (or `.codex/config.toml` at the project root — see the trusted-project quirk below).
 
@@ -161,7 +161,7 @@ Codex is OpenAI's open-source CLI agent (`@openai/codex` on npm; repo: https://g
 - **Model invocation.** Delegates to the OpenAI SDK. Reads `OPENAI_API_KEY`. Default tier-2: `gpt-5-mini` (or whatever the cheap tier is at v1.0); tier-3: `gpt-5` / `o-series` reasoning models. The exact mapping is configured in the adapter's `defaultProviderModels`.
 - **Capabilities**: `supportsMcp: 'stdio' | 'http'` (Codex supports both via the same `[mcp_servers.*]` schema), `supportsHooks: 'kernel-side-only'` (no native hook system), `supportsThinkingBlocks: false` (out-of-band reasoning channel), `supportsToolCallApi: 'native'`, `configFileFormat: 'toml'`, `configFileLocation: '.codex/config.toml'` or `~/.codex/config.toml`.
 
-The ruflo `@claude-flow/codex` package (see `v3/@claude-flow/codex/README.md`) already implements much of this. The adapter for `agent-harness-generator` factors that code out into `@ruflo/host-codex`.
+The ruflo `@claude-flow/codex` package (see `v3/@claude-flow/codex/README.md`) already implements much of this. The adapter for `agent-harness-generator` factors that code out into `@metaharness/host-codex`.
 
 References:
 - Codex config (TOML basics) — https://developers.openai.com/codex/config-basic
@@ -169,7 +169,7 @@ References:
 - Repo — https://github.com/openai/codex
 - Trusted-project footgun — https://github.com/openai/codex/issues/3441
 
-#### pi.dev (`@ruflo/host-pi-dev`)
+#### pi.dev (`@metaharness/host-pi-dev`)
 
 **Clarification:** "pi.dev" here means the **badlogic / earendil-works "Pi coding agent"** — a minimal CLI agent harness. It is NOT Inflection's Pi.ai consumer chatbot.
 
@@ -186,7 +186,7 @@ References:
 
   An out-of-tree MCP shim exists (https://github.com/nicobailon/pi-mcp-adapter) with the documented rationale that a single MCP server can burn 10,000+ tokens of context window — Pi's tool-via-extension model avoids that cost. We do not require the shim; for the harness generator we ship the Pi adapter as a Pi extension instead.
 
-- **Adapter shape.** `@ruflo/host-pi-dev` ships as a **Pi extension (TypeScript module)**, not as an MCP server.
+- **Adapter shape.** `@metaharness/host-pi-dev` ships as a **Pi extension (TypeScript module)**, not as an MCP server.
   - The harness's tool catalogue is exposed via `pi.registerTool({...})` calls inside the extension.
   - The harness's slash commands are exposed via `pi.registerCommand(...)`.
   - The wasm kernel is still loaded — for memory, routing, intelligence, and the marketplace client. Only the MCP transport layer is bypassed.
@@ -201,7 +201,7 @@ References:
 - Source — https://github.com/badlogic/pi-mono
 - Optional MCP shim (third-party) — https://github.com/nicobailon/pi-mcp-adapter
 
-#### Hermes / hermes-agent (`@ruflo/host-hermes`)
+#### Hermes / hermes-agent (`@metaharness/host-hermes`)
 
 Hermes is Nous Research's instruction-tuned model series (Hermes-3, Hermes-4, etc.). Two distinct Nous Research projects use the "Hermes" name; the adapter targets both, and reviewers should not conflate them:
 
@@ -220,7 +220,7 @@ The Hermes adapter:
   - **`Hermes-Function-Calling` reference mode (for older deployments).** The harness exposes its tools as a `tools.json` schema document the function-calling reference loads at session start. ChatML `<tool_call>...</tool_call>` parsing is wired by the kernel's function-calling bridge.
 - **Hooks.** Kernel-side only in both modes. `hermes-agent` does not expose Claude-Code-style lifecycle hooks; the kernel wraps session start/end.
 - **Host instructions file.** `HERMES.md` at the harness root.
-- **Thinking blocks — MANDATORY scrubbing.** Hermes-4 (e.g. https://huggingface.co/NousResearch/Hermes-4-14B) emits `<think>...</think>` reasoning blocks AND occasionally raw `<tool_call>` text on the assistant content channel instead of using the OpenAI-compatible function-calling channel. This is a documented behavior — see https://github.com/NousResearch/hermes-agent/issues/741. The adapter's `postProcessAgentOutput` MUST call `scrubReasoningBlocks` to strip both `<think>...</think>` and stray `<tool_call>` text from the assistant content before it reaches the user, memory bridge, or trajectory tracker. This is exactly the pattern ruflo's `scrubReasoningBlocks` in `v3/@claude-flow/cli/src/mcp-tools/hooks-tools.ts` already implements; the kernel exports it from `@ruflo/kernel/hosts/util/scrub-reasoning-blocks`. **Failing to scrub these blocks contaminates DISTILL embeddings, breaks trajectory replay, and leaks reasoning content into user-visible output.** This is the single load-bearing reason Hermes has its own first-class adapter rather than reusing the OpenAI-compatible Codex adapter — getting the scrubbing right at every output boundary is otherwise an everywhere-fix.
+- **Thinking blocks — MANDATORY scrubbing.** Hermes-4 (e.g. https://huggingface.co/NousResearch/Hermes-4-14B) emits `<think>...</think>` reasoning blocks AND occasionally raw `<tool_call>` text on the assistant content channel instead of using the OpenAI-compatible function-calling channel. This is a documented behavior — see https://github.com/NousResearch/hermes-agent/issues/741. The adapter's `postProcessAgentOutput` MUST call `scrubReasoningBlocks` to strip both `<think>...</think>` and stray `<tool_call>` text from the assistant content before it reaches the user, memory bridge, or trajectory tracker. This is exactly the pattern ruflo's `scrubReasoningBlocks` in `v3/@claude-flow/cli/src/mcp-tools/hooks-tools.ts` already implements; the kernel exports it from `@metaharness/kernel/hosts/util/scrub-reasoning-blocks`. **Failing to scrub these blocks contaminates DISTILL embeddings, breaks trajectory replay, and leaks reasoning content into user-visible output.** This is the single load-bearing reason Hermes has its own first-class adapter rather than reusing the OpenAI-compatible Codex adapter — getting the scrubbing right at every output boundary is otherwise an everywhere-fix.
 - **Tool-loop guardrail.** The adapter wires the kernel's tool-loop circuit breaker (the `tool-loop-guardrail.ts` code) by default. Without it, Hermes agents are noticeably more prone to repeating-call loops.
 - **Model invocation.** Hermes is typically served via a local inference server (TGI, vLLM, llama.cpp) or Together AI. The adapter reads `HERMES_API_BASE` and `HERMES_API_KEY` env vars and posts OpenAI-compatible completion requests.
 - **Capabilities**: `supportsMcp: 'stdio'` for the `hermes-agent` runtime mode, `'none'` (function-calling translation is kernel-side) for the reference mode; `supportsHooks: 'kernel-side-only'`; `supportsThinkingBlocks: true` (and the post-processor is mandatory); `supportsToolCallApi: 'function-calling'` for the reference mode, `'native'` for the runtime mode.
@@ -257,15 +257,15 @@ Three constraints across multi-host harnesses:
 
 ### What gets easier
 
-- **A new host is a new package.** Adding a fifth host (say, Google's Gemini CLI when it eventually ships an MCP equivalent) is a `@ruflo/host-gemini-cli` package, not a kernel change.
-- **Host churn is contained.** Codex ships a release that changes its config TOML schema; only `@ruflo/host-codex` needs to update.
+- **A new host is a new package.** Adding a fifth host (say, Google's Gemini CLI when it eventually ships an MCP equivalent) is a `@metaharness/host-gemini-cli` package, not a kernel change.
+- **Host churn is contained.** Codex ships a release that changes its config TOML schema; only `@metaharness/host-codex` needs to update.
 - **The adapter contract is testable.** Each adapter passes the same contract test suite (ADR-010 §Contract tests), so we can prove they behave equivalently for all the kernel-level guarantees.
 
 ### What gets harder
 
 - **Smoke tests multiply.** A harness with three hosts runs three smoke tests, one per host. CI minutes scale with host count. ADR-007 specifies the parallelisation.
 - **Capability gating is a real UX problem.** When a feature does not work in one of the selected hosts, the composer must explain why clearly. The "greyed out" state must surface the reason.
-- **Adapter version skew.** A user pins `@ruflo/kernel ^1.2.0` but `@ruflo/host-codex 0.5.0` (which was built against kernel `^1.0.0`). The adapter contract version is independent of the kernel semver. ADR-008 §Drift detection handles this; in short, each adapter declares its `peerDependencies.@ruflo/kernel` range, and `npm install` enforces it.
+- **Adapter version skew.** A user pins `@metaharness/kernel ^1.2.0` but `@metaharness/host-codex 0.5.0` (which was built against kernel `^1.0.0`). The adapter contract version is independent of the kernel semver. ADR-008 §Drift detection handles this; in short, each adapter declares its `peerDependencies.@metaharness/kernel` range, and `npm install` enforces it.
 
 ### What does not change
 
@@ -274,13 +274,13 @@ Three constraints across multi-host harnesses:
 
 ## Alternatives Considered
 
-### Alternative 1: One mega-adapter ("@ruflo/host-universal")
+### Alternative 1: One mega-adapter ("@metaharness/host-universal")
 
 Ship a single adapter that detects the host at runtime and adapts. Rejected because (a) detecting the host correctly is itself a research problem (what if the user runs the harness's bin directly with no host?), (b) the union of all hosts' surface area is far larger than any one host's, so the universal adapter would be the slowest path for every user, and (c) updating to a new host version would force every harness to re-test against every host. Independent adapter packages give independent release cadences.
 
 ### Alternative 2: Host-specific kernels
 
-Ship `@ruflo/kernel-claude-code`, `@ruflo/kernel-codex`, etc. Rejected because the kernel is then redundant across hosts (each kernel re-implements memory, hooks, routing) and the cross-host shared memory promise disappears. The shared kernel + per-host adapter is the only model that delivers cross-host continuity.
+Ship `@metaharness/kernel-claude-code`, `@metaharness/kernel-codex`, etc. Rejected because the kernel is then redundant across hosts (each kernel re-implements memory, hooks, routing) and the cross-host shared memory promise disappears. The shared kernel + per-host adapter is the only model that delivers cross-host continuity.
 
 ### Alternative 3: No adapter; just generate the right files for each host
 
@@ -288,7 +288,7 @@ The generator could write `.claude/settings.json` for Claude Code, `.codex/confi
 
 ### Alternative 4: Adapt at the kernel boundary, not via per-host packages
 
-Put host adapters inside `@ruflo/kernel/hosts/*`. Rejected per ADR-002 §Alternative 3 — each host moves at a different cadence, and the kernel must not absorb each host's churn.
+Put host adapters inside `@metaharness/kernel/hosts/*`. Rejected per ADR-002 §Alternative 3 — each host moves at a different cadence, and the kernel must not absorb each host's churn.
 
 ## Test Contract
 
@@ -296,9 +296,9 @@ This ADR is satisfied when the following exist:
 
 ### Contract tests (per adapter)
 
-For each of `@ruflo/host-claude-code`, `@ruflo/host-codex`, `@ruflo/host-pi-dev`, `@ruflo/host-hermes`:
+For each of `@metaharness/host-claude-code`, `@metaharness/host-codex`, `@metaharness/host-pi-dev`, `@metaharness/host-hermes`:
 
-1. **Capability contract** — the adapter's `capabilities` object satisfies the schema in `@ruflo/kernel/hosts/contract.ts`. Asserted via a Zod schema.
+1. **Capability contract** — the adapter's `capabilities` object satisfies the schema in `@metaharness/kernel/hosts/contract.ts`. Asserted via a Zod schema.
 2. **`generateConfig` produces valid host config** — schema-validated against the host's actual config schema (JSON Schema for Claude Code's `settings.json`, the TOML schema we derive from Codex docs, etc.).
 3. **`registerMcp` instructions are runnable** — the returned instructions can be executed in a test sandbox and result in a registered server.
 4. **`postProcessAgentOutput` round-trip** — fixtures with and without thinking blocks; output matches expected scrubbed form.
@@ -313,14 +313,14 @@ For each of `@ruflo/host-claude-code`, `@ruflo/host-codex`, `@ruflo/host-pi-dev`
 
 ### Multi-host harness tests
 
-10. **Cross-host memory continuity** — a harness with two adapters (Claude Code + Codex). A trajectory recorded under Claude Code is retrieved under Codex (via the shared `@ruflo/kernel/memory`). End-to-end fixture lives in `packages/test-harness/tests/cross-host/`.
+10. **Cross-host memory continuity** — a harness with two adapters (Claude Code + Codex). A trajectory recorded under Claude Code is retrieved under Codex (via the shared `@metaharness/kernel/memory`). End-to-end fixture lives in `packages/test-harness/tests/cross-host/`.
 11. **Capability-gating in composer** — the generator with two selected hosts disables features that one of the hosts cannot support. UI snapshot test.
 
 ## References
 
 ### Ruflo internals cited
 
-- `v3/@claude-flow/codex/README.md` — the existing Codex integration, the basis for `@ruflo/host-codex`.
+- `v3/@claude-flow/codex/README.md` — the existing Codex integration, the basis for `@metaharness/host-codex`.
 - `v3/@claude-flow/cli/src/mcp-tools/hooks-tools.ts` — the `scrubReasoningBlocks` function and the `#14` comment block referencing hermes-agent's `<think>` block contamination of DISTILL.
 - `v3/@claude-flow/cli/src/mcp-tools/tool-loop-guardrail.ts` — the "hermes-agent tool_guardrails pattern" the Hermes adapter wires by default.
 - `v3/@claude-flow/cli/src/init/mcp-generator.ts` — the cross-platform `cmd /c` wrap used by every adapter.

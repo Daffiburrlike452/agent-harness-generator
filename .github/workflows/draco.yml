@@ -42,13 +42,13 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
 
-      - name: Install + build (root, dependency-ordered — resolves @ruflo/* workspace deps)
+      - name: Install + build (root, dependency-ordered — resolves @metaharness/* workspace deps)
         shell: bash
         run: |
           npm ci || npm install
           # The ordered root build compiles kernel → hosts → bench, so
-          # host-bench.ts's @ruflo/host-* imports resolve. A bench-only build
-          # fails (the @ruflo scope is unpublished — workspace symlinks only
+          # host-bench.ts's @metaharness/host-* imports resolve. A bench-only build
+          # fails (the @metaharness scope is unpublished — workspace symlinks only
           # exist from the repo root).
           npm run build
 

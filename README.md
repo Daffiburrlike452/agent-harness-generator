@@ -245,12 +245,12 @@ You (harness author)
         └→ Your harness (.zip)    ← what you ship
              ├ npx <your-name>     ← your identity
              ├ <your agents>       ← your content
-             └ @ruflo/kernel       ← shared primitives (Rust + WASM + NAPI-RS)
+             └ @metaharness/kernel       ← shared primitives (Rust + WASM + NAPI-RS)
                   └→ Host adapter (Claude Code / Codex / pi.dev / Hermes / OpenClaw / RVM)
                        └→ LLM providers
 ```
 
-You operate the factory. The factory produces your harness. Your users never see the factory — only the brand and CLI you ship. The kernel ships as `@ruflo/kernel` (Rust → wasm-pack + NAPI-RS); your content stays yours.
+You operate the factory. The factory produces your harness. Your users never see the factory — only the brand and CLI you ship. The kernel ships as `@metaharness/kernel` (Rust → wasm-pack + NAPI-RS); your content stays yours.
 
 📖 Deeper: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/adrs/INDEX.md](docs/adrs/INDEX.md) (31 ADRs)
 

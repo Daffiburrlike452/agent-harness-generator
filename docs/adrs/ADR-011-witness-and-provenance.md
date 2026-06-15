@@ -39,7 +39,7 @@ The schema is the ruflo ADR-103 schema, generalised to the harness context:
   "harness": {
     "name": "@acme/acme-support",
     "version": "1.2.0",
-    "kernel": "@ruflo/kernel@1.4.0",
+    "kernel": "@metaharness/kernel@1.4.0",
     "generatedFromManifest": "<sha256 of .harness/manifest.json>"
   },
   "gitCommit": "<commit at issuance>",
@@ -102,7 +102,7 @@ A compromised key requires immediate rotation. The harness publishes an emergenc
 A harness that has not customised its witness manifest attests:
 
 - **Self-checksums.** `.harness/manifest.json` and `package.json` are SHA-attested.
-- **Kernel version pin.** `@ruflo/kernel@<exact-version>` is attested; downgrading the kernel after the fact invalidates the signature.
+- **Kernel version pin.** `@metaharness/kernel@<exact-version>` is attested; downgrading the kernel after the fact invalidates the signature.
 - **Host adapter version pins.** Same.
 - **Plugin pin set.** Every installed plugin's name + version + tarball checksum.
 
@@ -116,7 +116,7 @@ The composer (ADR-003) defaults to attesting the first set. A user picking `--fe
 
 ### The regen / verify / history scripts
 
-All three are factored from ruflo ADR-103 §2 and shipped under `@ruflo/kernel/witness`. The harness exposes them as:
+All three are factored from ruflo ADR-103 §2 and shipped under `@metaharness/kernel/witness`. The harness exposes them as:
 
 ```bash
 npx <harness-name> witness regen      # Regenerate the manifest at the current commit

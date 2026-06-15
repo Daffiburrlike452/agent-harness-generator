@@ -17,12 +17,12 @@ A bird's-eye view of how `agent-harness-generator` is wired. The detail lives in
 ┌──────────────────────────────────────────────────────────────────┐
 │ Layer 2 — Adapter + Application layer                            │
 │                                                                  │
-│   @ruflo/host-claude-code   @ruflo/host-codex                    │
-│   @ruflo/host-pi-dev        @ruflo/host-hermes                   │
-│   @ruflo/host-openclaw      @ruflo/host-rvm                      │
+│   @metaharness/host-claude-code   @metaharness/host-codex                    │
+│   @metaharness/host-pi-dev        @metaharness/host-hermes                   │
+│   @metaharness/host-openclaw      @metaharness/host-rvm                      │
 │                                                                  │
-│   @ruflo/sdk                @ruflo/vertical-base                 │
-│                             @ruflo/vertical-trading              │
+│   @metaharness/sdk                @metaharness/vertical-base                 │
+│                             @metaharness/vertical-trading              │
 └──────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -33,7 +33,7 @@ A bird's-eye view of how `agent-harness-generator` is wired. The detail lives in
 │                        memory, routing, witness, federation)     │
 │   crates/kernel-wasm  (wasm-bindgen target)                      │
 │   crates/kernel-napi  (NAPI-RS target)                           │
-│   @ruflo/kernel       (TS loader + bridge)                       │
+│   @metaharness/kernel       (TS loader + bridge)                       │
 └──────────────────────────────────────────────────────────────────┘
 ```
 

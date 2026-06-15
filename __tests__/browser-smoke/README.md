@@ -1,6 +1,6 @@
 # Browser-runtime WASM smoke
 
-Static fixture that loads `@ruflo/kernel`'s WASM bundle in a real browser and asserts the three exports work (`kernelInfo`, `mcpValidate` accept, `mcpValidate` reject).
+Static fixture that loads `@metaharness/kernel`'s WASM bundle in a real browser and asserts the three exports work (`kernelInfo`, `mcpValidate` accept, `mcpValidate` reject).
 
 ## Why this exists
 

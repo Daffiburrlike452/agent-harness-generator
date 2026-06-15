@@ -60,5 +60,5 @@ The script is host-aware — pass `--host=hermes` (or any of the 6) to see how t
 ## When to run
 
 - After editing `vertical_education/` templates — quick visual confirmation
-- After bumping `@ruflo/kernel` — does the existing scaffold still pass validate?
+- After bumping `@metaharness/kernel` — does the existing scaffold still pass validate?
 - In CI as a per-vertical smoke test alongside `harness validate`

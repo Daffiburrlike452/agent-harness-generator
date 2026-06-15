@@ -21,7 +21,7 @@ Reframe the app as **Agent Harness Studio** with four tabs, and add a **Verify**
 
 ### Verify is the in-browser trust link
 
-`verifyFileMap(files)` is a pure verifier that runs the same *class* of checks as the CLI's `harness validate` + `mcp-scan`, over a file map: package.json parses + has a name + declares `@ruflo/kernel`; generator manifest present; at least one host adapter; **no unresolved `{{template vars}}`**; and — when an MCP surface exists — policy is default-deny, shell-gated, audited, and timeout-bounded; secrets (`.env`) denied. It returns pass/fail checks with severities and an overall `ok`.
+`verifyFileMap(files)` is a pure verifier that runs the same *class* of checks as the CLI's `harness validate` + `mcp-scan`, over a file map: package.json parses + has a name + declares `@metaharness/kernel`; generator manifest present; at least one host adapter; **no unresolved `{{template vars}}`**; and — when an MCP surface exists — policy is default-deny, shell-gated, audited, and timeout-bounded; secrets (`.env`) denied. It returns pass/fail checks with severities and an overall `ok`.
 
 The Verify tab unzips a download with JSZip (stripping the single `<root>/` prefix) and renders the report. Nothing is uploaded; the same engine verifies the live scaffold or any zip the user drops in.
 

@@ -19,7 +19,7 @@ It has. Three developments crossed the threshold between 2024 and 2026:
 
 The combination of MCP client support + the Copilot Extensions API creates two distinct integration paths, and the choice between them shapes the package materially.
 
-This ADR is a **proposal**. It documents the design for `@ruflo/host-copilot` and registers the decision, but implementation is deferred to a future iteration. The status is `Proposed` pending acceptance and an implementation milestone.
+This ADR is a **proposal**. It documents the design for `@metaharness/host-copilot` and registers the decision, but implementation is deferred to a future iteration. The status is `Proposed` pending acceptance and an implementation milestone.
 
 ## Decision
 
@@ -94,7 +94,7 @@ The Extensions path is more invasive than MCP: it requires publishing a VS Code 
 
 ### 4. Integration shape: two sub-modes
 
-`@ruflo/host-copilot` ships **two sub-modes** that the user picks at generation time:
+`@metaharness/host-copilot` ships **two sub-modes** that the user picks at generation time:
 
 | Sub-mode | What ships | When to use |
 |---|---|---|
@@ -103,13 +103,13 @@ The Extensions path is more invasive than MCP: it requires publishing a VS Code 
 
 The `mcp-only` sub-mode is the recommended default because it requires no new publishing step. The `extension` sub-mode is opt-in and adds a second publishable artifact.
 
-### 5. The new host adapter package: `@ruflo/host-copilot`
+### 5. The new host adapter package: `@metaharness/host-copilot`
 
-Package skeleton (mirrors `@ruflo/host-claude-code`, `@ruflo/host-codex`, `@ruflo/host-rvm`):
+Package skeleton (mirrors `@metaharness/host-claude-code`, `@metaharness/host-codex`, `@metaharness/host-rvm`):
 
 ```
 packages/host-copilot/
-  package.json                  # peerDependencies: @ruflo/kernel ^1.x
+  package.json                  # peerDependencies: @metaharness/kernel ^1.x
   src/
     index.ts                    # exports CopilotHostAdapter : HostAdapter
     capabilities.ts             # HostCapabilities declaration
@@ -130,7 +130,7 @@ packages/host-copilot/
     smoke.test.ts
 ```
 
-**`HostCapabilities` for `@ruflo/host-copilot`:**
+**`HostCapabilities` for `@metaharness/host-copilot`:**
 
 ```ts
 {
@@ -198,7 +198,7 @@ The adapter generates a `vscode:publish` npm script and documents the Azure DevO
 
 ### 8. Open question: 7th host or sub-shape of a broader "vscode" host?
 
-The most significant open question for implementors: should `@ruflo/host-copilot` be the 7th peer adapter (alongside `claude-code`, `codex`, `pi-dev`, `hermes`, `openclaw`, `rvm`), or should it become `@ruflo/host-vscode` — a broader adapter that also covers Cursor, Cline, Continue, and other Copilot-adjacent VS Code agents?
+The most significant open question for implementors: should `@metaharness/host-copilot` be the 7th peer adapter (alongside `claude-code`, `codex`, `pi-dev`, `hermes`, `openclaw`, `rvm`), or should it become `@metaharness/host-vscode` — a broader adapter that also covers Cursor, Cline, Continue, and other Copilot-adjacent VS Code agents?
 
 Arguments for **7th host (Copilot-specific)**:
 - Copilot's auth model (GitHub OAuth, `vscode.lm.*`) is meaningfully different from Cursor's (Anthropic API key in VS Code settings) and Cline's (tool-call-over-chat model).
@@ -208,10 +208,10 @@ Arguments for **7th host (Copilot-specific)**:
 
 Arguments for **broader "vscode" host**:
 - The `mcp-only` sub-mode is identical across Copilot, Cursor, and Cline — all three read `.vscode/mcp.json`. The adapter would be identical for all three in that sub-mode.
-- Users often have multiple of these agents installed in the same workspace. A single `@ruflo/host-vscode` could generate the union of config files (`.vscode/mcp.json`, `.cursorrules`, `.clinerules`) in one step.
+- Users often have multiple of these agents installed in the same workspace. A single `@metaharness/host-vscode` could generate the union of config files (`.vscode/mcp.json`, `.cursorrules`, `.clinerules`) in one step.
 - Future agents will emerge; "vscode" is a stable namespace; "copilot" carries a vendor name that may change scope.
 
-**Recommendation**: ship `@ruflo/host-copilot` as the 7th standalone adapter for now. The `mcp-only` sub-mode already provides the widest reach (Copilot, Cursor, Cline, Continue all read `.vscode/mcp.json`). Once there is a concrete need to support Cursor's `.cursorrules` conventions or Cline's approval-gate model as first-class concerns, refactor into `@ruflo/host-vscode` via a superseding ADR. Do not abstract ahead of the data.
+**Recommendation**: ship `@metaharness/host-copilot` as the 7th standalone adapter for now. The `mcp-only` sub-mode already provides the widest reach (Copilot, Cursor, Cline, Continue all read `.vscode/mcp.json`). Once there is a concrete need to support Cursor's `.cursorrules` conventions or Cline's approval-gate model as first-class concerns, refactor into `@metaharness/host-vscode` via a superseding ADR. Do not abstract ahead of the data.
 
 ## Consequences
 
@@ -280,6 +280,6 @@ This ADR is satisfied when the following exist:
 6. **`.vscode/mcp.json` schema (VS Code docs)** — https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server-to-your-workspace (as of 2025-06)
 7. **VS Code Workspace Trust** — https://code.visualstudio.com/docs/editor/workspace-trust (as of 2025)
 8. **VSCE publishing** — https://code.visualstudio.com/api/working-with-extensions/publishing-extension (as of 2026-01)
-9. ADR-004 — Host integration model (the contract `@ruflo/host-copilot` must implement)
+9. ADR-004 — Host integration model (the contract `@metaharness/host-copilot` must implement)
 10. ADR-022 — MCP as a gated primitive (policy layer unchanged)
 11. ADR-030 — The Discovery Loop (propagation steps when this host ships)

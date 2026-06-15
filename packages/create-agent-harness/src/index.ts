@@ -30,9 +30,9 @@ function resolveKernelVersion(): string | undefined {
     // Workspace layout: packages/create-agent-harness/dist/ → ../../kernel-js/package.json
     resolve(__dirname, '..', '..', 'kernel-js', 'package.json'),
     // Installed layout: sibling node_modules/@metaharness/kernel/package.json
-    resolve(__dirname, '..', '..', '@ruflo', 'kernel', 'package.json'),
+    resolve(__dirname, '..', '..', '@metaharness', 'kernel', 'package.json'),
     // Fallback: top-level node_modules
-    resolve(__dirname, '..', '..', '..', '@ruflo', 'kernel', 'package.json'),
+    resolve(__dirname, '..', '..', '..', '@metaharness', 'kernel', 'package.json'),
   ];
   for (const p of candidates) {
     try {

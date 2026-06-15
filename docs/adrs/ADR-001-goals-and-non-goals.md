@@ -36,7 +36,7 @@ A generated harness must support, in increasing order of exoticism:
 |---|---|---|
 | **Trivial** | "I need a 3-agent customer-support harness branded `@acme/acme-support` that runs in Claude Code." | ADR-003, ADR-004 |
 | **Standard** | "I need a 6-agent legal-contracts harness branded `@lexcorp/contract-bench` that runs in Claude Code AND Codex, with its own MCP server and a small skill pack." | ADR-003, ADR-004, ADR-006 |
-| **Curated** | "I am bundling a vertical pack — `@ruflo/vertical-trading` — that I maintain alongside ruflo and want to ship as a marketplace plugin." | ADR-013 |
+| **Curated** | "I am bundling a vertical pack — `@metaharness/vertical-trading` — that I maintain alongside ruflo and want to ship as a marketplace plugin." | ADR-013 |
 | **Multi-host** | "Same harness, three hosts (Claude Code, Codex, pi.dev), shared memory, single brand." | ADR-004 |
 | **Federated** | "Two instances of my legal harness coordinate over the federation transport; one is on-prem, one is cloud." | ADR-014 |
 | **Self-evolving** | "My harness uses the intelligence loop to optimise its own model routing over time. Successful trajectories get rewarded; failed ones get penalised." | ADR-014 |
@@ -52,7 +52,7 @@ The project is successful if all of these hold:
 2. **Generated harnesses pass the kernel contract.** Every generated harness, regardless of choices, passes a fixed contract test suite that proves it correctly wires MCP, hooks, memory, routing. See ADR-010 §Contract tests.
 3. **A generated harness can be published to npm** with `npm publish` and `npm provenance` attestation. No additional manual steps. See ADR-007 §Pre-publish gates, ADR-011 §Witness manifest.
 4. **The four hosts are addressable.** A user can pick Claude Code, Codex, pi.dev, or Hermes (or any subset) at generation time, and the resulting harness has working integration for each host they picked. "Working" means the host's MCP / hook / tool surface is wired correctly and a host-specific contract test passes. See ADR-004.
-5. **The kernel can be upgraded** in a generated harness without re-running the generator. `npm update @ruflo/kernel` works for peer-dep mode harnesses; an `eject` mode exists for harnesses that vendored the kernel. See ADR-012.
+5. **The kernel can be upgraded** in a generated harness without re-running the generator. `npm update @metaharness/kernel` works for peer-dep mode harnesses; an `eject` mode exists for harnesses that vendored the kernel. See ADR-012.
 6. **Drift is detectable.** A generated harness whose kernel has diverged from its template can detect the drift, classify it (safe / breaking), and either auto-apply the patch or surface a clear migration. See ADR-008.
 7. **Anti-slop signals are real.** The marketplace surfaces quality signals (download counts, smoke-test status, witness verification, publisher reputation) and refuses to surface harnesses that fail their smoke contract. See ADR-009.
 8. **An existing ruflo user can migrate** their memory, learned patterns, and skill choices into a generated harness in one command, without re-training. See ADR-016.
@@ -99,14 +99,14 @@ To pin this concretely: today the `ruflo` package on npm ships kernel + content 
 
 ```
             ┌────────────────────────┐
-            │   @ruflo/kernel      │  ← extracted from ruflo (ADR-002)
+            │   @metaharness/kernel      │  ← extracted from ruflo (ADR-002)
             │   primitives only      │
             └────────────────────────┘
                        ▲
        ┌───────────────┼───────────────────────────────────┐
        │               │                                   │
 ┌──────┴──────┐ ┌──────┴──────────────────┐ ┌──────────────┴──────────────┐
-│   ruflo     │ │  generated harness #1    │ │  @ruflo/vertical-trading │
+│   ruflo     │ │  generated harness #1    │ │  @metaharness/vertical-trading │
 │  (opinion-  │ │  (e.g. @acme/support)    │ │  (curated vertical pack)    │
 │   ated)     │ │                          │ │                             │
 └─────────────┘ └─────────────────────────┘ └─────────────────────────────┘
@@ -132,7 +132,7 @@ Concretely: if a user picks `--federation` in the composer, the generated harnes
 
 ### What gets harder
 
-- **Kernel changes ripple.** Every change to `@ruflo/kernel` potentially breaks every generated harness. ADR-008 (drift detection) and ADR-012 (eject + upgrade) are mandatory mitigations, not nice-to-haves.
+- **Kernel changes ripple.** Every change to `@metaharness/kernel` potentially breaks every generated harness. ADR-008 (drift detection) and ADR-012 (eject + upgrade) are mandatory mitigations, not nice-to-haves.
 - **Two test surfaces.** We must now run the generator's own test suite AND a smoke test of generator output. ADR-010 specifies how this is structured.
 - **Branding rules become a real concern.** A generated harness can choose "powered by ruflo" or "independence" mode. ADR-015 pins down what each implies (trademark, attribution, marketplace tagging).
 

@@ -63,7 +63,7 @@ For each target:
 
 This is a basic multi-armed-bandit loop, the same Thompson-sampling Beta-Bernoulli structure ADR-026 uses for model routing, applied at one level of indirection.
 
-The kernel exports `@ruflo/kernel/self-evolution` which provides the loop runner. The harness's `harness.config.json` `selfEvolution.targets` selects which loops to run.
+The kernel exports `@metaharness/kernel/self-evolution` which provides the loop runner. The harness's `harness.config.json` `selfEvolution.targets` selects which loops to run.
 
 #### Cost/quality trade-offs
 
@@ -100,7 +100,7 @@ Self-evolution is opt-in for a reason. It is wrong when:
 
 `--features federation` at generation time enables it. Adds the federation overlay to the template (per ADR-003 §template overlays). The harness inherits:
 
-- `@ruflo/host-federation` (the transport adapter from ruflo's v3 ADR-104 / ADR-108 — the QUIC + WG mesh code).
+- `@metaharness/host-federation` (the transport adapter from ruflo's v3 ADR-104 / ADR-108 — the QUIC + WG mesh code).
 - `harness.config.json` `federation.*` schema for declaring peers and trust relationships.
 - A federated memory layer (per ADR-006 §federated-memory feature) that shares specific namespaces across peers.
 
@@ -165,7 +165,7 @@ A federation member can opt out of cross-peer aggregation: `selfEvolution.federa
 
 How do two members establish that the public keys are real? Out-of-band. The kernel does not specify a trust establishment protocol; the human operators exchange keys directly (a vault, an in-person meeting, a signed email). This is intentional: federation is a high-trust feature; the kernel does not invent a trust hierarchy where there is none.
 
-For organisations that want a key management system, the kernel exports `@ruflo/kernel/federation/key-store` with hooks to integrate Vault / GCP KMS / AWS KMS. None are required.
+For organisations that want a key management system, the kernel exports `@metaharness/kernel/federation/key-store` with hooks to integrate Vault / GCP KMS / AWS KMS. None are required.
 
 #### Network failure modes
 
@@ -188,8 +188,8 @@ npx create-agent-harness acme-legal-onprem \
   --scope @acme \
   --hosts claude-code,codex \
   --features federation,self-evolution,witness=strict \
-  --packs @ruflo/vertical-legal \
-  --catalogue @ruflo/catalogue \
+  --packs @metaharness/vertical-legal \
+  --catalogue @metaharness/catalogue \
   --no-interactive
 ```
 

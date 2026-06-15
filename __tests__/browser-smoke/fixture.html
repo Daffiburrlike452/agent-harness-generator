@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>@ruflo/kernel browser smoke</title>
+  <title>@metaharness/kernel browser smoke</title>
 </head>
 <body>
-  <h1>@ruflo/kernel browser smoke test</h1>
+  <h1>@metaharness/kernel browser smoke test</h1>
   <pre id="output">loading…</pre>
 
   <script type="module">
@@ -16,7 +16,7 @@
     try {
       // Browser-side import via bundler-style URL. In a real run, the
       // bundler (Vite / esbuild / webpack / Rollup) resolves this to
-      // the wasm-pack output under @ruflo/kernel/pkg/.
+      // the wasm-pack output under @metaharness/kernel/pkg/.
       const mod = await import('/pkg/ruflo_kernel_wasm.js');
       if (typeof mod.default === 'function') {
         await mod.default();

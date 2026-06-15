@@ -68,7 +68,7 @@ for (const host of HOSTS) {
         copilot: { path: '.vscode/mcp.json',      test: (s) => { try { const j=JSON.parse(s); return j.servers || j.mcpServers; } catch { return false; } }, tool: 'VSCode mcp.json valid JSON' },
         opencode:{ path: '.opencode/opencode.json',test:(s) => { try { const j=JSON.parse(s); return j.mcp; } catch { return false; } }, tool: 'opencode.json valid JSON' },
         // iter 147 — github-actions (ADR-033) emits workflow YAML at runtime;
-        // the scaffold ships the @ruflo/host-github-actions dep, which the
+        // the scaffold ships the @metaharness/host-github-actions dep, which the
         // dep-fallback below verifies.
         'github-actions':{ path: '.github/workflows', test: () => true, tool: 'GHA workflow (emitted at runtime)' },
       };
@@ -78,7 +78,7 @@ for (const host of HOSTS) {
         // Many hosts don't emit a config at scaffold time — the adapter
         // emits at runtime. Verify the matching dep landed instead.
         const pkg = JSON.parse(readFileSync(`${dir}/package.json`, 'utf-8'));
-        const dep = `@ruflo/host-${host}`;
+        const dep = `@metaharness/host-${host}`;
         const ok = !!(pkg.dependencies?.[dep] || pkg.peerDependencies?.[dep]);
         results.push({ host, status: ok ? 'PASS' : 'FAIL', tool: `dep: ${dep}`, proof: ok ? `${dep} found in package.json` : 'no host dep' });
       } else {

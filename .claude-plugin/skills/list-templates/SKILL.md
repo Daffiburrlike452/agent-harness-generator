@@ -29,5 +29,5 @@ Lists every harness template `create-agent-harness` can scaffold from.
 
 ## Roadmap
 
-- Vertical packs ship as separate npm packages (`@ruflo/vertical-trading`, etc.) so each pack can be owned by a domain expert
+- Vertical packs ship as separate npm packages (`@metaharness/vertical-trading`, etc.) so each pack can be owned by a domain expert
 - See [ADR-013](https://github.com/ruvnet/agent-harness-generator/blob/main/docs/adrs/ADR-013-vertical-packs-publishing.md)

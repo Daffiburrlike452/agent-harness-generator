@@ -18,9 +18,9 @@
   },
   "packageRules": [
     {
-      "description": "Group all @ruflo/* internal packages together",
+      "description": "Group all @metaharness/* internal packages together",
       "groupName": "ruflo internal",
-      "matchPackagePatterns": ["^@ruflo/"]
+      "matchPackagePatterns": ["^@metaharness/"]
     },
     {
       "description": "Group all @ruvector/* internal packages together",

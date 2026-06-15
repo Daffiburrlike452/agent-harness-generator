@@ -43,8 +43,8 @@ export function verifyFileMap(files: GenFile[]): VerifyReport {
       const parsed = JSON.parse(pkg.content);
       if (parsed.name && typeof parsed.name === 'string') pass('pkg-name', 'package.json has a name');
       else fail('pkg-name', 'high', 'package.json has a name', 'Missing or non-string name.');
-      if (parsed.dependencies?.['@ruflo/kernel']) pass('kernel-dep', 'declares @ruflo/kernel');
-      else fail('kernel-dep', 'medium', 'declares @ruflo/kernel', 'Harness should depend on @ruflo/kernel.');
+      if (parsed.dependencies?.['@metaharness/kernel']) pass('kernel-dep', 'declares @metaharness/kernel');
+      else fail('kernel-dep', 'medium', 'declares @metaharness/kernel', 'Harness should depend on @metaharness/kernel.');
     } catch {
       fail('pkg-json', 'high', 'package.json is valid JSON', 'package.json does not parse.');
     }

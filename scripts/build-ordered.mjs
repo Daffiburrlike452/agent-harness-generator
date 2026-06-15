@@ -4,10 +4,10 @@
 // Topologically-ordered workspace build. `npm run -ws --if-present build`
 // runs in undefined order — when `host-rvm` builds BEFORE `kernel-js` has
 // produced its `dist/index.d.ts`, tsc fails with "Cannot find module
-// '@ruflo/kernel'". This script fixes the order:
+// '@metaharness/kernel'". This script fixes the order:
 //
-//   1. @ruflo/kernel        (everyone depends on it)
-//   2. @ruflo/vertical-base (vertical-trading depends on it)
+//   1. @metaharness/kernel        (everyone depends on it)
+//   2. @metaharness/vertical-base (vertical-trading depends on it)
 //   3. SDK + host adapters + create-agent-harness (parallel-safe)
 //   4. vertical-trading + bench
 

@@ -13,7 +13,7 @@ This ADR pins down the architecture of the generator: where the templates come f
 
 The decisions here cascade into ADR-007 (CI guards), ADR-008 (drift detection), and ADR-012 (eject + upgrade). Specifically: how the generator records what it generated determines whether future kernel upgrades and template upgrades can detect drift cleanly.
 
-> **The generator is TypeScript; the kernel is Rust (wasm + NAPI-RS).** Per ADR-002 and ADR-002a, `@ruflo/kernel` is published from a Rust workspace as a wasm bundle plus per-platform native peers. The generator (`create-agent-harness`) is a conventional TypeScript npm package; it **embeds references to** `@ruflo/kernel` in the templates it writes, and it **depends on** the kernel itself (for `init` / scaffolding helpers it shares with generated harnesses). It does NOT re-implement kernel primitives in TypeScript. Generated harnesses likewise depend on `@ruflo/kernel`; the kernel they consume is the same Rust-source wasm/native build. The generator is the only piece of this project written purely in TypeScript.
+> **The generator is TypeScript; the kernel is Rust (wasm + NAPI-RS).** Per ADR-002 and ADR-002a, `@metaharness/kernel` is published from a Rust workspace as a wasm bundle plus per-platform native peers. The generator (`create-agent-harness`) is a conventional TypeScript npm package; it **embeds references to** `@metaharness/kernel` in the templates it writes, and it **depends on** the kernel itself (for `init` / scaffolding helpers it shares with generated harnesses). It does NOT re-implement kernel primitives in TypeScript. Generated harnesses likewise depend on `@metaharness/kernel`; the kernel they consume is the same Rust-source wasm/native build. The generator is the only piece of this project written purely in TypeScript.
 
 ## Decision
 
@@ -21,7 +21,7 @@ The decisions here cascade into ADR-007 (CI guards), ADR-008 (drift detection), 
 
 ```
 packages/
-  kernel/                    # @ruflo/kernel (see ADR-002)
+  kernel/                    # @metaharness/kernel (see ADR-002)
   create-agent-harness/      # the CLI users run
     src/
       cli.ts                 # entry point, arg parsing
@@ -184,7 +184,7 @@ acme-support/
   bin/
     acme-support.mjs        Thin shim; loads dist/cli.js
   src/
-    index.ts                Imports from @ruflo/kernel; wires the host adapter
+    index.ts                Imports from @metaharness/kernel; wires the host adapter
     config.ts               Harness config (hosts, features, kernel version, ...)
     agents/                 Selected agents (copied from catalogue)
     skills/                 Selected skills (copied)
@@ -210,7 +210,7 @@ acme-support/
     contract/               Host-contract tests (ADR-010)
 ```
 
-If the user picked Codex too, the same tree has `AGENTS.md`, `.codex/config.toml`, and the Codex host adapter wired in. If they picked `--features federation`, `src/index.ts` imports `@ruflo/kernel/hosts/federation` and the federation transport is configured in `src/config.ts`.
+If the user picked Codex too, the same tree has `AGENTS.md`, `.codex/config.toml`, and the Codex host adapter wired in. If they picked `--features federation`, `src/index.ts` imports `@metaharness/kernel/hosts/federation` and the federation transport is configured in `src/config.ts`.
 
 ### The harness manifest
 
@@ -228,7 +228,7 @@ Schema (simplified):
     "templateRegistryCid": "Qm..." // null for offline mode
   },
   "kernel": {
-    "name": "@ruflo/kernel",
+    "name": "@metaharness/kernel",
     "version": "1.2.0",
     "subsystemsIncluded": ["mcp","hooks","memory","routing","marketplace"]
   },
@@ -260,7 +260,7 @@ This pattern is borrowed from `copier` (https://github.com/copier-org/copier), w
 
 ### Catalogue: where agents / skills / plugins are picked from
 
-The composer offers a curated catalogue. The catalogue is content, not kernel — it lives in its own package, `@ruflo/catalogue`, which the generator depends on. The package contains:
+The composer offers a curated catalogue. The catalogue is content, not kernel — it lives in its own package, `@metaharness/catalogue`, which the generator depends on. The package contains:
 
 - `agents/<id>.md` — agent definition (system prompt, model preferences, tool allowlist, metadata)
 - `skills/<id>/SKILL.md` — skill (the format ruflo already uses, see `plugins/ruflo-core/skills/*`)
@@ -305,7 +305,7 @@ These budgets are enforced by ADR-007 §Perf gates.
 ### What gets harder
 
 - **The template runner is non-trivial.** A `cookiecutter`-style runner would be ~200 lines; ours, with three rename tracks plus overlay merging plus manifest writing, will be closer to ~3000. ADR-010 mandates a heavy unit-test suite for the renamer.
-- **Catalogue maintenance is real work.** Curating `@ruflo/catalogue` is its own project. It is owned by the ruflo maintainers initially; ADR-013 covers how vertical-pack owners contribute.
+- **Catalogue maintenance is real work.** Curating `@metaharness/catalogue` is its own project. It is owned by the ruflo maintainers initially; ADR-013 covers how vertical-pack owners contribute.
 - **Two install paths to support.** Offline (bundled) and online (IPFS) templates means two test suites. We mitigate by keeping the same template runner across both paths — the difference is just where files come from.
 
 ### What does not change
@@ -367,7 +367,7 @@ This ADR is satisfied when the following exist:
 ### Ruflo internals cited
 
 - `v3/@claude-flow/cli/src/init/mcp-generator.ts` — the cross-platform spawn wrapper feeds the `_base/.mcp.json.hbs` template.
-- `v3/@claude-flow/cli/src/plugins/store/discovery.ts` — the IPFS registry consumer the online mode delegates to via `@ruflo/kernel/marketplace`.
+- `v3/@claude-flow/cli/src/plugins/store/discovery.ts` — the IPFS registry consumer the online mode delegates to via `@metaharness/kernel/marketplace`.
 - `plugins/ruflo-core/skills/*` — the SKILL.md format the catalogue inherits.
 
 ### Generator prior art

@@ -34,12 +34,12 @@ async function setupFixture(): Promise<string> {
   }));
   await mkdir(join(dir, 'packages', 'a'), { recursive: true });
   await writeFile(join(dir, 'packages', 'a', 'package.json'), JSON.stringify({
-    name: '@ruflo/a', version: '0.1.0',
-    dependencies: { '@ruflo/b': '0.1.0', 'other': '^1.0.0' },
+    name: '@metaharness/a', version: '0.1.0',
+    dependencies: { '@metaharness/b': '0.1.0', 'other': '^1.0.0' },
   }));
   await mkdir(join(dir, 'packages', 'b'), { recursive: true });
   await writeFile(join(dir, 'packages', 'b', 'package.json'), JSON.stringify({
-    name: '@ruflo/b', version: '0.1.0',
+    name: '@metaharness/b', version: '0.1.0',
   }));
   await mkdir(join(dir, '.claude-plugin'), { recursive: true });
   await writeFile(join(dir, '.claude-plugin', 'plugin.json'), JSON.stringify({
@@ -96,14 +96,14 @@ describe('version-bump.mjs', () => {
     }
   }, 30_000);
 
-  it('workspace deps to other @ruflo/* packages get bumped in lockstep', async () => {
+  it('workspace deps to other @metaharness/* packages get bumped in lockstep', async () => {
     const dir = await setupFixture();
     try {
       await runBump(dir, ['patch']);
       const a = JSON.parse(await readFile(join(dir, 'packages', 'a', 'package.json'), 'utf-8'));
-      // @ruflo/b was 0.1.0 in deps, should become 0.1.1
-      expect(a.dependencies['@ruflo/b']).toBe('0.1.1');
-      // non-@ruflo dep stays put
+      // @metaharness/b was 0.1.0 in deps, should become 0.1.1
+      expect(a.dependencies['@metaharness/b']).toBe('0.1.1');
+      // non-@metaharness dep stays put
       expect(a.dependencies['other']).toBe('^1.0.0');
     } finally {
       await rm(dir, { recursive: true, force: true });

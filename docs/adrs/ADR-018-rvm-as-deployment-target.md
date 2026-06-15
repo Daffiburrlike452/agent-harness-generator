@@ -26,14 +26,14 @@ For **federated harnesses across trust boundaries**, OS-level isolation is the w
 
 ## Decision
 
-Ship `@ruflo/host-rvm` as the **6th host adapter**, positioned as the deployment target for hardware-isolated harnesses. The adapter:
+Ship `@metaharness/host-rvm` as the **6th host adapter**, positioned as the deployment target for hardware-isolated harnesses. The adapter:
 
 1. Generates an `rvm-partition.toml` partition manifest
 2. Maps the kernel's `Claim { capability, resource, expires_at }` onto RVM's 7-right capability tokens
 3. Emits `wasm-guest.json` referencing the kernel WASM bundle + F1–F4 recovery actions
 4. Provides an idempotent `install-rvm.sh` runbook (idempotent re-install, register partition, install caps, boot guest)
 
-**The kernel's WASM bundle IS the RVM guest.** The same `@ruflo/kernel` wasm-pack output that loads in `@ruflo/host-claude-code` loads as an RVM-managed guest. No fork of the kernel.
+**The kernel's WASM bundle IS the RVM guest.** The same `@metaharness/kernel` wasm-pack output that loads in `@metaharness/host-claude-code` loads as an RVM-managed guest. No fork of the kernel.
 
 ### Claim → capability mapping
 

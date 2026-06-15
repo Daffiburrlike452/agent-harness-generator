@@ -7,7 +7,7 @@
 
 ## Context
 
-A vertical pack bundles multiple agents, skills, commands, MCP tools, intelligence-pipeline overrides, and sensible memory-decay defaults focused on one domain. The user prompt names several candidates: `@ruflo/vertical-legal`, `@ruflo/vertical-trading`, healthcare clinical workflows, financial risk, customer support.
+A vertical pack bundles multiple agents, skills, commands, MCP tools, intelligence-pipeline overrides, and sensible memory-decay defaults focused on one domain. The user prompt names several candidates: `@metaharness/vertical-legal`, `@metaharness/vertical-trading`, healthcare clinical workflows, financial risk, customer support.
 
 Ruflo already ships vertical-shaped plugins today (e.g. `@claude-flow/plugin-healthcare-clinical`, `@claude-flow/plugin-financial-risk`, `@claude-flow/plugin-legal-contracts` from the registry list in `CLAUDE.md`). These were each authored individually, with no shared structure. We want to formalise the model so:
 
@@ -26,7 +26,7 @@ This ADR pins all of that down.
 A vertical pack is an npm package shaped like:
 
 ```
-@ruflo/vertical-<domain>/
+@metaharness/vertical-<domain>/
   package.json
   pack.json                     # the pack manifest (this ADR)
   src/
@@ -51,7 +51,7 @@ The `pack.json` manifest is the new structured part:
 ```jsonc
 {
   "packSchemaVersion": 1,
-  "id": "@ruflo/vertical-trading",
+  "id": "@metaharness/vertical-trading",
   "displayName": "Vertical: Trading",
   "version": "1.0.0",
   "kernelEngines": "^1.0.0",
@@ -101,7 +101,7 @@ The `defaults` object is what makes a vertical pack a vertical pack: it has opin
 
 We recognise two kinds of vertical pack ownership:
 
-#### Bundled vertical pack (`@ruflo/vertical-*`)
+#### Bundled vertical pack (`@metaharness/vertical-*`)
 
 Ships from `packages/vertical-packs/<domain>/` in the `ruvnet/agent-harness-generator` repo. Code-owned by a CODEOWNERS group named per pack (e.g. `@ruflo-vertical-trading`). Reviewed inside the same repo; published via the repo's release flow.
 
@@ -150,7 +150,7 @@ If the user picks multiple packs, the composer merges defaults conservatively (m
 
 The composer's pack picker pulls from:
 
-1. **Bundled packs** in the local `@ruflo/catalogue` (always available offline).
+1. **Bundled packs** in the local `@metaharness/catalogue` (always available offline).
 2. **Marketplace packs** in the IPFS registry (only when in online mode).
 
 ### Pack-scoped namespaces
@@ -188,7 +188,7 @@ This is the editorial sheen that distinguishes a vertical pack from a generic pl
 
 Same rules as any plugin (ADR-005 §schema). The pack declares `kernelEngines`. The kernel rejects loading a pack whose range does not match. ADR-012's drift detection surfaces the compatibility status.
 
-A pack that wants to support multiple major kernel versions ships separate npm versions (`@ruflo/vertical-trading@1.x` for kernel `1.x`; `@ruflo/vertical-trading@2.x` for kernel `2.x`). The marketplace surfaces both; the composer picks the matching one for the harness's kernel.
+A pack that wants to support multiple major kernel versions ships separate npm versions (`@metaharness/vertical-trading@1.x` for kernel `1.x`; `@metaharness/vertical-trading@2.x` for kernel `2.x`). The marketplace surfaces both; the composer picks the matching one for the harness's kernel.
 
 ## Consequences
 
@@ -218,7 +218,7 @@ A pack is a plugin tagged `category: vertical`. Rejected because a pack's pre-se
 
 ### Alternative 2: All packs are bundled (no curator path)
 
-Reject all third-party verticals; only first-party `@ruflo/vertical-*` exist. Rejected because the marketplace's reason for existing is to let domain experts publish their own. A nephrology vertical the ruflo team does not have the domain knowledge to build should still be possible to publish.
+Reject all third-party verticals; only first-party `@metaharness/vertical-*` exist. Rejected because the marketplace's reason for existing is to let domain experts publish their own. A nephrology vertical the ruflo team does not have the domain knowledge to build should still be possible to publish.
 
 ### Alternative 3: All packs are curator (no bundled path)
 

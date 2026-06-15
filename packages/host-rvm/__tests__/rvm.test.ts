@@ -116,7 +116,7 @@ describe('partitionToml', () => {
     expect(out).toMatch(/name = "demo"/);
     expect(out).toMatch(/memory_tier = "Warm"/);
     expect(out).toMatch(/\[wasm_guest\]/);
-    expect(out).toMatch(/package = "@ruflo\/kernel"/);
+    expect(out).toMatch(/package = "@metaharness\/kernel"/);
     expect(out).toMatch(/\[metadata\]/);
     expect(out).toMatch(/description = "a demo"/);
   });

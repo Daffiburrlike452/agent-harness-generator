@@ -19,7 +19,7 @@ Today's ruflo users have invested in:
 When `agent-harness-generator` ships, every existing ruflo user has a choice:
 
 1. **Stay on ruflo as-is.** The `ruflo` package continues to ship; existing workflows continue. (ADR-001 §Non-goal 1 commits us to this.)
-2. **Refactor ruflo to use the kernel.** Internal change: ruflo becomes one harness consuming `@ruflo/kernel`, observable behaviour unchanged.
+2. **Refactor ruflo to use the kernel.** Internal change: ruflo becomes one harness consuming `@metaharness/kernel`, observable behaviour unchanged.
 3. **Migrate to a self-generated harness.** Run `create-agent-harness <my-thing>` against the user's existing project, end up with a new package they own.
 
 Path 1 is the no-op. Path 2 is the ruflo team's job (ADR-002 §Test Contract §6 is the gate). This ADR specifies path 3: how an existing ruflo user moves their memory, patterns, witnesses, custom skills, and CI investments into a generated harness without re-training, without breaking their current setup, and with a reversible path back to ruflo if they change their mind.
@@ -60,7 +60,7 @@ What the tool does, in order:
 
    Proposed harness:
      - Name: @acme/acme-research
-     - Kernel: @ruflo/kernel@<current>
+     - Kernel: @metaharness/kernel@<current>
      - Hosts: claude-code (Codex/Hermes/pi.dev disabled by default; add with --hosts)
      - Branding mode: powered-by (default; --branding=independence to change)
 

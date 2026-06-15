@@ -8,12 +8,12 @@
 //   - broken peer deps
 //   - per-platform install failures (the GoF Windows-cmd-bug class)
 //
-// Key insight (iter 31): tarballs declare deps on OTHER @ruflo/* tarballs
+// Key insight (iter 31): tarballs declare deps on OTHER @metaharness/* tarballs
 // that aren't on the npm registry yet. So `npm install <hosttar>` tries
-// to fetch `@ruflo/kernel@0.1.0` from registry.npmjs.org and 404s.
+// to fetch `@metaharness/kernel@0.1.0` from registry.npmjs.org and 404s.
 //
 // Fix: install ALL tarballs in a single `npm install` call. npm resolves
-// the @ruflo/* deps from the OTHER tarballs in the same install set
+// the @metaharness/* deps from the OTHER tarballs in the same install set
 // instead of going to the registry. Single PASS/FAIL — if any tarball
 // has a structural problem, the batch install fails.
 
@@ -51,9 +51,9 @@ console.log(`Project: ${project}`);
 console.log(`Tarballs: ${tarballs.length}`);
 
 // Pass 1: batch install — every tarball in one shot. npm resolves
-// cross-tarball @ruflo/* deps locally instead of from the registry.
+// cross-tarball @metaharness/* deps locally instead of from the registry.
 const tarballArgs = tarballs.map(t => `"${join(packed, t)}"`).join(' ');
-console.log('Pass 1: batch install (resolves cross-tarball @ruflo deps locally)');
+console.log('Pass 1: batch install (resolves cross-tarball @metaharness deps locally)');
 try {
   execSync(`npm install --no-save --no-package-lock ${tarballArgs}`, {
     cwd: project,
@@ -79,8 +79,8 @@ for (const t of tarballs) {
     continue;
   }
   const rawName = m[1];
-  // ruflo-foo → @ruflo/foo. Others unchanged.
-  const pkgName = rawName.startsWith('ruflo-') ? `@ruflo/${rawName.slice('ruflo-'.length)}` : rawName;
+  // ruflo-foo → @metaharness/foo. Others unchanged.
+  const pkgName = rawName.startsWith('ruflo-') ? `@metaharness/${rawName.slice('ruflo-'.length)}` : rawName;
   const pkgDir = join(project, 'node_modules', ...pkgName.split('/'));
   if (!existsSync(pkgDir)) {
     console.log(`  FAIL ${pkgName} — not in node_modules`);

@@ -1,7 +1,7 @@
 # Codex skill: kernel-version skew diagnostic for a generated harness.
 #
 # Wraps the iter-66 `harness diag` CLI command. Single-question:
-# does my LOCAL @ruflo/kernel match what this harness was scaffolded
+# does my LOCAL @metaharness/kernel match what this harness was scaffolded
 # against? Surfaces manifest.meta.surface (iter 56) +
 # manifest.meta.kernel_version (iter 58) + the locally-resolved
 # kernel version, computes the skew verdict, and prints a
@@ -10,7 +10,7 @@
 [skill]
 name = "diag-harness"
 version = "0.1.0"
-description = "Kernel-version skew check (ADR-027). Reports manifest surface + manifest kernel + installed kernel + verdict (match/patch-diff/minor-diff/major-diff). Exits 1 on minor/major skew with a copy-pasteable `npm install @ruflo/kernel@X.Y.Z` next step. Exits 2 if no .harness/manifest.json at path."
+description = "Kernel-version skew check (ADR-027). Reports manifest surface + manifest kernel + installed kernel + verdict (match/patch-diff/minor-diff/major-diff). Exits 1 on minor/major skew with a copy-pasteable `npm install @metaharness/kernel@X.Y.Z` next step. Exits 2 if no .harness/manifest.json at path."
 author = "rUv <ruv@ruv.net>"
 homepage = "https://github.com/ruvnet/agent-harness-generator"
 license = "MIT"
@@ -22,7 +22,7 @@ tool = "diag_harness"
 
 [command]
 name = "diag-harness"
-synopsis = "Single-question check: is my local @ruflo/kernel compatible with this harness?"
+synopsis = "Single-question check: is my local @metaharness/kernel compatible with this harness?"
 
 [[args]]
 name = "path"

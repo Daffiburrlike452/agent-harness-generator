@@ -11,7 +11,7 @@ A generated harness diverges from its origin over time. The kernel ships new ver
 
 This is "drift detection," and the answer to "what is drifting from what?" is more than one question:
 
-1. **Kernel drift** — the harness pins `@ruflo/kernel ^1.2.0`, the kernel has shipped `1.4.0` with a security fix. The harness has not pulled it.
+1. **Kernel drift** — the harness pins `@metaharness/kernel ^1.2.0`, the kernel has shipped `1.4.0` with a security fix. The harness has not pulled it.
 2. **Template drift** — the harness was generated from template version `template@1.0.0`; templates `template@1.3.0` now exists with bug fixes the harness has not received.
 3. **Catalogue drift** — the harness pulled `coder@2.1.0` agent; `coder@2.2.0` ships with a better system prompt.
 4. **Local-edit drift** — the harness author hand-edited `src/index.ts`; the kernel API the file imports has changed.
@@ -36,7 +36,7 @@ For each kind, we specify: detection mechanism, classification, recovery.
 
 #### 1. Kernel drift
 
-- **Detection.** Compare `manifest.kernel.version` to `npm view @ruflo/kernel version`. If newer, surface the changelog excerpt from the registry.
+- **Detection.** Compare `manifest.kernel.version` to `npm view @metaharness/kernel version`. If newer, surface the changelog excerpt from the registry.
 - **Classification.** Patch-only (`1.4.0 → 1.4.1`) = safe. Minor (`1.4.0 → 1.5.0`) = actionable (probably backward-compat but read the changelog). Major (`1.4.0 → 2.0.0`) = urgent / breaking, see ADR-012 §Upgrade flow.
 - **Recovery.** `npx <harness-name> upgrade kernel` runs the upgrade flow.
 
@@ -52,7 +52,7 @@ For each kind, we specify: detection mechanism, classification, recovery.
 
 #### 3. Catalogue drift
 
-- **Detection.** For each agent / skill / command in `manifest.choice`, compare its declared version (`coder@2.1.0`) to the current version in `@ruflo/catalogue`. If newer, fetch the diff.
+- **Detection.** For each agent / skill / command in `manifest.choice`, compare its declared version (`coder@2.1.0`) to the current version in `@metaharness/catalogue`. If newer, fetch the diff.
 - **Classification.** Same as template drift — version semantics applied to catalogue entries. The catalogue ships per-entry semver.
 - **Recovery.** Same as template drift — `npx <harness-name> upgrade catalogue --entry coder`.
 
@@ -68,7 +68,7 @@ The "expected to edit" determination is recorded in the manifest at generation t
 
 #### 5. API surface drift
 
-- **Detection.** For each plugin in `manifest.choice.plugins`, fetch its current registry entry, read `kernelEngines`, intersect with the harness's current `@ruflo/kernel` version. If the intersection is empty, the plugin is no longer compatible.
+- **Detection.** For each plugin in `manifest.choice.plugins`, fetch its current registry entry, read `kernelEngines`, intersect with the harness's current `@metaharness/kernel` version. If the intersection is empty, the plugin is no longer compatible.
 - **Classification.** Empty intersection = blocker on the plugin (it will not load); non-empty but at the boundary (e.g. the plugin wants `^1.2.0` and we are on `1.2.0`) = informational.
 - **Recovery.** Either upgrade the plugin to a version compatible with the current kernel, or downgrade the kernel (rare), or remove the plugin. The drift command surfaces each option.
 
@@ -80,7 +80,7 @@ The "expected to edit" determination is recorded in the manifest at generation t
 
 ### The `drift` CLI command
 
-The kernel exports `@ruflo/kernel/drift`. Every generated harness exposes it as `npx <harness-name> drift <subcommand>`.
+The kernel exports `@metaharness/kernel/drift`. Every generated harness exposes it as `npx <harness-name> drift <subcommand>`.
 
 Subcommands:
 
@@ -166,7 +166,7 @@ jobs:
 
 The generator repo (`ruvnet/agent-harness-generator`) also runs drift detection — but against its own templates. Specifically, ADR-007 §A16 (`kernel-template-coherence`) is a drift gate that fails the build if the bundled templates do not match the current kernel version.
 
-Additionally, the generator runs a periodic compatibility-matrix check (`scripts/check-harness-compatibility.mjs`) that picks a sample of recently-published harnesses from npm under `@ruflo/*` and `@claude-flow/plugin-*` scopes, fetches their `.harness/manifest.json`, and asserts that the current kernel + catalogue versions are still compatible. Surfaces broken downstream consumers before they file a bug.
+Additionally, the generator runs a periodic compatibility-matrix check (`scripts/check-harness-compatibility.mjs`) that picks a sample of recently-published harnesses from npm under `@metaharness/*` and `@claude-flow/plugin-*` scopes, fetches their `.harness/manifest.json`, and asserts that the current kernel + catalogue versions are still compatible. Surfaces broken downstream consumers before they file a bug.
 
 ### Drift severity threshold for blocking
 
@@ -204,7 +204,7 @@ A harness that has been ejected (ADR-012 §Eject) has vendored the kernel. The k
 
 ### What does not change
 
-- The kernel itself does not have to know about drift. The drift command is in `@ruflo/kernel/drift`, yes, but it operates on the manifest, not on the kernel's runtime. Removing the drift package does not affect kernel runtime behaviour.
+- The kernel itself does not have to know about drift. The drift command is in `@metaharness/kernel/drift`, yes, but it operates on the manifest, not on the kernel's runtime. Removing the drift package does not affect kernel runtime behaviour.
 - The marketplace registry shape is unchanged. Drift detection consumes the registry; it does not modify it.
 
 ## Alternatives Considered

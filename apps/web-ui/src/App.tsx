@@ -101,7 +101,7 @@ export default function App() {
 
       <footer className="mt-12 border-t border-ink-700/60 pt-6 text-xs text-slate-500">
         <p>
-          Built on <a className="text-slate-300 hover:text-white" href="https://www.npmjs.com/package/@ruflo/kernel">@ruflo/kernel</a> — a
+          Built on <a className="text-slate-300 hover:text-white" href="https://www.npmjs.com/package/@metaharness/kernel">@metaharness/kernel</a> — a
           Rust → WASM + NAPI-RS kernel. Output is byte-compatible with the <code className="text-slate-300">create-agent-harness</code> CLI.
           MCP is one selectable, default-deny primitive. Drop generated <code className="text-slate-300">SKILL.md</code> folders straight
           into Claude desktop or claude.ai. <span className="text-slate-400">Embeddings recommend · rules generate · tests prove.</span>

@@ -19,16 +19,16 @@ This ADR pins down both: the upgrade flow that keeps a harness on the upstream k
 
 ### Default: peer-dep, upgrade via `drift apply-template`
 
-A freshly generated harness has `@ruflo/kernel` as a peer dependency in its `package.json`:
+A freshly generated harness has `@metaharness/kernel` as a peer dependency in its `package.json`:
 
 ```jsonc
 {
   "name": "@acme/acme-support",
   "peerDependencies": {
-    "@ruflo/kernel": "^1.2.0"
+    "@metaharness/kernel": "^1.2.0"
   },
   "dependencies": {
-    "@ruflo/kernel": "^1.2.0"   // also pinned here for self-contained npm install
+    "@metaharness/kernel": "^1.2.0"   // also pinned here for self-contained npm install
   },
   "engines": {
     "kernel": "^1.2.0"
@@ -70,7 +70,7 @@ A major-version upgrade has its own flow, below.
 
 When the kernel ships a major version, the kernel team ships a `codemod` alongside:
 
-- The codemod is shipped as `@ruflo/kernel-codemod-N-to-M` (e.g. `@ruflo/kernel-codemod-1-to-2`).
+- The codemod is shipped as `@metaharness/kernel-codemod-N-to-M` (e.g. `@metaharness/kernel-codemod-1-to-2`).
 - It uses AST-based transforms (the same renamer infrastructure ADR-003 §The renamer specifies) to update import paths, rename moved exports, replace removed signatures.
 - The codemod is run by the user via `npx <harness-name> upgrade kernel --major --to 2.0.0`.
 
@@ -105,8 +105,8 @@ npx <harness-name> eject
 The eject flow:
 
 1. **Confirm.** Display the consequences (no more `drift apply kernel`; no more codemod migrations; security fixes are now manual). Require typed confirmation.
-2. **Vendor the kernel.** Copy `node_modules/@ruflo/kernel/` into `vendor/kernel/` in the harness tree.
-3. **Rewrite imports.** Every `import ... from '@ruflo/kernel/*'` becomes `import ... from '../vendor/kernel/dist/...'`. AST-based rewrite via the same renamer.
+2. **Vendor the kernel.** Copy `node_modules/@metaharness/kernel/` into `vendor/kernel/` in the harness tree.
+3. **Rewrite imports.** Every `import ... from '@metaharness/kernel/*'` becomes `import ... from '../vendor/kernel/dist/...'`. AST-based rewrite via the same renamer.
 4. **Drop the kernel from `package.json` `dependencies`.** The `peerDependencies` declaration is also dropped; the eject mode publishes the harness as kernel-free.
 5. **Add an eject marker.** `.harness/ejected.json` records the eject metadata: the kernel version vendored, the date, the reason (if supplied).
 6. **Update `.harness/manifest.json`.** The kernel section becomes `{ "vendored": true, "originalVersion": "1.4.0", "vendoredAt": "..." }`.

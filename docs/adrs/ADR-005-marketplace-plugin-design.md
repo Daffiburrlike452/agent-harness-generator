@@ -21,7 +21,7 @@ This ADR pins the schema, the trust model, and the publishing flow for each of t
 
 ### 1. The marketplace participates via the existing IPFS registry
 
-We do not build a new registry. The kernel's `@ruflo/kernel/marketplace` (per ADR-002 §5) consumes the same IPFS-Pinata-Ed25519 registry pattern ruflo already operates.
+We do not build a new registry. The kernel's `@metaharness/kernel/marketplace` (per ADR-002 §5) consumes the same IPFS-Pinata-Ed25519 registry pattern ruflo already operates.
 
 The CID is configuration, not a constant. A harness's `harness.config.json` carries:
 
@@ -48,7 +48,7 @@ The schema below is the post-extraction version of ruflo's existing `PluginEntry
   "displayName": "Acme Customer Support",
   "description": "Customer support agents and skills for Acme.",
   "version": "1.0.0",
-  "kernelEngines": "^1.0.0",                        // semver range of @ruflo/kernel
+  "kernelEngines": "^1.0.0",                        // semver range of @metaharness/kernel
   "size": 100000,                                   // bytes, approximate
   "checksum": "sha256:abc123...",                   // sha256 of the published tarball
   "provenance": {                                   // new in this ADR
@@ -85,7 +85,7 @@ The schema below is the post-extraction version of ruflo's existing `PluginEntry
 
 Notable additions relative to ruflo's current schema:
 
-- **`kernelEngines`** — the semver range of `@ruflo/kernel` the plugin requires. Mirrors VS Code's `engines.vscode`. The kernel rejects loading a plugin whose range does not match.
+- **`kernelEngines`** — the semver range of `@metaharness/kernel` the plugin requires. Mirrors VS Code's `engines.vscode`. The kernel rejects loading a plugin whose range does not match.
 - **`provenance.*`** — see §3 below.
 - **`hostsSupported`** — declares which hosts the plugin works in. The composer (ADR-003) intersects this with the harness's selected hosts and warns or excludes accordingly.
 - **`type` is richer** — distinguishes vertical packs, integrations, host adapters, plain plugins, skill-only packs, and agent-only packs. Helps the composer's UI filter by purpose.
@@ -103,7 +103,7 @@ A plugin can have any subset of these. Anti-slop (ADR-009) uses presence/absence
 
 ### 4. The generator's marketplace participation
 
-`@ruflo/create-agent-harness` ships **as a marketplace plugin** in addition to its standalone CLI:
+`@metaharness/create-agent-harness` ships **as a marketplace plugin** in addition to its standalone CLI:
 
 - npm package: `@claude-flow/plugin-harness-generator` (final name per ADR-015).
 - Registry entry: `type: "integration"`, `categories: ["meta", "official"]`, `trustLevel: "official"`.

@@ -45,7 +45,7 @@ Three distinct shapes were evaluated:
 
 | Option | What it means |
 |---|---|
-| **(A) `@ruflo/host-oia`** | OIA becomes the 9th host adapter alongside Claude Code, Codex, etc. |
+| **(A) `@metaharness/host-oia`** | OIA becomes the 9th host adapter alongside Claude Code, Codex, etc. |
 | **(B) Cross-cutting manifest layer** | Every generated harness emits an OIA capability manifest in addition to its host config — a harness built for Claude Code is *also* OIA-described. |
 | **(C) Selectable primitive (parallel to MCP)** | `oia: 'on/off'` in the generator, like `mcp: 'off/local/remote'` in ADR-022. |
 
@@ -136,7 +136,7 @@ Default: `'off'` for the current iteration (deferred implementation). When set t
 5. The Discovery Loop (ADR-030) gains a 6th propagation surface: the OIA manifest is surfaced in the harness README table under a new "OIA Alignment" column.
 
 No changes to:
-- `@ruflo/kernel` (OIA is content, not kernel — ADR-002)
+- `@metaharness/kernel` (OIA is content, not kernel — ADR-002)
 - Any existing host adapter
 - `src/mcp/*`
 - The existing `mcp-policy.json` default-deny gate
@@ -185,9 +185,9 @@ ADR-030 specifies that every new user-facing surface must traverse 5 propagation
 
 ## Alternatives Considered
 
-### Alternative A: Treat OIA as a 9th host adapter (`@ruflo/host-oia`)
+### Alternative A: Treat OIA as a 9th host adapter (`@metaharness/host-oia`)
 
-OIA at v0.1 provides no runtime. There is no OIA CLI, no execution environment, no server binary. A host adapter (ADR-004) wraps a runtime; there is nothing to wrap. If OIA v1.0 ships a runtime agent environment (a plausible but unconfirmed direction), this ADR should be superseded by one that adds `@ruflo/host-oia`. For now, treating a reference architecture as an execution host is a category error.
+OIA at v0.1 provides no runtime. There is no OIA CLI, no execution environment, no server binary. A host adapter (ADR-004) wraps a runtime; there is nothing to wrap. If OIA v1.0 ships a runtime agent environment (a plausible but unconfirmed direction), this ADR should be superseded by one that adds `@metaharness/host-oia`. For now, treating a reference architecture as an execution host is a category error.
 
 ### Alternative B: Treat OIA as a selectable primitive (`oia: 'on/off'` like MCP)
 

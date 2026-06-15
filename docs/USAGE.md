@@ -109,7 +109,7 @@ my-bot/
 └── runbooks/ or kb/ ...      # template-specific
 ```
 
-Edit anything. The kernel and host adapter come from `@ruflo/kernel` and `@ruflo/host-<n>` packages — you depend on them as published npm packages, not vendored copies.
+Edit anything. The kernel and host adapter come from `@metaharness/kernel` and `@metaharness/host-<n>` packages — you depend on them as published npm packages, not vendored copies.
 
 ---
 
@@ -162,7 +162,7 @@ npx my-bot init
 
 ## 7. Get updates (drift detection)
 
-When `@ruflo/kernel` or your template ships an update, you don't have to start over. Run:
+When `@metaharness/kernel` or your template ships an update, you don't have to start over. Run:
 
 ```bash
 harness upgrade
@@ -191,7 +191,7 @@ You can preserve attribution by marking specific markdown blocks:
 
 ```html
 <!-- ruflo-attribution-block -->
-This harness is powered by ruflo and built on @ruflo/kernel.
+This harness is powered by ruflo and built on @metaharness/kernel.
 <!-- /ruflo-attribution-block -->
 ```
 
@@ -227,7 +227,7 @@ The Pinata JWT comes from environment or GCP Secret Manager — never from a fil
 If you want your harness to ADAPT its routing decisions over time:
 
 ```typescript
-import { SelfEvolvingRouter } from '@ruflo/kernel/self-evolution';
+import { SelfEvolvingRouter } from '@metaharness/kernel/self-evolution';
 
 const router = new SelfEvolvingRouter({
   enabled: true,
@@ -261,7 +261,7 @@ Honesty caveat from the underlying `@ruvector/emergent-time` package: the SDK is
 | `witness verification failed` on publish | Your `.harness/witness.json` was tampered with OR `harness sign` was never run |
 | `npm publish: 403` | Token expired — rotate via `gcloud secrets versions add NPM_TOKEN --data-file=-` |
 | `harness doctor` reports issues you don't understand | Run `harness diag <path> --bundle > bundle.json` and attach to an issue at <https://github.com/ruvnet/agent-harness-generator/issues>. The bundle is sanitised (secret/token/key/password fields redacted). |
-| `harness diag` says `MAJOR skew — APIs may have changed; expect breakage` | Your local `@ruflo/kernel` is on a different major than the version your harness was scaffolded against. Run `npm install @ruflo/kernel@<manifest-version>` (the diag output names the version). See [ADR-028](adrs/ADR-028-skew-detection-and-liveness.md). |
+| `harness diag` says `MAJOR skew — APIs may have changed; expect breakage` | Your local `@metaharness/kernel` is on a different major than the version your harness was scaffolded against. Run `npm install @metaharness/kernel@<manifest-version>` (the diag output names the version). See [ADR-028](adrs/ADR-028-skew-detection-and-liveness.md). |
 | Want to share your MCP/Bash/claims config for a security review without zipping the whole harness | `harness export-config <path> > config.json` (iter 97) — emits a single sanitised JSON. |
 | Want to share npm-audit findings (machine-parseable, for grep / CI / vuln review) | `harness audit <path> --bundle > audit.json` (iter 102) — emits `{ schema, level, total, counts, offenders, failCount, exitCode }`. Error paths (no-package-json / no-lockfile / unknown-level) are also JSON. |
 

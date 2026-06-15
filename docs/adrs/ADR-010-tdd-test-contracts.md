@@ -74,12 +74,12 @@ Tooling: `vitest`. Real filesystem via `node:fs/promises` against a `os.tmpdir()
 
 #### Contract tests
 
-A test that the public API of a package satisfies a contract another package expects. Example: the `HostAdapter` interface from ADR-004 has six methods; a contract test for each implementation (`@ruflo/host-claude-code`, `@ruflo/host-codex`, etc.) asserts each method behaves to the contract.
+A test that the public API of a package satisfies a contract another package expects. Example: the `HostAdapter` interface from ADR-004 has six methods; a contract test for each implementation (`@metaharness/host-claude-code`, `@metaharness/host-codex`, etc.) asserts each method behaves to the contract.
 
 The contract test fixture lives once, in the kernel. Each adapter package imports and runs it. The pattern is the standard "shared contract tests" pattern (https://martinfowler.com/bliki/ContractTest.html, Fowler 2011).
 
 ```ts
-// In @ruflo/kernel/hosts/contract.test-kit.ts (shipped, not just for tests)
+// In @metaharness/kernel/hosts/contract.test-kit.ts (shipped, not just for tests)
 export function runHostAdapterContractTests(adapter: HostAdapter, ctx: TestContext) {
   describe(`HostAdapter contract — ${adapter.hostId}`, () => {
     it('declares valid capabilities', () => { ... });
@@ -88,8 +88,8 @@ export function runHostAdapterContractTests(adapter: HostAdapter, ctx: TestConte
   });
 }
 
-// In @ruflo/host-claude-code/test/contract.test.ts
-import { runHostAdapterContractTests } from '@ruflo/kernel/hosts/contract.test-kit';
+// In @metaharness/host-claude-code/test/contract.test.ts
+import { runHostAdapterContractTests } from '@metaharness/kernel/hosts/contract.test-kit';
 import { ClaudeCodeAdapter } from '../src';
 runHostAdapterContractTests(new ClaudeCodeAdapter(), defaultContext);
 ```
@@ -147,11 +147,11 @@ The coverage targets are minimums:
 
 | Package | Statement coverage | Branch coverage |
 |---|---|---|
-| `@ruflo/kernel/*` | 85% | 80% |
-| `@ruflo/create-agent-harness` | 80% | 75% |
-| `@ruflo/host-*` | 75% | 70% |
-| `@ruflo/catalogue` | 70% (content-heavy) | 65% |
-| `@ruflo/vertical-packs/*` | 70% | 65% |
+| `@metaharness/kernel/*` | 85% | 80% |
+| `@metaharness/create-agent-harness` | 80% | 75% |
+| `@metaharness/host-*` | 75% | 70% |
+| `@metaharness/catalogue` | 70% (content-heavy) | 65% |
+| `@metaharness/vertical-packs/*` | 70% | 65% |
 
 CI enforces these (ADR-007 §A4). PRs that drop below the floor are blocked.
 
@@ -236,9 +236,9 @@ This ADR is satisfied when the following exist:
 
 ### Contract test kits
 
-6. **`@ruflo/kernel/hosts/contract.test-kit`** — shipped, imported by every host adapter's test.
-7. **`@ruflo/kernel/marketplace/contract.test-kit`** — shipped, imported by every plugin's test scaffold.
-8. **`@ruflo/kernel/memory/intelligence-contract.test-kit`** — shipped, imported by every vertical pack's intelligence-provider test.
+6. **`@metaharness/kernel/hosts/contract.test-kit`** — shipped, imported by every host adapter's test.
+7. **`@metaharness/kernel/marketplace/contract.test-kit`** — shipped, imported by every plugin's test scaffold.
+8. **`@metaharness/kernel/memory/intelligence-contract.test-kit`** — shipped, imported by every vertical pack's intelligence-provider test.
 
 ### Outer-ring infrastructure
 

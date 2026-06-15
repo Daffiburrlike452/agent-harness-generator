@@ -65,7 +65,7 @@ describe('buildScaffold', () => {
     const parsed = JSON.parse(pkg.content);
     expect(parsed.name).toBe('legal-redline');
     expect(parsed.bin['legal-redline']).toBeDefined();
-    expect(parsed.dependencies['@ruflo/kernel']).toBeDefined();
+    expect(parsed.dependencies['@metaharness/kernel']).toBeDefined();
   });
 
   it('settings.json is valid JSON with scoped permissions', () => {

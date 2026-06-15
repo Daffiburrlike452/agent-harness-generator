@@ -157,19 +157,19 @@ jobs:
       # ─────────────────────────────────────────────────────────────────
       # ACTUAL PUBLISH — every non-private workspace package
       # ─────────────────────────────────────────────────────────────────
-      - name: Publish @ruflo/kernel-* native packages
+      - name: Publish @metaharness/kernel-* native packages
         env:
           NODE_AUTH_TOKEN: ${{ steps.secrets.outputs.npm_token }}
         run: |
           echo "TODO: publish per-platform native packages from dist-native/ (lands in a follow-up iteration)"
 
-      - name: Publish @ruflo/kernel (umbrella)
+      - name: Publish @metaharness/kernel (umbrella)
         env:
           NODE_AUTH_TOKEN: ${{ steps.secrets.outputs.npm_token }}
         working-directory: packages/kernel-js
         run: npm publish --provenance --access public
 
-      - name: Publish @ruflo/sdk
+      - name: Publish @metaharness/sdk
         env:
           NODE_AUTH_TOKEN: ${{ steps.secrets.outputs.npm_token }}
         working-directory: packages/sdk
@@ -181,7 +181,7 @@ jobs:
         run: |
           set -euo pipefail
           for host in host-claude-code host-codex host-pi-dev host-hermes host-openclaw host-rvm; do
-            echo "::group::publish @ruflo/$host"
+            echo "::group::publish @metaharness/$host"
             (cd packages/$host && npm publish --provenance --access public)
             echo "::endgroup::"
           done
@@ -192,7 +192,7 @@ jobs:
         run: |
           set -euo pipefail
           for v in vertical-base vertical-trading; do
-            echo "::group::publish @ruflo/$v"
+            echo "::group::publish @metaharness/$v"
             (cd packages/$v && npm publish --provenance --access public)
             echo "::endgroup::"
           done

@@ -11,13 +11,13 @@ By iter 65 the project had three production surfaces:
 
 1. **The CLI generator** (`packages/create-agent-harness/`) + 15 `harness` subcommands
 2. **The Studio** deployed to GitHub Pages (`https://ruvnet.github.io/agent-harness-generator/`)
-3. **The published npm packages** that downstream harnesses depend on (`@ruflo/kernel`, 6 host adapters, `create-agent-harness`, …)
+3. **The published npm packages** that downstream harnesses depend on (`@metaharness/kernel`, 6 host adapters, `create-agent-harness`, …)
 
 Every one of those surfaces can drift independently:
 
 | Surface | Drift mode |
 |---|---|
-| Downstream harness ↔ local `@ruflo/kernel` | User pulls a harness that was scaffolded against kernel `0.1.0`; their local install is `0.2.0` → manifest assertions in `harness doctor` start failing because the meta-block hash drifts |
+| Downstream harness ↔ local `@metaharness/kernel` | User pulls a harness that was scaffolded against kernel `0.1.0`; their local install is `0.2.0` → manifest assertions in `harness doctor` start failing because the meta-block hash drifts |
 | Downstream harness ↔ local `create-agent-harness` | User runs `harness upgrade` against a harness scaffolded with create-agent-harness `0.1.0`; their local CLI is `0.3.0` → re-renders produce surprise diffs that look like local damage |
 | CLI surface ↔ web-UI surface | ADR-027 contract — both must emit byte-identical scaffolds for the same `(name, host, template)`. A version skew between the npm-installed CLI and the deployed Studio produces "same input, different output" reports |
 | Pages deploy ↔ live URL | The deploy step can return 200 (Pages API said OK) while the served URL is broken or stale (CDN propagation, build cache, bundle ref mismatch). This bit the repo on iter 57's first deploys |

@@ -67,7 +67,7 @@ export function VerifyPanel() {
 
         <Section title="What it checks" desc="The same class of checks as the CLI's harness validate + mcp-scan.">
           <ul className="list-disc space-y-1 pl-5 text-xs text-slate-400">
-            <li>package.json parses, has a name, declares @ruflo/kernel</li>
+            <li>package.json parses, has a name, declares @metaharness/kernel</li>
             <li>generator manifest + at least one host adapter present</li>
             <li>no unresolved <code className="text-slate-300">{'{{template vars}}'}</code></li>
             <li>MCP policy is default-deny, shell-gated, audited, timeout-bounded</li>

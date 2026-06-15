@@ -105,7 +105,7 @@ describe('e2e lifecycle: scaffold → all 13 subcommands (iter 52 + iter 66 diag
 
       // 11. diag (iter 66) — kernel-version skew check. On a fresh
       // scaffold the manifest.meta.kernel_version (stamped by iter 58)
-      // matches the locally-resolved @ruflo/kernel, so we expect PASS
+      // matches the locally-resolved @metaharness/kernel, so we expect PASS
       // and exit 0. This pins that ADR-027's diagnostic loop survives
       // every other lifecycle step above — none of doctor / verify /
       // mcp-scan / sbom / audit / upgrade / publish / federate corrupt

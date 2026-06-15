@@ -56,15 +56,15 @@ function fileExistsInPack(packed: { files: Array<{ path: string }> } | null, pat
 }
 
 describe('npm pack content invariants', () => {
-  it('@ruflo/kernel ships README + LICENSE + dist/', async () => {
+  it('@metaharness/kernel ships README + LICENSE + dist/', async () => {
     const dir = join(PACKAGES_DIR, 'kernel-js');
     if (!existsSync(join(dir, 'package.json'))) return;
     const packed = await packList(dir);
-    expect(packed, '@ruflo/kernel pack failed').not.toBeNull();
-    expect(packed!.name).toBe('@ruflo/kernel');
+    expect(packed, '@metaharness/kernel pack failed').not.toBeNull();
+    expect(packed!.name).toBe('@metaharness/kernel');
     expect(fileExistsInPack(packed, 'README')).toBe(true);
     expect(fileExistsInPack(packed, 'LICENSE')).toBe(true);
-    expect(fileExistsInPack(packed, 'dist/'), '@ruflo/kernel missing dist/').toBe(true);
+    expect(fileExistsInPack(packed, 'dist/'), '@metaharness/kernel missing dist/').toBe(true);
   }, 30_000);
 
   it('every host adapter ships README + LICENSE + dist/', async () => {
@@ -74,7 +74,7 @@ describe('npm pack content invariants', () => {
       if (!existsSync(join(dir, 'package.json'))) continue;
       const packed = await packList(dir);
       expect(packed, `${h} pack failed`).not.toBeNull();
-      expect(packed!.name).toBe(`@ruflo/${h}`);
+      expect(packed!.name).toBe(`@metaharness/${h}`);
       expect(fileExistsInPack(packed, 'README'), `${h} missing README`).toBe(true);
       expect(fileExistsInPack(packed, 'LICENSE'), `${h} missing LICENSE`).toBe(true);
       expect(fileExistsInPack(packed, 'dist/'), `${h} missing dist/`).toBe(true);
@@ -102,9 +102,9 @@ describe('npm pack content invariants', () => {
       if (!existsSync(join(dir, 'package.json'))) continue;
       const packed = await packList(dir);
       expect(packed, `${v} pack failed`).not.toBeNull();
-      expect(packed!.name).toBe(`@ruflo/${v}`);
+      expect(packed!.name).toBe(`@metaharness/${v}`);
       expect(fileExistsInPack(packed, 'dist/'), `${v} missing dist/`).toBe(true);
-      // iter 63: preflight failed because @ruflo/vertical-base shipped without
+      // iter 63: preflight failed because @metaharness/vertical-base shipped without
       // a README. Pin this invariant so the publish gate catches it before
       // we hit the actual `npm publish` call.
       expect(fileExistsInPack(packed, 'README'), `${v} missing README`).toBe(true);
@@ -112,12 +112,12 @@ describe('npm pack content invariants', () => {
     }
   }, 60_000);
 
-  it('@ruflo/sdk ships dist/ + README', async () => {
+  it('@metaharness/sdk ships dist/ + README', async () => {
     const dir = join(PACKAGES_DIR, 'sdk');
     if (!existsSync(join(dir, 'package.json'))) return;
     const packed = await packList(dir);
     expect(packed).not.toBeNull();
-    expect(packed!.name).toBe('@ruflo/sdk');
+    expect(packed!.name).toBe('@metaharness/sdk');
     expect(fileExistsInPack(packed, 'dist/')).toBe(true);
     expect(fileExistsInPack(packed, 'README')).toBe(true);
   }, 30_000);

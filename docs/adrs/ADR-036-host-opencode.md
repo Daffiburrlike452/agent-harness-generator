@@ -40,7 +40,7 @@ OpenCode is the strongest near-term host candidate for three reasons:
 
 ## Decision
 
-**Add `@ruflo/host-opencode` as the 8th host adapter, following the ADR-032 (Copilot) pattern: an additive config-emitter package that mirrors the existing six adapters in shape, size, and test surface.**
+**Add `@metaharness/host-opencode` as the 8th host adapter, following the ADR-032 (Copilot) pattern: an additive config-emitter package that mirrors the existing six adapters in shape, size, and test surface.**
 
 Status: **Proposed**. Implementation deferred to a future iteration; this ADR documents the contract.
 
@@ -48,7 +48,7 @@ Status: **Proposed**. Implementation deferred to a future iteration; this ADR do
 
 ```
 packages/host-opencode/
-├── package.json          # name: @ruflo/host-opencode, version: 0.1.0
+├── package.json          # name: @metaharness/host-opencode, version: 0.1.0
 ├── tsconfig.json         # mirrors host-codex
 ├── LICENSE
 ├── README.md             # what it does, schema sample, install runbook reference

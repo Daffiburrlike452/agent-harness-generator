@@ -185,7 +185,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
   - `harness doctor` reports issues you don't understand → run
     `harness diag --bundle > bundle.json` and attach to an issue
     (the bundle is sanitised; iter 90)
-  - `harness diag` says MAJOR skew → `npm install @ruflo/kernel@<v>`
+  - `harness diag` says MAJOR skew → `npm install @metaharness/kernel@<v>`
     with ADR-028 link
   - Share MCP/Bash/claims config for a security review →
     `harness export-config` (iter 97)
@@ -468,7 +468,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 - **Bundle contents** (`SupportBundle` interface):
   - `diag` — full DiagReport with `exitCode` (verdict + kernel + generator)
   - `harness.packageName / packageVersion` — what was scaffolded
-  - `harness.rufloDeps` — only `@ruflo/*` + `create-agent-harness` entries
+  - `harness.rufloDeps` — only `@metaharness/*` + `create-agent-harness` entries
     (no third-party noise that's irrelevant to the harness's own state)
   - `manifest.present` + `manifest.content` — the full manifest, but
     **sanitised**: any object key matching `/^(secret|token|key|password|api[-_]?key)/i`
@@ -895,7 +895,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
   in the per-line output. Default code-based mapping unchanged.
 - **`runDiag()` returns three states**:
   - `SKIP` — no `.harness/manifest.json`, or manifest is pre-iter-58
-    (no `kernel_version`), or `@ruflo/kernel` not installed locally
+    (no `kernel_version`), or `@metaharness/kernel` not installed locally
   - `PASS` — `match` or `patch-diff` between manifest + local kernel
   - `WARN` — `minor-diff` / `major-diff` / `unparseable`
 - **Live smoke output** on a fresh scaffold:
@@ -1122,7 +1122,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
   chained in. iter 68 closes that gap.
 - The new step asserts:
   - `diagCmd` exits 0 on a fresh scaffold (matches manifest +
-    locally-resolved @ruflo/kernel)
+    locally-resolved @metaharness/kernel)
   - The output line `PASS kernel versions match` is present
   - **Implicitly**: none of doctor / verify / mcp-scan / sbom / audit /
     upgrade / publish / federate corrupted the iter-58 `meta.kernel_version`
@@ -1241,7 +1241,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ### Fixed — Iter 63 (2026-06-14)
 
-- **`@ruflo/vertical-base` now ships a README** — caught by running
+- **`@metaharness/vertical-base` now ships a README** — caught by running
   `node scripts/preflight.mjs` end-to-end for the first time on the
   road-to-v0.1.0 push. The iter-25 `pack-contents` invariants test
   pinned README+LICENSE for the 6 host adapters but only `dist/` for
@@ -1351,7 +1351,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 - **`manifest.meta.kernel_version` populated at scaffold time** —
   iter 56 added the field; iter 58 makes it load-bearing. New
   `resolveKernelVersion()` helper in `packages/create-agent-harness/src/index.ts`
-  reads `@ruflo/kernel`'s package.json (3 lookup paths: workspace,
+  reads `@metaharness/kernel`'s package.json (3 lookup paths: workspace,
   installed sibling, top-level node_modules) and stamps the version
   into every scaffolded manifest. Never throws — a broken kernel
   install soft-passes to `kernel_version: undefined` (the doctor
@@ -1703,8 +1703,8 @@ All notable changes to this project are documented here. Format follows [Keep a 
     structured `outcome.kind`: `result` / `denied` / `not-found` /
     `bad-args`. Exit codes follow: 0 on result, 1 on denied/not-found,
     2 on bad-args / malformed input.
-- **New `./dispatch` subpath export on `@ruflo/kernel`** — required
-  so the CLI can `import('@ruflo/kernel/dispatch')` to load the
+- **New `./dispatch` subpath export on `@metaharness/kernel`** — required
+  so the CLI can `import('@metaharness/kernel/dispatch')` to load the
   `ToolDispatcher` class without pulling the full kernel index.
 - **`__tests__/mcp-cmd.test.ts`** (12 cases):
   - `mcp ls` reports missing file, lists servers+tools, handles empty
@@ -1773,7 +1773,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
   the 6 host adapters for the cross-host benchmark, but
   `scripts/build-ordered.mjs` had `bench` in Phase 3 *parallel to* the
   hosts. On a fresh CI checkout the bench `tsc` ran before the hosts
-  had finished, hitting `TS2307: Cannot find module '@ruflo/host-rvm'`.
+  had finished, hitting `TS2307: Cannot find module '@metaharness/host-rvm'`.
 - **Fix**: moved `bench` from Phase 3 to Phase 4 alongside
   `vertical-trading` (both depend on a previous phase's output).
   Now: kernel → vertical-base → (hosts + sdk + cli) → (vertical-trading
@@ -2037,20 +2037,20 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 - **CI `pack+install` job RED on macos+windows since iter 16** —
   installing each tarball individually meant npm tried to resolve the
-  cross-tarball `@ruflo/*` deps from the registry, where they don't
+  cross-tarball `@metaharness/*` deps from the registry, where they don't
   exist pre-publish. Real CI error: `npm error 404 Not Found - GET
   https://registry.npmjs.org/@ruflo%2fkernel - Not found` ×7 of the
   11 packages. This was masking real install regressions because every
   host adapter failed in the same way.
 - **Fix**: rewrote `scripts/install-all.mjs` to do a single batched
   `npm install <t1.tgz> <t2.tgz> ... <tN.tgz>` call. npm now resolves
-  `@ruflo/*` deps from the OTHER tarballs in the same install set,
+  `@metaharness/*` deps from the OTHER tarballs in the same install set,
   not the registry. Then a second pass spot-checks each installed
   package's `package.json` is present under `node_modules/<scope>/<name>/`.
 - **Verified locally**: 11/11 packages install cleanly (was 4/11
   before the fix). Includes the cross-deps (`host-rvm` finds its
-  `@ruflo/kernel`, `vertical-trading` finds its `@ruflo/vertical-base`,
-  `create-agent-harness` finds its `@ruflo/kernel`).
+  `@metaharness/kernel`, `vertical-trading` finds its `@metaharness/vertical-base`,
+  `create-agent-harness` finds its `@metaharness/kernel`).
 - This is the regression class iter 16's pack-install job was
   designed to catch — and now actually does.
 
@@ -2095,13 +2095,13 @@ All notable changes to this project are documented here. Format follows [Keep a 
   — this script makes the inverse (synchronised bump) a one-command op.
   - `node scripts/version-bump.mjs patch|minor|major|<x.y.z>`
   - `--dry-run` for safe diff preview
-  - Workspace deps to other `@ruflo/*` packages get bumped in lockstep
-    (so `host-rvm` → `@ruflo/kernel ^0.1.0` becomes `^0.1.1` together)
+  - Workspace deps to other `@metaharness/*` packages get bumped in lockstep
+    (so `host-rvm` → `@metaharness/kernel ^0.1.0` becomes `^0.1.1` together)
 - **`__tests__/version-bump.test.ts`** (7 cases) — pins the cross-pack
   lockstep invariant inside a tmpdir fixture so the test is fully
   hermetic:
   - patch / minor / major / explicit-version bumps
-  - workspace deps to other `@ruflo/*` packages updated in lockstep
+  - workspace deps to other `@metaharness/*` packages updated in lockstep
   - `--dry-run` doesn't touch files
   - rejects unparseable target with non-zero exit
 - CI milestone: iter-28 commit `7b9bbcf` ran with all 12 core matrix
@@ -2193,14 +2193,14 @@ All notable changes to this project are documented here. Format follows [Keep a 
 - **`__tests__/pack-contents.test.ts`** (6 cases) — `npm pack --dry-run
   --json` on every package, then asserts the tarball CONTAINS the files
   README + exports promise:
-  - `@ruflo/kernel` ships README + LICENSE + `dist/`
+  - `@metaharness/kernel` ships README + LICENSE + `dist/`
   - every host adapter (×6) ships README + LICENSE + `dist/`
   - `create-agent-harness` ships `dist/`, `templates/`, AND both bin
     entrypoints (`dist/bin.js`, `dist/harness-bin.js`) — the exact
     bug class that hit create-agent-harness@0.1.0 when npm auto-
     corrected the broken bin paths
   - vertical packs ship `dist/`
-  - `@ruflo/sdk` ships `dist/` + README
+  - `@metaharness/sdk` ships `dist/` + README
   - NO package leaks `.env`, `node_modules`, `.tsbuildinfo`,
     `.DS_Store` (a separate regression class — accidental secret /
     bloat in a tarball)
@@ -2241,7 +2241,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
   - `npm run -ws --if-present build` runs the workspace builds in
     undefined order, and `tsc` in `host-rvm` runs BEFORE `kernel-js`
     produces `dist/index.d.ts` — failure: "Cannot find module
-    `@ruflo/kernel`".
+    `@metaharness/kernel`".
   - Replaced root `build` script with `scripts/build-ordered.mjs`,
     a 4-phase topological build:
       1. `kernel-js` (everyone depends on it)
@@ -2330,8 +2330,8 @@ All notable changes to this project are documented here. Format follows [Keep a 
   action sets ADC but doesn't install the SDK, and Gate 1 shells out
   to `gcloud secrets describe`.
 - **Per-package publish steps for all 11 workspace packages** (was 2):
-  - `@ruflo/kernel` (umbrella)
-  - `@ruflo/sdk`
+  - `@metaharness/kernel` (umbrella)
+  - `@metaharness/sdk`
   - 6 host adapters (`host-claude-code`, `host-codex`, `host-pi-dev`,
     `host-hermes`, `host-openclaw`, `host-rvm`)
   - 2 vertical packs (`vertical-base`, `vertical-trading`)
@@ -2459,13 +2459,13 @@ All notable changes to this project are documented here. Format follows [Keep a 
   `os.tmpdir()` non-empty on every platform, posix.sep normalisation
   invariants, Windows drive-letter detection, mkdtemp parallel uniqueness
 - **`@ruvector/rvf` integration** (paired with RVM per user request):
-  - `@ruflo/kernel`: declares `@ruvector/rvf ^0.2.0` as optional peer
+  - `@metaharness/kernel`: declares `@ruvector/rvf ^0.2.0` as optional peer
     dep + new `./memory-rvf` subpath export
   - `packages/kernel-js/src/memory-rvf.ts`: `createRvfBackend()`
     returns a `RvfBackend` wrapper over RVF's HNSW + SIMD index;
     `isRvfAvailable()` predicate; graceful null fallback when RVF
     isn't installed
-  - `@ruflo/host-rvm`: emitted `wasm-guest.json` now declares
+  - `@metaharness/host-rvm`: emitted `wasm-guest.json` now declares
     `companion.vector_format` referencing `@ruvector/rvf` +
     `@ruvector/rvf-wasm`, marked `recommended: true`
   - host-rvm README documents the pairing (hardware-isolated vector
@@ -2475,7 +2475,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ### Added — Iter 15 (2026-06-13)
 
-- **`@ruflo/vertical-base` shared contract** for `@ruflo/vertical-*` packs
+- **`@metaharness/vertical-base` shared contract** for `@metaharness/vertical-*` packs
   (per ADR-013):
   - `VerticalPack`, `VerticalManifest`, `TemplateFileEntry`,
     `TemplateVar` interfaces
@@ -2486,7 +2486,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
   - `verifyTemplateFilesPresent()` — pre-publish check for dangling
     references
   - 11 new TS test cases
-- **`@ruflo/vertical-trading` standalone pack** — first concrete pack
+- **`@metaharness/vertical-trading` standalone pack** — first concrete pack
   in the new pattern:
   - `templates/manifest.json` declares 10 files + 3 vars (name +
     description + host — host choices include all 6 host adapters,
@@ -2503,14 +2503,14 @@ All notable changes to this project are documented here. Format follows [Keep a 
     calls its `.load()`, returns `{ manifest, templateRoot }`
   - Actionable error messages on missing package (`Did you forget to
     install it?`) + missing `load()` export + malformed result
-  - CLI now accepts `--template-package @ruflo/vertical-trading` to use
+  - CLI now accepts `--template-package @metaharness/vertical-trading` to use
     an external pack instead of a bundled template
   - 2 new TS test cases (empty packageName rejected, missing package
     error message contains install hint)
 
 ### Added — Iter 14 (2026-06-13)
 
-- **`@ruflo/sdk` convenience helpers** for harness authors:
+- **`@metaharness/sdk` convenience helpers** for harness authors:
   - `defineAgent` / `defineSkill` / `defineTool` / `defineHook` /
     `defineMcpServer` / `defineHarness`
   - Every helper returns a frozen object (immutable post-definition)
@@ -2519,7 +2519,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
   - 18 new TS test cases pinning every validation rule + collision
     detection + freeze invariant
 - **Browser-runtime WASM smoke fixture** (`__tests__/browser-smoke/`):
-  - `fixture.html` loads `@ruflo/kernel`'s wasm bundle in a real browser
+  - `fixture.html` loads `@metaharness/kernel`'s wasm bundle in a real browser
   - Runs the 3 key exports (`kernelInfo`, `mcpValidate` pass + reject)
   - Sets `window.__SMOKE_RESULT` for Playwright to read in iter 16
   - README documents how to serve the fixture today
@@ -2545,7 +2545,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ### Added — Iter 13 (2026-06-13)
 
-- **`@ruflo/bench` package** — reproducible memory-retrieval benchmark:
+- **`@metaharness/bench` package** — reproducible memory-retrieval benchmark:
   - 6 configs scored side-by-side (k ∈ {1,3,10} × decay ∈ {on,off})
   - Synthetic corpus + queries deterministic via `mulberry32` seed
   - 4-category eval (single-hop / temporal / multi-hop / open-domain)
@@ -2572,7 +2572,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ### Added — Iter 12 (2026-06-13)
 
-- **Sixth host adapter: `@ruflo/host-rvm`** for
+- **Sixth host adapter: `@metaharness/host-rvm`** for
   [RVM](https://github.com/ruvnet/rvm) — the Agentic Virtual Machine.
   Positioned as the **hardware-isolated deployment target** (vs the
   five OS-level adapters)
@@ -2597,7 +2597,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ### Added — Iter 11 (2026-06-13)
 
-- **Fifth host adapter: `@ruflo/host-openclaw`** for
+- **Fifth host adapter: `@metaharness/host-openclaw`** for
   [OpenClaw](https://github.com/openclaw/openclaw) — "Personal AI Assistant.
   Any OS. Any Platform. The lobster way. 🦞"
   - Generates `openclaw.json` (JSON, not TOML/YAML) snippet to merge into
@@ -2653,7 +2653,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 - **Cross-host integration smoke** (`__tests__/integration/multi-host.test.
   ts`):
   - Scaffolds minimal template for every host -> validates package.json
-    declares @ruflo/host-<n>
+    declares @metaharness/host-<n>
   - Scaffolds every template for claude-code -> validates artifact
     presence
   - mcpServers config contains the harness name
@@ -2683,7 +2683,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
     when the TS PageHinkleyDetector isn't loaded
   - 7 new Rust tests
 - **Renovate config** (`renovate.json`):
-  - Weekly schedule, automerge patch/minor, group @ruflo/* and
+  - Weekly schedule, automerge patch/minor, group @metaharness/* and
     @ruvector/* internal
   - wasm-bindgen / wasm-bindgen-cli marked no-automerge (toolchain
     upgrades need review)
@@ -2705,7 +2705,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
     placeholder otherwise (so doctor + verify report the gap explicitly)
   - `harness verify [path]` — read + verify witness.json, prints harness
     name + version + entry count + public key prefix
-  - `harness doctor [path]` — smoke checks: package.json, @ruflo/kernel
+  - `harness doctor [path]` — smoke checks: package.json, @metaharness/kernel
     dep, .harness/manifest.json + .sha256, manifest hash consistency,
     at least one host artifact (.claude/, .codex/, AGENTS.md, or
     cli-config.yaml)
@@ -2723,13 +2723,13 @@ All notable changes to this project are documented here. Format follows [Keep a 
   - 7 new Rust test cases (validate-tool, registry register/get/replace,
     for-server filter)
 - **Per-package READMEs** for the 6 npm-published packages:
-  - `@ruflo/kernel` — kernel API + memory subpath usage
+  - `@metaharness/kernel` — kernel API + memory subpath usage
   - `create-agent-harness` — scaffold quick start + template + host matrix
-  - `@ruflo/host-claude-code` — hooks three-level shape, 3 settings scopes
-  - `@ruflo/host-codex` — TOML quirks (trusted-project gate, no hooks)
-  - `@ruflo/host-pi-dev` — no-MCP design clarification, badlogic Pi (NOT
+  - `@metaharness/host-claude-code` — hooks three-level shape, 3 settings scopes
+  - `@metaharness/host-codex` — TOML quirks (trusted-project gate, no hooks)
+  - `@metaharness/host-pi-dev` — no-MCP design clarification, badlogic Pi (NOT
     Inflection)
-  - `@ruflo/host-hermes` — Hermes-4 `<think>` / `<tool_call>` quirk,
+  - `@metaharness/host-hermes` — Hermes-4 `<think>` / `<tool_call>` quirk,
     two-project disambiguation
 - **GCP setup automation** (`scripts/setup-gcp.sh`):
   - One-shot bash script: APIs → WIF pool → OIDC provider → publisher SA
@@ -2811,7 +2811,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ### Added — Iter 2 (2026-06-13)
 
-- 4 host adapter packages: `@ruflo/host-{claude-code,codex,pi-dev,hermes}`
+- 4 host adapter packages: `@metaharness/host-{claude-code,codex,pi-dev,hermes}`
 - First template (`templates/minimal/`)
 - Claude marketplace plugin manifest (`.claude-plugin/plugin.json`) + 2 skills
 - Vitest config + 29 TypeScript test cases
@@ -2822,7 +2822,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 - Cargo workspace + npm workspace scaffold
 - 7-subsystem Rust kernel stubs with serde round-trip tests
 - WASM bindings (wasm-bindgen) + NAPI-RS bindings
-- `@ruflo/kernel` runtime resolver (native → wasm fallback)
+- `@metaharness/kernel` runtime resolver (native → wasm fallback)
 - `create-agent-harness` CLI entry point
 - CI matrix (Rust × 3 platforms, wasm validate + 500 KB budget, Node 20/22 × 3 platforms)
 - Publish workflow (GCP Workload Identity Federation → Secret Manager → npm provenance)

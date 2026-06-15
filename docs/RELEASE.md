@@ -8,18 +8,18 @@ Every release publishes these packages **at the same version**:
 
 | Package | What |
 |---|---|
-| `@ruflo/kernel` | The kernel — Rust → wasm + native (NAPI-RS) |
-| `@ruflo/sdk` | Typed convenience helpers for harness authors |
-| `@ruflo/host-claude-code` | Claude Code adapter |
-| `@ruflo/host-codex` | Codex adapter |
-| `@ruflo/host-pi-dev` | pi.dev adapter |
-| `@ruflo/host-hermes` | Hermes adapter |
-| `@ruflo/host-openclaw` | OpenClaw adapter |
-| `@ruflo/host-rvm` | RVM adapter (hardware-isolated) |
+| `@metaharness/kernel` | The kernel — Rust → wasm + native (NAPI-RS) |
+| `@metaharness/sdk` | Typed convenience helpers for harness authors |
+| `@metaharness/host-claude-code` | Claude Code adapter |
+| `@metaharness/host-codex` | Codex adapter |
+| `@metaharness/host-pi-dev` | pi.dev adapter |
+| `@metaharness/host-hermes` | Hermes adapter |
+| `@metaharness/host-openclaw` | OpenClaw adapter |
+| `@metaharness/host-rvm` | RVM adapter (hardware-isolated) |
 | `create-agent-harness` | The scaffolder CLI (also ships `harness` binary) |
 
-| `@ruflo/vertical-base` | Shared contract for vertical packs |
-| `@ruflo/vertical-trading` | Trading-vertical pack (loadable standalone) |
+| `@metaharness/vertical-base` | Shared contract for vertical packs |
+| `@metaharness/vertical-trading` | Trading-vertical pack (loadable standalone) |
 
 Version drift across the 11 packages is detected by `scripts/preflight.mjs`.
 
@@ -80,8 +80,8 @@ The push of `v*.*.*` triggers `.github/workflows/publish.yml`. The workflow:
    the real publish (broken `files`, missing `bin`, unresolvable
    workspace ref, etc.)
 8. Publishes all 11 packages with `npm publish --provenance`:
-   - `@ruflo/kernel` (umbrella)
-   - `@ruflo/sdk`
+   - `@metaharness/kernel` (umbrella)
+   - `@metaharness/sdk`
    - 6 host adapters (`host-claude-code`, `host-codex`, `host-pi-dev`,
      `host-hermes`, `host-openclaw`, `host-rvm`)
    - 2 vertical packs (`vertical-base`, `vertical-trading`)
@@ -99,9 +99,9 @@ If your GCP variables aren't set, see [`setup/gcp-secrets.md`](setup/gcp-secrets
 
 ```bash
 # Each of the 9 packages should report the new version on @latest
-for pkg in @ruflo/kernel @ruflo/sdk @ruflo/host-claude-code \
-           @ruflo/host-codex @ruflo/host-pi-dev @ruflo/host-hermes \
-           @ruflo/host-openclaw @ruflo/host-rvm create-agent-harness; do
+for pkg in @metaharness/kernel @metaharness/sdk @metaharness/host-claude-code \
+           @metaharness/host-codex @metaharness/host-pi-dev @metaharness/host-hermes \
+           @metaharness/host-openclaw @metaharness/host-rvm create-agent-harness; do
   npm view "$pkg@latest" version
 done
 ```
@@ -126,7 +126,7 @@ If a release ships broken:
 
 1. **npm deprecate** — don't unpublish; deprecate with a clear message:
    ```bash
-   npm deprecate '@ruflo/kernel@0.1.1' 'broken — use 0.1.0'
+   npm deprecate '@metaharness/kernel@0.1.1' 'broken — use 0.1.0'
    # repeat for each affected package
    ```
 2. Fix the bug

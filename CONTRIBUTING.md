@@ -56,7 +56,7 @@ node scripts/dev-toolkit.mjs --check-health
 | `crates/kernel/` | The Rust kernel — seven subsystems per [ADR-002](./docs/adrs/ADR-002-kernel-boundary.md) |
 | `crates/kernel-wasm/` | wasm-bindgen surface — primary distribution target |
 | `crates/kernel-napi/` | NAPI-RS surface — native Node.js fallback per [ADR-002a](./docs/adrs/ADR-002a-rust-wasm-napi-publishing-pipeline.md) |
-| `packages/kernel-js/` | `@ruflo/kernel` runtime resolver |
+| `packages/kernel-js/` | `@metaharness/kernel` runtime resolver |
 | `packages/create-agent-harness/` | `create-agent-harness` CLI entry point |
 | `.github/workflows/` | CI, publish (GCP-secret-gated), security |
 | `docs/adrs/` | 17 ADRs defining the system end-to-end |
