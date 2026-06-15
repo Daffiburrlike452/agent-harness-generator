@@ -4,12 +4,41 @@
 // Fully offline: URL checker + transport are injected mocks.
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { scoreAnswer, extractUrls, type Rubric, type UrlChecker } from '../src/draco/scorer.js';
+import { scoreAnswer, extractUrls, liveUrlChecker, type Rubric, type UrlChecker } from '../src/draco/scorer.js';
 import { runDraco, type DracoCorpus } from '../src/draco/runner.js';
 import type { OpenRouterTransport } from '../src/draco/fusion.js';
 
 const allOk: UrlChecker = async () => 'ok';
 const allDead: UrlChecker = async () => 'dead';
+
+describe('liveUrlChecker — timeout-bounded (regression: grounded run froze at 5/20)', () => {
+  it('returns "dead" fast when a host hangs, instead of blocking forever', async () => {
+    // A fetch that never resolves unless aborted — models a hung/slow dead domain.
+    const hangingFetch = ((_url: string, init?: { signal?: AbortSignal }) =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => reject(new Error('aborted')));
+      })) as unknown as typeof fetch;
+    const check = liveUrlChecker(hangingFetch, { timeoutMs: 40 });
+    const start = Date.now();
+    const result = await check('https://hung.example/dead');
+    expect(result).toBe('dead');
+    expect(Date.now() - start).toBeLessThan(2000); // bounded, not hung
+  });
+
+  it('"ok" on 2xx, "dead" on non-2xx', async () => {
+    const ok = liveUrlChecker((async () => ({ ok: true }) as Response) as typeof fetch);
+    const bad = liveUrlChecker((async () => ({ ok: false }) as Response) as typeof fetch);
+    expect(await ok('https://x/live')).toBe('ok');
+    expect(await bad('https://x/404')).toBe('dead');
+  });
+
+  it('"dead" on a thrown network error', async () => {
+    const errFetch = (async () => {
+      throw new Error('ENOTFOUND');
+    }) as typeof fetch;
+    expect(await liveUrlChecker(errFetch)('https://nope.invalid')).toBe('dead');
+  });
+});
 
 describe('DRACO scorer — dimensions', () => {
   it('coverage = fraction of must_contain terms present (case-insensitive)', async () => {

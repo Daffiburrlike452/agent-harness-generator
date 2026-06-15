@@ -107,17 +107,29 @@ export async function scoreAnswer(
 }
 
 /**
- * A live URL checker: HEAD/GET each URL, "ok" on 2xx, "dead" otherwise.
+ * A live URL checker: GET each URL, "ok" on 2xx, "dead" otherwise.
  * Injected separately so the scorer core stays offline-testable. Not used in
  * --no-judge CI (which passes a mock); reserved for full judged runs.
+ *
+ * CRITICAL: each request is bounded by an AbortController timeout. Without it a
+ * single dead/slow/hung domain stalls the WHOLE run — the grounding pass (ADR-038
+ * arms 5+6) checks every cited + pooled URL (often dozens of likely-dead links),
+ * so an unbounded fetch on one hanging host froze a live grounded run at 5/20.
+ * A timed-out / errored request is treated as "dead" (an unreachable citation is,
+ * for grounding purposes, exactly that).
  */
-export function liveUrlChecker(fetchImpl: typeof fetch = fetch): UrlChecker {
+export function liveUrlChecker(fetchImpl: typeof fetch = fetch, opts: { timeoutMs?: number } = {}): UrlChecker {
+  const timeoutMs = opts.timeoutMs ?? 8000;
   return async (url) => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
-      const res = await fetchImpl(url, { method: 'GET' });
+      const res = await fetchImpl(url, { method: 'GET', signal: ctrl.signal });
       return res.ok ? 'ok' : 'dead';
     } catch {
-      return 'dead';
+      return 'dead'; // network error, timeout/abort, bad URL → unreachable = dead
+    } finally {
+      clearTimeout(timer);
     }
   };
 }
