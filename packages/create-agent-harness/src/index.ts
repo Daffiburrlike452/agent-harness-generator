@@ -362,6 +362,14 @@ async function runMetaHarnessSubcommand(sub: string, rest: string[]): Promise<nu
       for (const line of r.lines) console.log(line);
       return r.code;
     }
+    case 'score': {
+      // `metaharness score <repo> [--json]` — ADR-041 scorecard (the killer
+      // feature). No-exec repo analysis → 6-line fit/cost/safety card.
+      const { scoreRepoCmd } = await import('./repo-scorecard.js');
+      const r = await scoreRepoCmd(rest);
+      for (const line of r.lines) console.log(line);
+      return r.code;
+    }
     default:
       return null; // not a known subcommand
   }
@@ -436,6 +444,9 @@ export async function main(argv: string[]): Promise<number> {
 
   if (!args.name) {
     console.log('Usage: npx metaharness <name> [--template <id>] [--host claude-code|codex|pi-dev|hermes] [--description "..."] [--force]');
+    console.log('       npx metaharness score <repo> [--json]   (scorecard: fit/cost/safety for a repo — ADR-041)');
+    console.log('       npx metaharness analyze <repo>           (recommend a harness plan, no-exec)');
+    console.log('       npx metaharness genome <repo>            (7-section repo readiness)');
     console.log('       npx metaharness --from-existing [./path]');
     console.log('       npx metaharness --wizard          (iter 100 — interactive picker)');
     console.log('       npx metaharness --list            (browse all templates)');

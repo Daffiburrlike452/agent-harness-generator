@@ -90,6 +90,26 @@ all file writes auditable · all tool calls replayable
 ```
 
 This ADR is the roadmap; increments land as separate ADRs/PRs, each with the
-measured-win discipline. First increment: the **scorecard** (`metaharness score
-<repo>` → the 6-line card), since it is the killer feature and reuses the DRACO
-scorer + `score-harness` + `repo-genome` already in-tree.
+measured-win discipline.
+
+### First increment — the scorecard: SHIPPED
+
+`metaharness score <repo> [--json]` (`src/repo-scorecard.ts`) is live. It reuses
+the no-exec repo analyzer (`inventory` → `analyzeFiles` → `recommendPlan`) and
+emits the 6-line card — every dimension derived from real repo signals, not
+invented:
+
+```
+Scorecard — <repo>  (best-fit archetype: …)
+  Harness fit:        N/100   (recommended-archetype match confidence)
+  Compile confidence: N/100   (language + build + test + CI signals)
+  Task coverage:      N/100   (agents/skills/commands span × observed tokens)
+  Tool safety:        N/100   (default-deny policy posture − MCP exposure)
+  Memory usefulness:  N/100   (repo scale: files × languages × tokens)
+  Est. cost per run:  $N      (agents × budget at the cheap tier — DRACO routing)
+  Recommended mode:   CLI | CLI + MCP
+```
+
+No-exec (only reads high-signal files), deterministic, `--json` for CI. +9 tests.
+Wired into `metaharness score` and the CLI help. The remaining synthesis stages
+(beam/MCTS/GoT search, constraint solver) build on this measurement spine.
