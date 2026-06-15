@@ -96,9 +96,22 @@ async function main() {
     : {};
 
   // Heartbeat so a long live run shows progress on stderr instead of going dark
-  // until the final summary. No-op for tiny mock runs but harmless.
-  const onProgress = (done: number, total: number, id: string) =>
+  // until the final summary. Node block-BUFFERS stderr to a pipe (not a TTY), so
+  // the stderr lines often don't surface live — also write a `<out>.progress`
+  // sidecar JSON that can be polled to tell genuine progress from buffering (this
+  // exact ambiguity cost real effort chasing phantom stalls).
+  const onProgress = (done: number, total: number, id: string) => {
     process.stderr.write(`[draco] ${done}/${total} done (${id})\n`);
+    if (out) {
+      try {
+        const p = resolve(out) + '.progress';
+        mkdirSync(dirname(p), { recursive: true });
+        writeFileSync(p, JSON.stringify({ done, total, lastId: id, at: new Date().toISOString() }) + '\n', 'utf-8');
+      } catch {
+        /* progress sidecar is best-effort — never fail a run over it */
+      }
+    }
+  };
 
   // The full thesis: --threeway runs vanilla < harness < fusion+harness.
   if (has('threeway')) {
