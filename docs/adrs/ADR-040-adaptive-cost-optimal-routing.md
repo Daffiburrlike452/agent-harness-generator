@@ -194,6 +194,36 @@ FastGRNN), which generalises where raw TF k-NN overfits. The current best simple
 router is `domain_router`; the embedding router is the data-scaling follow-up,
 not a free win.
 
+## Result — embedding router is the best, but n=20 caps everyone at ~92%
+
+Embedded the 20 prompts with `openai/text-embedding-3-small` (1536-dim, via
+OpenRouter; embeddings committed at `draco/runs/corpus-embeddings.json` so the
+router re-evaluates offline). semantic k-NN vs the earlier lexical k-NN:
+
+| router | quality | % oracle-q | cost |
+|--------|---------|-----------|------|
+| **embedding_knn(k=5)** | **0.7048** | **92%** | $1.42 |
+| domain_router | 0.7022 | 92% | $1.42 |
+| knn_router (TF, k=5) | 0.6892 | 90% | $1.49 |
+| always_opus (best fixed) | 0.6960 | 91% | $1.27 |
+| oracle | 0.7682 | 100% | $1.68 |
+
+Two honest findings:
+1. **Semantic beats lexical** (0.7048 > 0.6892) — real embeddings cluster
+   questions by "which model wins" better than raw term-frequency, and
+   `embedding_knn(k=5)` is the **best router measured**, edging past both
+   `domain_router` and the best fixed model.
+2. **But the win is within noise** (+0.0026 vs domain) and still 8% short of the
+   oracle. On n=20, even semantic similarity hits a **data ceiling** at ~92% —
+   precisely the prediction above: the 92% → 100% gap is **data-limited**, not
+   signal-limited. k matters (k=5 > k=3 > k=1): more neighbours regularise the
+   tiny sample.
+
+**The decisive next lever is corpus SIZE, not a cleverer router.** With more
+questions per "model-affinity cluster," a learned router (tiny-dancer over these
+same embeddings) has the density to separate them; at n=20 it cannot. The
+embedding router + committed embeddings are the substrate for that scale-up.
+
 ## Honest guardrails
 
 - The "haiku > opus on DRACO" claim must **survive repeated runs** before it

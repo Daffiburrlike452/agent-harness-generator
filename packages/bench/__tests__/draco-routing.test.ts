@@ -11,6 +11,7 @@ import {
   routerEscalate,
   domainRouter,
   knnRouter,
+  embeddingKnnRouter,
   analyse,
 } from '../src/draco/routing.js';
 
@@ -144,6 +145,29 @@ describe('knn_router — text-similarity learned router (embedding-free)', () =>
       'anthropic/claude-opus-4', 'anthropic/claude-opus-4',
     ]);
     expect(r.quality).toBeCloseTo((0.9 + 0.88 + 0.92 + 0.9) / 4); // = oracle on this clean split
+  });
+});
+
+describe('embedding_knn_router — semantic similarity (mock embeddings)', () => {
+  // a,b near each other (haiku wins); c,d near each other (opus wins).
+  const ME: RoutingMatrix = {
+    models: ['anthropic/claude-haiku-4.5', 'anthropic/claude-opus-4'],
+    questionIds: ['a', 'b', 'c', 'd'],
+    cells: {
+      a: { 'anthropic/claude-haiku-4.5': { quality: 0.9, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.6, tokens: 1000 } },
+      b: { 'anthropic/claude-haiku-4.5': { quality: 0.88, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.62, tokens: 1000 } },
+      c: { 'anthropic/claude-haiku-4.5': { quality: 0.5, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.92, tokens: 1000 } },
+      d: { 'anthropic/claude-haiku-4.5': { quality: 0.55, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.9, tokens: 1000 } },
+    },
+  };
+  const emb = { a: [1, 0], b: [0.99, 0.1], c: [0, 1], d: [0.1, 0.99] };
+
+  it('routes by semantic neighbour to its best model (k=1, LOO)', () => {
+    const r = embeddingKnnRouter(ME, emb, 1);
+    expect(r.picks).toEqual([
+      'anthropic/claude-haiku-4.5', 'anthropic/claude-haiku-4.5',
+      'anthropic/claude-opus-4', 'anthropic/claude-opus-4',
+    ]);
   });
 });
 

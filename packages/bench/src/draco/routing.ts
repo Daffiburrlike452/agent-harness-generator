@@ -299,6 +299,50 @@ export function knnRouter(m: RoutingMatrix, prompts: Record<string, string>, k =
   return { label: `knn_router(k=${k})`, picks, quality, costUSD: cost, qualityPerUSD: cost > 0 ? quality / cost : Infinity };
 }
 
+/** Cosine over dense embedding vectors. */
+function cosineArr(a: number[], b: number[]): number {
+  let dot = 0, na = 0, nb = 0;
+  for (let i = 0; i < a.length; i++) { dot += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+  return na && nb ? dot / (Math.sqrt(na) * Math.sqrt(nb)) : 0;
+}
+
+/**
+ * embedding_knn_router — the SEMANTIC version of knn_router. Same leave-one-out
+ * k-NN routing, but similarity is cosine over real query EMBEDDINGS (e.g.
+ * text-embedding-3-small) instead of raw term-frequency. The Phase-2 test: does
+ * semantic similarity cluster questions by "which model wins" better than the
+ * coarse 5-way domain label (where TF k-NN failed on n=20)? This is the
+ * embedding-router idea (tiny-dancer's territory) at k-NN simplicity.
+ */
+export function embeddingKnnRouter(
+  m: RoutingMatrix,
+  embeddings: Record<string, number[]>,
+  k = 3,
+  prices = BLENDED_USD_PER_MTOK,
+): PolicyResult {
+  const picks = m.questionIds.map((q) => {
+    const eq = embeddings[q];
+    const sims = m.questionIds
+      .filter((o) => o !== q && embeddings[o])
+      .map((o) => [o, cosineArr(eq, embeddings[o])] as const)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, k)
+      .map(([o]) => o);
+    const pool = sims.length > 0 ? sims : m.questionIds.filter((o) => o !== q);
+    let best = m.models[0];
+    let bestMean = -Infinity;
+    for (const model of m.models) {
+      const mean = pool.reduce((s, o) => s + m.cells[o][model].quality, 0) / pool.length;
+      if (mean > bestMean) { bestMean = mean; best = model; }
+    }
+    return best;
+  });
+  let qSum = 0, cost = 0;
+  m.questionIds.forEach((q, i) => { qSum += m.cells[q][picks[i]].quality; cost += costOf(picks[i], m.cells[q][picks[i]].tokens, prices); });
+  const quality = qSum / m.questionIds.length;
+  return { label: `embedding_knn_router(k=${k})`, picks, quality, costUSD: cost, qualityPerUSD: cost > 0 ? quality / cost : Infinity };
+}
+
 function bestBy(m: RoutingMatrix, q: string, key: (c: RoutingCell) => number): string {
   let best = m.models[0];
   for (const model of m.models) if (key(m.cells[q][model]) > key(m.cells[q][best])) best = model;
