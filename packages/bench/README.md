@@ -44,6 +44,39 @@ We don't run Mem0 or ReasoningBank in CI (their API keys + workloads aren't acce
 
 If `k=1 recall >= k=10 recall - epsilon` on the temporal category, the ReasoningBank result reproduces in our shape. If not, the decay path is over-eager or the corpus is too dense.
 
+## DRACO — deep-research benchmark + the beyond-SOTA findings
+
+`src/draco/` is a second, independent benchmark: a cross-domain deep-research
+gate (science / finance / law / current-events / technical) that scores a cited
+dossier on grounding, coverage, balance, cleanliness, and faithfulness, with
+live OpenRouter model fusion. See ADR-037 for the design.
+
+**The honest result (ADR-038, ADR-039 — measured, not gamed):**
+
+- **Quality ceiling.** A single well-prompted frontier call is *unbeatable on
+  score*. Across 4 frontier runs every harness/fusion/refine/select arm landed
+  at or below vanilla (within its own ±0.02 between-run noise). The mechanism:
+  `grounding = (live URLs)/(total URLs)` is a fraction, so transforms lose live
+  URLs, selection is capped by the best draw, and union can only dilute. The
+  benchmark *falsified* the harness-beats-vanilla thesis with a mechanism.
+- **Cost win (the real "beyond SOTA").** A cheap model (haiku-4.5) produces a
+  HIGHER-quality dossier than a frontier model (opus-4) at **~10× lower cost**
+  (`+0.042` quality, `10.6×` more quality-per-dollar). The frontier *fusion*
+  harness costs **≥250×** the cheap direct call and scores **worse**. For
+  DRACO-style factual dossiers: route to a cheap model and ask directly.
+
+```bash
+# Offline cost-efficiency report from committed run artifacts (no API spend):
+node dist/draco/draco-bin.js --cost-report
+
+# Re-run a live arm (needs OPENROUTER_API_KEY): --threeway | --augment | --selfcon [--composite]
+DRACO_CONCURRENCY=4 node --env-file=../../.env dist/draco/draco-bin.js --threeway --live
+```
+
+Run artifacts: `draco/runs/*.json`. Arms are tested + offline-mockable; CI runs
+the full suite so no result regresses. Findings gist + ADR-038/039 carry the
+full evidence.
+
 ## License
 
 MIT
