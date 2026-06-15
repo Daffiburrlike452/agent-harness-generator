@@ -169,6 +169,31 @@ inference-only — it needs a pre-trained model + an embedding pipeline (the
 broader ruvector stack), so `domain_router` is the no-dependency proof that a
 learned feature-router works; the embedding router is the richer follow-up.
 
+## Result — finer features are NOT automatically better (bias–variance)
+
+Tested a richer embedding-free router — `knn_router`: route each question by
+TF-cosine text similarity to its k nearest peers' best model (leave-one-out):
+
+| router | quality | % oracle-q |
+|--------|---------|-----------|
+| domain_router | 0.7022 | **92%** |
+| knn_router(k=5) | 0.6892 | 90% |
+| knn_router(k=3) | 0.6833 | 89% |
+| knn_router(k=1) | 0.6751 | 88% |
+| always_opus (best fixed) | 0.6960 | 91% |
+
+The finer feature **lost**. On n=20 (4 questions/domain) TF k-NN is low-bias but
+**high-variance** — its nearest-by-words neighbours are not reliably in the same
+"which-model-wins" cluster, whereas the 5-way domain label is a clean, low-
+variance signal. Granularity without enough data hurts.
+
+**Implication for the embedding router:** closing the 92% → 100% gap is not a
+matter of a finer hand-feature; it needs (a) **more data** (a larger corpus) and
+(b) a **regularised learned model** over real semantic embeddings (tiny-dancer's
+FastGRNN), which generalises where raw TF k-NN overfits. The current best simple
+router is `domain_router`; the embedding router is the data-scaling follow-up,
+not a free win.
+
 ## Honest guardrails
 
 - The "haiku > opus on DRACO" claim must **survive repeated runs** before it

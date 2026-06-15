@@ -10,6 +10,7 @@ import {
   routerPolicy,
   routerEscalate,
   domainRouter,
+  knnRouter,
   analyse,
 } from '../src/draco/routing.js';
 
@@ -113,6 +114,36 @@ describe('domain_router — learned, leave-one-out, no embeddings', () => {
     ]);
     // = oracle on this clean split: mean(0.9,0.85,0.9,0.95)
     expect(r.quality).toBeCloseTo((0.9 + 0.85 + 0.9 + 0.95) / 4);
+  });
+});
+
+describe('knn_router — text-similarity learned router (embedding-free)', () => {
+  // 4 questions: two "stock" (haiku wins), two "vaccine" (opus wins). Text
+  // similarity should cluster them and route each cluster to its best model.
+  const MK: RoutingMatrix = {
+    models: ['anthropic/claude-haiku-4.5', 'anthropic/claude-opus-4'],
+    questionIds: ['a', 'b', 'c', 'd'],
+    cells: {
+      a: { 'anthropic/claude-haiku-4.5': { quality: 0.9, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.6, tokens: 1000 } },
+      b: { 'anthropic/claude-haiku-4.5': { quality: 0.88, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.62, tokens: 1000 } },
+      c: { 'anthropic/claude-haiku-4.5': { quality: 0.5, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.92, tokens: 1000 } },
+      d: { 'anthropic/claude-haiku-4.5': { quality: 0.55, tokens: 1000 }, 'anthropic/claude-opus-4': { quality: 0.9, tokens: 1000 } },
+    },
+  };
+  const prompts = {
+    a: 'stock market valuation and price earnings ratio',
+    b: 'stock price valuation earnings forecast',
+    c: 'vaccine efficacy clinical trial immune response',
+    d: 'vaccine immune trial efficacy data',
+  };
+
+  it('routes text-clustered questions to their best model (k=1, LOO)', () => {
+    const r = knnRouter(MK, prompts, 1);
+    expect(r.picks).toEqual([
+      'anthropic/claude-haiku-4.5', 'anthropic/claude-haiku-4.5',
+      'anthropic/claude-opus-4', 'anthropic/claude-opus-4',
+    ]);
+    expect(r.quality).toBeCloseTo((0.9 + 0.88 + 0.92 + 0.9) / 4); // = oracle on this clean split
   });
 });
 

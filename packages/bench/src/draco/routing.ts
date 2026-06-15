@@ -253,6 +253,52 @@ export function domainRouter(m: RoutingMatrix, prices = BLENDED_USD_PER_MTOK): P
   return { label: 'domain_router(leave-one-out)', picks, quality, costUSD: cost, qualityPerUSD: cost > 0 ? quality / cost : Infinity };
 }
 
+/** Term-frequency vector from a prompt (lowercased word counts). Pure, no deps. */
+function tf(text: string): Map<string, number> {
+  const v = new Map<string, number>();
+  for (const w of text.toLowerCase().match(/[a-z0-9]+/g) ?? []) v.set(w, (v.get(w) ?? 0) + 1);
+  return v;
+}
+function cosine(a: Map<string, number>, b: Map<string, number>): number {
+  let dot = 0;
+  for (const [w, x] of a) dot += x * (b.get(w) ?? 0);
+  const na = Math.sqrt([...a.values()].reduce((s, x) => s + x * x, 0));
+  const nb = Math.sqrt([...b.values()].reduce((s, x) => s + x * x, 0));
+  return na && nb ? dot / (na * nb) : 0;
+}
+
+/**
+ * knn_router — a richer LEARNED router than domain_router, still embedding-free:
+ * for each question, find the k most TEXT-SIMILAR other questions (TF cosine over
+ * the prompt) and route to the model with the best mean quality among them
+ * (leave-one-out). Tests whether finer-grained question features capture more of
+ * the oracle gap than the coarse 5-way domain label. A real embedding (tiny-
+ * dancer) is the production upgrade of this same idea — semantic instead of TF.
+ */
+export function knnRouter(m: RoutingMatrix, prompts: Record<string, string>, k = 3, prices = BLENDED_USD_PER_MTOK): PolicyResult {
+  const vecs = new Map(m.questionIds.map((q) => [q, tf(prompts[q] ?? q)]));
+  const picks = m.questionIds.map((q) => {
+    const sims = m.questionIds
+      .filter((o) => o !== q)
+      .map((o) => [o, cosine(vecs.get(q)!, vecs.get(o)!)] as const)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, k)
+      .map(([o]) => o);
+    const pool = sims.length > 0 ? sims : m.questionIds.filter((o) => o !== q);
+    let best = m.models[0];
+    let bestMean = -Infinity;
+    for (const model of m.models) {
+      const mean = pool.reduce((s, o) => s + m.cells[o][model].quality, 0) / pool.length;
+      if (mean > bestMean) { bestMean = mean; best = model; }
+    }
+    return best;
+  });
+  let qSum = 0, cost = 0;
+  m.questionIds.forEach((q, i) => { qSum += m.cells[q][picks[i]].quality; cost += costOf(picks[i], m.cells[q][picks[i]].tokens, prices); });
+  const quality = qSum / m.questionIds.length;
+  return { label: `knn_router(k=${k})`, picks, quality, costUSD: cost, qualityPerUSD: cost > 0 ? quality / cost : Infinity };
+}
+
 function bestBy(m: RoutingMatrix, q: string, key: (c: RoutingCell) => number): string {
   let best = m.models[0];
   for (const model of m.models) if (key(m.cells[q][model]) > key(m.cells[q][best])) best = model;

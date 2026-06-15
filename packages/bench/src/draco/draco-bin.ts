@@ -140,7 +140,10 @@ async function main() {
     // router_v2: escalate cheapest→dearest when the pre-signal is low. Sweep thresholds.
     const v2s = recordSignal ? [0.5, 0.6, 0.7, 0.8].map((t) => routerEscalate(matrix, { cheapModel: cheapest, escalateTo: dearest, threshold: t })) : [];
     const dRouter = domainRouter(matrix); // learned (domain → best model), leave-one-out, no embeddings
-    const ladder = analyse([...always, oQ, routerV1, ...v2s, dRouter, oCO], oCO);
+    const { knnRouter } = await import('./routing.js');
+    const prompts = Object.fromEntries(corpus.questions.map((q) => [q.id, q.prompt]));
+    const kRouter = knnRouter(matrix, prompts, 5); // richer text-similarity feature (embedding-free)
+    const ladder = analyse([...always, oQ, routerV1, ...v2s, dRouter, kRouter, oCO], oCO);
     process.stdout.write(`\nDRACO ${kind.toUpperCase()} ROUTING (ADR-040) — quality/dollar ladder (eps=${eps})\n`);
     process.stdout.write(`  pool: ${pool.join(', ')}\n`);
     for (const p of ladder) {
