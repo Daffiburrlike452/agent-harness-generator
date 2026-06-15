@@ -96,6 +96,27 @@ gate + SONA adaptation over the per-stage reward signal.
 | cheap n=20 | 0.7788 | 0.7611 | 0.7594 | NO | structure hurt on weak models |
 | frontier n=20 (baseline) | 0.7143 | 0.6126 | 0.6472 | NO | harness DEGRADES −0.10 vs vanilla; fusion recovers +0.035 but still < vanilla. ordering: harness < fusion < vanilla |
 
+#### Arm 1 — augment-not-replace (verify→prune): REJECTED
+
+| arm | vanilla | augment | Δ | grounding Δ | coverage Δ | cleanliness Δ | result |
+|-----|---------|---------|---|-------------|------------|---------------|--------|
+| frontier n=20 | 0.7258 | 0.6982 | **−0.0275** | **−0.09** | **−0.07** | 0.00 | LOSES |
+
+The prune pass strips grounding (−0.09) and coverage (−0.07) without improving
+cleanliness (0.00). Root cause: the independent verifier cannot re-fetch URLs,
+so it flags real citations as "unsupported" from the text alone, and the prune
+obediently removes them — discarding the exact grounding the scorer rewards.
+Kept in-tree as a tested, documented, MEASURED-rejected arm (not the default).
+
+**Cross-result learning (the key insight):** *every transformation of the
+dossier loses grounding* — the harness rebuild loses it, the prune loses it —
+because the scorer re-fetches real URLs and vanilla's single direct call
+produces the most real, re-fetchable citations. Therefore an improvement must
+**SELECT or UNION, never rewrite.** Next arm: best-of-N self-consistency
+selection (generate N intact vanilla dossiers, pick the highest judged — never
+transforms a dossier, so grounding cannot be lost; can only match or exceed the
+single draw).
+
 ### What the baseline tells us (the real target)
 
 The harness loses to vanilla at BOTH tiers, and at frontier the gap is large

@@ -1,0 +1,42 @@
+{
+  "corpusVersion": 1,
+  "transport": "live",
+  "judged": true,
+  "judge": {
+    "model": "google/gemini-2.5-pro",
+    "promptVersion": 1
+  },
+  "vanilla": {
+    "arm": "single",
+    "score": 0.7257659625790971,
+    "perDimension": {
+      "grounding": 0.5161298128954852,
+      "coverage": 0.59,
+      "balance": 0.875,
+      "cleanliness": 1,
+      "faithfulness": 0.6476999999999999
+    },
+    "totalTokens": 29248
+  },
+  "augment": {
+    "arm": "fusion",
+    "score": 0.6982455942097118,
+    "perDimension": {
+      "grounding": 0.42957797104855927,
+      "coverage": 0.52,
+      "balance": 0.9,
+      "cleanliness": 1,
+      "faithfulness": 0.64165
+    },
+    "totalTokens": 238879
+  },
+  "delta": -0.027520368369385317,
+  "deltaByDimension": {
+    "grounding": -0.08655184184692594,
+    "coverage": -0.06999999999999995,
+    "balance": 0.025000000000000022,
+    "cleanliness": 0,
+    "faithfulness": -0.006049999999999889
+  },
+  "augmentWins": false
+}
