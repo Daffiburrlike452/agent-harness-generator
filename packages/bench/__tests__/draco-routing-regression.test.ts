@@ -11,7 +11,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { alwaysPolicy, oracleQuality, domainRouter, embeddingKnnRouter } from '../src/draco/routing.js';
+import { alwaysPolicy, oracleQuality, domainRouter, embeddingKnnRouter, learningCurveEmbedding } from '../src/draco/routing.js';
 
 const RUNS = join(dirname(fileURLToPath(import.meta.url)), '..', 'draco', 'runs');
 const matrixPath = join(RUNS, 'routing-matrix-signal.json');
@@ -46,5 +46,13 @@ describe.skipIf(!have)('DRACO routing regression — learned routers beat the be
     // embedding_knn(k=5) >= domain_router (within a small tolerance) — the
     // "semantic >= lexical/coarse" finding. Tolerance absorbs benign reshuffles.
     expect(embeddingKnnRouter(m, emb, 5).quality).toBeGreaterThanOrEqual(domainRouter(m).quality - 0.01);
+  });
+
+  it('the learning curve rises with training data (data-limited, not signal-limited)', () => {
+    const curve = learningCurveEmbedding(m, emb, [3, 9, 19], 5);
+    // monotone non-decreasing AND a clear net gain from small→full training set:
+    expect(curve[1].quality).toBeGreaterThanOrEqual(curve[0].quality);
+    expect(curve[2].quality).toBeGreaterThanOrEqual(curve[1].quality);
+    expect(curve[2].quality - curve[0].quality).toBeGreaterThan(0.03); // ≥3% gain 3→19
   });
 });

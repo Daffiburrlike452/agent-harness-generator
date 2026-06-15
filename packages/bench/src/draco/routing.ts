@@ -299,6 +299,47 @@ export function knnRouter(m: RoutingMatrix, prompts: Record<string, string>, k =
   return { label: `knn_router(k=${k})`, picks, quality, costUSD: cost, qualityPerUSD: cost > 0 ? quality / cost : Infinity };
 }
 
+/**
+ * Learning curve for the embedding router: does routing accuracy RISE as the
+ * training set grows? Tests the ADR-040 "data-limited" claim directly. For each
+ * training size T, restrict every test question's k-NN training pool to T
+ * evenly-spaced peers (deterministic, ~domain-balanced), route, and average the
+ * resulting quality over all questions. A rising curve confirms data-limited; a
+ * flat one refutes it. Pure + offline.
+ */
+export function learningCurveEmbedding(
+  m: RoutingMatrix,
+  embeddings: Record<string, number[]>,
+  sizes: number[],
+  k = 5,
+): { trainSize: number; quality: number }[] {
+  return sizes.map((T) => {
+    let qSum = 0;
+    for (const q of m.questionIds) {
+      const others = m.questionIds.filter((o) => o !== q && embeddings[o]);
+      // evenly-spaced subsample of size min(T, others.length)
+      const t = Math.min(T, others.length);
+      const pool: string[] = [];
+      for (let i = 0; i < t; i++) pool.push(others[Math.floor((i * others.length) / t)]);
+      // k-NN within the restricted pool
+      const eq = embeddings[q];
+      const nn = pool
+        .map((o) => [o, cosineArr(eq, embeddings[o])] as const)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, Math.min(k, t))
+        .map(([o]) => o);
+      let best = m.models[0];
+      let bestMean = -Infinity;
+      for (const model of m.models) {
+        const mean = nn.reduce((s, o) => s + m.cells[o][model].quality, 0) / nn.length;
+        if (mean > bestMean) { bestMean = mean; best = model; }
+      }
+      qSum += m.cells[q][best].quality;
+    }
+    return { trainSize: T, quality: qSum / m.questionIds.length };
+  });
+}
+
 /** Cosine over dense embedding vectors. */
 function cosineArr(a: number[], b: number[]): number {
   let dot = 0, na = 0, nb = 0;
