@@ -33,13 +33,16 @@ test.describe('MetaHarness Studio UI', () => {
     // Change the harness name and confirm it propagates into package.json.
     const nameInput = page.getByLabel('Harness name');
     await nameInput.fill('contract-sentinel');
-    // Click package.json in the file tree.
-    await page.getByRole('button', { name: 'package.json' }).click();
+    // Click package.json in the file tree. `exact` so the file-tree button never
+    // collides with a host-card description that happens to mention the filename.
+    await page.getByRole('button', { name: 'package.json', exact: true }).click();
     await expect(page.locator('pre')).toContainText('"name": "contract-sentinel"');
 
-    // Toggle a host on and confirm the codex adapter file appears.
+    // Toggle a host on and confirm the codex adapter file appears. `exact` avoids
+    // the strict-mode clash with the "OpenAI Codex" host card, whose description
+    // text mentions config.toml.
     await page.getByRole('button', { name: /OpenAI Codex/ }).click();
-    await expect(page.getByRole('button', { name: 'config.toml' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'config.toml', exact: true })).toBeVisible();
 
     // Download the zip.
     const [dl] = await Promise.all([
@@ -55,19 +58,19 @@ test.describe('MetaHarness Studio UI', () => {
     await page.getByTestId('tpl-vertical:agentics').click();
     await expect(page.getByLabel('Description')).toHaveValue(/swarm/i);
     // Its orchestrator agent file should appear in the tree.
-    await expect(page.getByRole('button', { name: 'orchestrator.ts' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'orchestrator.ts', exact: true })).toBeVisible();
   });
 
   test('MCP primitive: toggling mode adds/removes the src/mcp surface', async ({ page }) => {
     await page.goto('/');
     // Default is local — the server file should be in the tree.
-    await expect(page.getByRole('button', { name: 'server.ts' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'server.ts', exact: true })).toBeVisible();
     // Switch MCP off.
     await page.getByRole('button', { name: 'Off', exact: true }).click();
-    await expect(page.getByRole('button', { name: 'server.ts' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'server.ts', exact: true })).toHaveCount(0);
     // Switch to remote — auth.ts should now appear.
     await page.getByRole('button', { name: 'Remote', exact: true }).click();
-    await expect(page.getByRole('button', { name: 'auth.ts' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'auth.ts', exact: true })).toBeVisible();
   });
 
   test('invalid name blocks download and shows the reason', async ({ page }) => {
