@@ -58,6 +58,9 @@ export interface AblationOptions {
   /** Override the fusion-arm model map (e.g. the cheap preset). Defaults to DRACO_OPTIMIZED_MODELS. */
   fusionModels?: import('./fusion.js').FusionModelMap;
   limit?: number;
+  /** Called as each question finishes — lets a long live run emit a heartbeat
+   * instead of printing nothing until the end. */
+  onProgress?: (done: number, total: number, questionId: string) => void;
 }
 
 function mean(xs: number[]): number {
@@ -141,12 +144,14 @@ export async function runAblation(corpus: DracoCorpus, opts: AblationOptions): P
 
   // Bounded pool (iter 160): both arms per question run concurrently, questions
   // through a capped pool. Order preserved → deterministic. See DRACO_CONCURRENCY.
+  let done = 0;
   const rows = await mapPooled(questions, DRACO_CONCURRENCY, async (q) => {
     const [single, fused] = await Promise.all([
       singleModelResearch({ id: q.id, prompt: q.prompt }, singleModel, opts.transport),
       fuseResearch({ id: q.id, prompt: q.prompt }, fusionModels, opts.transport),
     ]);
     const [s, f] = await Promise.all([scoreOne(single.answer, q), scoreOne(fused.answer, q)]);
+    opts.onProgress?.(++done, questions.length, q.id);
     return { single, fused, s, f };
   });
   for (const r of rows) {
@@ -246,6 +251,7 @@ export async function runThreeWayAblation(corpus: DracoCorpus, opts: AblationOpt
   // the old one-call-at-a-time loop, but capped so a live run never bursts past
   // the OpenRouter rate limit (the unbounded version 429-stormed and died with no
   // output). mapPooled preserves input order → deterministic scoring.
+  let done = 0;
   const perQ = await mapPooled(questions, DRACO_CONCURRENCY, async (q) => {
     const [v, h, f] = await Promise.all([
       vanillaResearch({ id: q.id, prompt: q.prompt }, singleModel, opts.transport),
@@ -253,6 +259,7 @@ export async function runThreeWayAblation(corpus: DracoCorpus, opts: AblationOpt
       fuseResearch({ id: q.id, prompt: q.prompt }, fusionModels, opts.transport),
     ]);
     const [vs, hs, fs] = await Promise.all([scoreOne(v.answer, q), scoreOne(h.answer, q), scoreOne(f.answer, q)]);
+    opts.onProgress?.(++done, questions.length, q.id);
     return { v, h, f, vs, hs, fs };
   });
   for (const r of perQ) {

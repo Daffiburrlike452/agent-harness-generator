@@ -95,9 +95,14 @@ async function main() {
     ? { fusionModels: DRACO_CHEAP_MODELS, singleModel: DRACO_CHEAP_SINGLE_MODEL, judgeModel: DRACO_CHEAP_JUDGE }
     : {};
 
+  // Heartbeat so a long live run shows progress on stderr instead of going dark
+  // until the final summary. No-op for tiny mock runs but harmless.
+  const onProgress = (done: number, total: number, id: string) =>
+    process.stderr.write(`[draco] ${done}/${total} done (${id})\n`);
+
   // The full thesis: --threeway runs vanilla < harness < fusion+harness.
   if (has('threeway')) {
-    const r = await runThreeWayAblation(corpus, { transport, transportKind: kind, checkUrl, judgeTransport, limit, ...cheapOpts });
+    const r = await runThreeWayAblation(corpus, { transport, transportKind: kind, checkUrl, judgeTransport, limit, onProgress, ...cheapOpts });
     process.stdout.write(`\nDRACO ${kind.toUpperCase()} THREE-WAY — vanilla < harness < fusion+harness\n`);
     if (kind === 'mock') process.stdout.write('NOTE: MOCK transport — demonstrates the machinery, not a live result.\n');
     process.stdout.write(`  vanilla (raw chat):            ${r.arms.vanilla.score.toFixed(4)}\n`);
@@ -116,7 +121,7 @@ async function main() {
 
   // M6: --ablation runs the fusion-vs-single comparison (the beyond-SOTA proof).
   if (has('ablation')) {
-    const ab = await runAblation(corpus, { transport, transportKind: kind, checkUrl, judgeTransport, limit, ...cheapOpts });
+    const ab = await runAblation(corpus, { transport, transportKind: kind, checkUrl, judgeTransport, limit, onProgress, ...cheapOpts });
     process.stdout.write(`\nDRACO ${kind.toUpperCase()} ABLATION — optimised fusion vs single-model\n`);
     if (kind === 'mock') {
       process.stdout.write('NOTE: MOCK transport — this demonstrates the ablation MACHINERY, not a live result.\n');

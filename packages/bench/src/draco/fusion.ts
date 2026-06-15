@@ -112,8 +112,12 @@ export function openRouterTransport(opts: {
   apiKey?: string;
   baseUrl?: string;
   fetchImpl?: typeof fetch;
-  /** Retries for transient (429/5xx) failures before giving up. Default 5. */
+  /** Retries for transient (429/5xx/timeout) failures before giving up. Default 5. */
   maxRetries?: number;
+  /** Per-request timeout in ms (AbortController). A hung socket is treated as a
+   * transient failure and retried, so one stuck call can't stall a 300-call run.
+   * Default 120000 (2 min — dossier generations are long). */
+  requestTimeoutMs?: number;
 } = {}): OpenRouterTransport {
   const apiKey = opts.apiKey ?? process.env.OPENROUTER_API_KEY;
   const baseUrl = opts.baseUrl ?? 'https://openrouter.ai/api/v1';
@@ -131,18 +135,36 @@ export function openRouterTransport(opts: {
   // the whole ablation batch (observed iter 160). Retry only the transient codes;
   // 4xx other than 429 (e.g. 400 bad model slug) fails fast — retrying won't help.
   const maxRetries = opts.maxRetries ?? 5;
+  const requestTimeoutMs = opts.requestTimeoutMs ?? 120000;
   const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
   return async (modelId, messages) => {
     let lastStatus = 0;
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      const res = await doFetch(`${baseUrl}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ model: modelId, messages }),
-      });
+      // Per-request timeout: abort a hung socket so it becomes a retryable
+      // failure instead of stalling the whole run forever.
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), requestTimeoutMs);
+      let res: Awaited<ReturnType<typeof doFetch>>;
+      try {
+        res = await doFetch(`${baseUrl}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ model: modelId, messages }),
+          signal: ctrl.signal,
+        });
+      } catch (err) {
+        // Network error or abort (timeout): transient. Retry unless out of budget.
+        if (attempt === maxRetries) {
+          throw new Error(`OpenRouter ${modelId} → ${ctrl.signal.aborted ? `timeout after ${requestTimeoutMs}ms` : String((err as Error)?.message ?? err)} (after ${attempt} retries)`);
+        }
+        await sleep(Math.min(1000 * 2 ** attempt, 16000) + (attempt * 137) % 500);
+        continue;
+      } finally {
+        clearTimeout(timer);
+      }
       if (res.ok) {
         const json = (await res.json()) as {
           choices?: { message?: { content?: string } }[];
