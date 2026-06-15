@@ -67,6 +67,10 @@ benchmark proves it: a small, cheap model delivers **frontier-quality** research
 at roughly **one-tenth the cost**, and a smart router squeezes out the rest.
 Stop paying frontier prices for work a $0.10 model does just as well.
 
+That router ships as [`@metaharness/router`](https://www.npmjs.com/package/@metaharness/router)
+— `route(query)` returns the cheapest model predicted to clear your quality bar,
+learned from your own eval logs. `npm i @metaharness/router`.
+
 ## Try it in 30 seconds
 
 ```bash
