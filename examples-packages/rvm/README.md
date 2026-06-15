@@ -1,5 +1,10 @@
 # MetaHarness × RVM deployment-target partition
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A minimal, opinionated agent-harness scaffold pre-configured for the RVM deployment-target partition. This scaffold gives you a working `claude -p`-style harness on disk in seconds: agents folder, MCP server wiring, settings.json with the RVM host conventions baked in, and a `harness doctor` health-check pass. It is intentionally minimal — it does NOT ship a vertical multi-agent template (no pre-built researcher/coder/tester crew), and it does NOT install or configure your underlying RVM runtime. Bring your own agents, bring your own runtime; this just gets the harness shape right.
 
 ## Quickstart

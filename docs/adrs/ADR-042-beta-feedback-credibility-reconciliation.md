@@ -48,11 +48,14 @@ Accept the report. Triage:
    noting byte-parity is not enforced and a real parity test is an open follow-up.
    (README:160 — wrapper→CLI byte-identity — is *correct* and unchanged: wrappers
    exec `npx metaharness`, so that scaffold genuinely is identical.)
-5. **Example-README fabricated transcripts — generate or mark illustrative.**
-   The `trading`/`legal`/`research` wrappers show invented `harness doctor`
-   output + README-only "safety." Regenerate from real `--scaffold` output or
-   label illustrative; push safety into template code. (follow-up; partially
-   overlaps the wrapper fixes already shipped)
+5. **Example-README fabricated transcripts — DONE (marked illustrative + cmd fix).**
+   Swept all 15 example-package READMEs: corrected the non-existent `npx harness
+   doctor` (no `harness` bin in a generated harness) to `npm run doctor`, and
+   added an explicit "⚠️ Illustrative output" disclaimer to the 13 READMEs that
+   show representative transcripts/validation output. The remaining sub-item —
+   pushing the `trading`/`legal` "paper-by-default / drafts-only" SAFETY from
+   README prose into enforced TEMPLATE CODE — is a deeper change tracked as an
+   open follow-up (the disclaimer makes the current state honest in the interim).
 
 ### P1 — adoption frictions (roadmap)
 

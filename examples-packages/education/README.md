@@ -1,5 +1,10 @@
 # MetaHarness: education vertical
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A ready-made Claude Code scaffold for a multi-agent tutoring pod. You get a planner that sequences a curriculum, a tutor that delivers lessons and answers questions, and a grader that checks understanding with rubric-backed feedback — all wired into Claude Code with sensible model tiers, memory, and slash commands. This is a starting template for educators, EdTech prototypers, and self-learners building a focused study companion. It is not a full LMS, not a content library, and does not ship pre-built curricula — you bring the syllabus, the pod runs the lessons.
 
 ## Quickstart

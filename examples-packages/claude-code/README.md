@@ -8,7 +8,7 @@ Use this when you want to ship a Claude Code agent that has opinions: custom sla
 
 ```bash
 npx @metaharness/claude-code@latest my-bot
-cd my-bot && npm install && npx harness doctor
+cd my-bot && npm install && npm run doctor
 ```
 
 `harness doctor` validates that Node is recent enough, that the `.claude/` tree is well-formed, that the plugin manifest parses, and that any declared MCP servers resolve. From here you open the folder in your editor and start editing `CLAUDE.md` plus the files under `.claude/`.
@@ -27,14 +27,14 @@ cd my-bot && npm install && npx harness doctor
 
 ```bash
 # Sanity-check the scaffold
-npx harness doctor
+npm run doctor
 # → node: ok (v20.x)
 # → .claude/settings.json: ok
 # → plugin.json: ok (1 command, 1 agent)
 # → mcp.json: 0 servers reachable, 0 errors
 
 # Validate the plugin manifest against the Claude Code schema
-npx harness validate --plugin
+npm run validate --plugin
 # → plugin.json schema: ok
 # → commands/plan.md: frontmatter ok
 # → agents/default.md: frontmatter ok

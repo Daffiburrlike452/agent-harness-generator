@@ -1,5 +1,10 @@
 # MetaHarness × OpenClaw .openclaw/ config
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A minimal MetaHarness scaffold pre-wired for [OpenClaw](https://github.com/openclaw), the open-source AI coding host that reads its configuration from a `.openclaw/` directory. Run one command and you get a working harness folder with the right config file layout, a starter agent, and the doctor/validate tooling that ships with MetaHarness. This is for developers who want to bootstrap an OpenClaw-compatible project without copy-pasting a config tree from another repo. It does NOT install OpenClaw itself, ship a model, or run any agent for you — it scaffolds the static files you need so `openclaw` (or any OpenClaw-compatible runner) finds a valid configuration on first launch.
 
 ## Quickstart

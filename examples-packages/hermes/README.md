@@ -1,12 +1,17 @@
 # MetaHarness × Hermes cli-config harness
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A one-shot scaffolder that drops a minimal, working Hermes-integrated agent harness into a fresh directory. It wires up the host-specific config file Hermes expects, a baseline `harness.json`, and the bare-minimum agent + MCP plumbing so you can run `harness doctor` and get a green check in under a minute. It is intentionally NOT a multi-agent template, a vertical solution, or an opinionated framework — it is the smallest viable starting point for building a Hermes-driven CLI agent.
 
 ## Quickstart
 
 ```bash
 npx @metaharness/hermes@latest my-bot
-cd my-bot && npm install && npx harness doctor
+cd my-bot && npm install && npm run doctor
 ```
 
 That sequence scaffolds the project, installs dependencies, and runs the harness self-check. If `doctor` passes, you have a working Hermes harness.
@@ -26,7 +31,7 @@ That sequence scaffolds the project, installs dependencies, and runs the harness
 Run the built-in health check:
 
 ```bash
-npx harness doctor
+npm run doctor
 ```
 
 Expected excerpt:
@@ -41,7 +46,7 @@ Expected excerpt:
 Validate the manifest against the MetaHarness schema:
 
 ```bash
-npx harness validate
+npm run validate
 # manifest: ok (host=hermes, template=minimal)
 ```
 

@@ -1,5 +1,10 @@
 # MetaHarness: coding vertical
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A ready-made multi-agent engineering pod for Claude Code. One command scaffolds a working harness with four specialized agents — architect, implementer, reviewer, test-writer — wired into Claude Code's plugin directory layout with sensible permissions, hooks, and tier-appropriate model routing. Use it when you want a starting point for shipping real code with AI pair-programmers instead of staring at a blank `.claude/` folder. It does NOT install a runtime, does NOT call a model on its own, and does NOT lock you into any specific MCP server — it is a scaffold, not a service.
 
 ## Quickstart

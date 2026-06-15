@@ -1,5 +1,10 @@
 # MetaHarness × OpenAI Codex / Codex CLI
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A minimal, opinionated scaffold for building agent harnesses that target the OpenAI Codex CLI. It generates a ready-to-run project directory with a host-specific `codex.config.json`, a starter agent, lifecycle hooks, and the `harness` doctor/validate tooling baked in. This is for developers who want a clean starting point for a Codex-driven agent and do not want to hand-wire config, prompts, and validation. It is not a multi-agent vertical template, a UI, or a hosted runtime — you supply the logic, this gives you the skeleton.
 
 ## Quickstart

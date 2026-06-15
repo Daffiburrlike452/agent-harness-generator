@@ -1,12 +1,17 @@
 # MetaHarness: research vertical
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A ready-made multi-agent research harness for Claude Code. One command scaffolds a project with six specialized agents — scout, web-searcher, source-grader, synthesizer, fact-checker, citer — wired through tiered model routing (haiku for fan-out, sonnet for synthesis, opus for adversarial fact-checking) so you can run deep, multi-source, cited research the moment `npm install` finishes. It is **not** a hosted SaaS, a search API, or a finished UI — it is the prompts, agent definitions, hooks, and Claude Code settings you'd otherwise spend a weekend writing.
 
 ## Quickstart
 
 ```bash
 npx @metaharness/research@latest my-bot
-cd my-bot && npm install && npx harness doctor
+cd my-bot && npm install && npm run doctor
 ```
 
 `harness doctor` checks your Node version, Claude Code install, and required MCP servers. When it reports green, open the project in Claude Code and ask: *"Research the state of robotic foundation models in 2026 with at least 12 sources."*
@@ -27,7 +32,7 @@ cd my-bot && npm install && npx harness doctor
 Validate the scaffold's structure before you trust it on a real project:
 
 ```bash
-$ npx harness validate
+$ npm run validate
 PASS  agents/scout.md          (frontmatter ok, tools allowed)
 PASS  agents/web-searcher.md   (frontmatter ok, tools allowed)
 PASS  agents/source-grader.md  (frontmatter ok, tools allowed)

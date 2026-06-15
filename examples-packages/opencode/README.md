@@ -1,5 +1,10 @@
 # MetaHarness × OpenCode .opencode/ config
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A minimal MetaHarness scaffold wired for the OpenCode host. It drops a ready-to-edit `.opencode/` config tree into a fresh project directory so you can run agents through OpenCode without hand-building the boilerplate. This is for developers who already use OpenCode (or want to try it) and want a working starting point in one command. It is not a multi-agent vertical template — there are no pre-built domain agents, no embedded MCP server farm, and no opinionated workflow. You get the harness skeleton; you bring the intent.
 
 ## Quickstart

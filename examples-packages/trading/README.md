@@ -1,5 +1,10 @@
 # MetaHarness: trading vertical
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A ready-made multi-agent scaffold for quantitative trading workflows on top of Claude Code. Ships a research → strategy → risk → execution pipeline with a non-bypassable risk gate and paper-trading defaults, so you can iterate on signals and backtests without accidentally wiring real capital. Intended for quants, algo-trading hobbyists, and trading-platform integrators who want a sane starting point. It does NOT include broker credentials, a live order router, or any market-data subscription — bring your own broker adapter when you're ready to flip from paper to live.
 
 ## Quickstart

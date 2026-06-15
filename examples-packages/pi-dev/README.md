@@ -1,5 +1,10 @@
 # MetaHarness × pi.dev AGENTS.md harness
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A one-shot scaffold that drops a pi.dev-ready agent harness into a new folder. It wires up the `AGENTS.md` contract that pi.dev workers read on startup, ships a minimal template (no opinionated multi-agent vertical), and leaves you with a clean working directory you can commit immediately. This is for engineers who already know they want pi.dev as their host runtime and just want the boilerplate done. It does NOT include domain-specific agents, evaluation harnesses, or pre-baked workflows — pick a vertical package if you want that.
 
 ## Quickstart

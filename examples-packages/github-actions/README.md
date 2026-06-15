@@ -54,10 +54,10 @@ alone does not add human review.
 
 ```bash
 # Health-check the scaffold (validates the workflow + action YAML parse)
-npx harness doctor
+npm run doctor
 
 # Full umbrella gate
-npx harness validate
+npm run validate
 
 # Scan the harness's permission surface (flags over-broad grants)
 npx harness mcp-scan

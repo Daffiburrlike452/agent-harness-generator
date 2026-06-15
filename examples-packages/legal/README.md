@@ -1,5 +1,10 @@
 # MetaHarness: legal vertical
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A ready-made Claude Code harness for drafting contract redlines, sanity-checking citations, and producing first-pass risk ratings. Scaffolds a multi-agent setup wired for legal review workflows: an intake agent that reads the document, a redline drafter, a citation/authority checker, and a risk rater that classifies clauses by severity. Aimed at legal-ops teams, in-house counsel, and lawtech builders who want a working starting point instead of a blank repo. This is a drafting aid — it does not give legal advice, does not replace attorney review, and every output is meant to be checked by a qualified human before it leaves your office.
 
 ## Quickstart

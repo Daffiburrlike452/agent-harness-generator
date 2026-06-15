@@ -1,5 +1,10 @@
 # MetaHarness × VSCode/Copilot mcp.json
 
+> ⚠️ **Illustrative output.** Transcripts and validation/run output shown in this README are
+> representative examples, not captured from a specific run — actual output depends on your
+> environment, models, and inputs. Run the commands to see real results.
+
+
 A minimal scaffold that wires up GitHub Copilot in VSCode with MCP (Model Context Protocol) servers via `mcp.json`. This is for developers who already use Copilot Chat in VSCode and want to extend it with custom tools, file-system context, and MCP-backed integrations without hand-rolling configuration files. It does NOT ship a custom Copilot model, agent runtime, or replacement for Copilot Chat — it just generates the config layer that VSCode's Copilot reads on startup.
 
 ## Quickstart
